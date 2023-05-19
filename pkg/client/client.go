@@ -32,7 +32,7 @@ type Client struct {
 }
 
 // New creates a new Omni API client.
-func New(ctx context.Context, endpoint string, opts ...grpc.DialOption) (*Client, error) {
+func New(ctx context.Context, endpoint string, opts ...Option) (*Client, error) {
 	u, err := url.Parse(endpoint)
 	if err != nil {
 		return nil, err
@@ -50,14 +50,27 @@ func New(ctx context.Context, endpoint string, opts ...grpc.DialOption) (*Client
 		u.Host = net.JoinHostPort(u.Host, "80")
 	}
 
-	switch u.Scheme {
-	case "https":
-		opts = append(opts, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{})))
-	default:
-		opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	grpcOpts := []grpc.DialOption{}
+
+	for _, opt := range opts {
+		var o []grpc.DialOption
+
+		o, err = opt()
+		if err != nil {
+			return nil, err
+		}
+
+		grpcOpts = append(grpcOpts, o...)
 	}
 
-	opts = append(opts,
+	switch u.Scheme {
+	case "https":
+		grpcOpts = append(grpcOpts, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{})))
+	default:
+		grpcOpts = append(grpcOpts, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	}
+
+	grpcOpts = append(grpcOpts,
 		grpc.WithDefaultCallOptions(
 			grpc.MaxCallRecvMsgSize(constants.GRPCMaxMessageSize),
 			grpc.UseCompressor(gzip.Name),
@@ -68,7 +81,7 @@ func New(ctx context.Context, endpoint string, opts ...grpc.DialOption) (*Client
 		endpoint: u.String(),
 	}
 
-	c.conn, err = grpc.DialContext(ctx, u.Host, opts...)
+	c.conn, err = grpc.DialContext(ctx, u.Host, grpcOpts...)
 	if err != nil {
 		return nil, err
 	}

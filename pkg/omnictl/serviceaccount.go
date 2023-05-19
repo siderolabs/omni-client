@@ -17,6 +17,7 @@ import (
 	"github.com/siderolabs/go-api-signature/pkg/pgp"
 	"github.com/spf13/cobra"
 
+	pkgaccess "github.com/siderolabs/omni-client/pkg/access"
 	"github.com/siderolabs/omni-client/pkg/client"
 	"github.com/siderolabs/omni-client/pkg/omnictl/internal/access"
 )
@@ -188,7 +189,7 @@ func encodeServiceAccountKey(name string, key *pgp.Key) (string, error) {
 		return "", fmt.Errorf("failed to armor private key: %w", err)
 	}
 
-	saKey := access.ServiceAccountKey{
+	saKey := pkgaccess.ServiceAccountKey{
 		Name:   name,
 		PGPKey: armoredPrivateKey,
 	}
