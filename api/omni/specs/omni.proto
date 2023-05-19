@@ -1,0 +1,547 @@
+syntax = "proto3";
+package specs;
+
+option go_package = "github.com/siderolabs/omni-client/api/omni/specs";
+
+import "talos/machine/machine.proto";
+import "google/protobuf/timestamp.proto";
+
+// MachineSpec describes a Machine.
+message MachineSpec {
+  // IP which can be used to access Talos API.
+  string management_address = 1;
+  // Connected is copied from the corresponding Link resource.
+  bool connected = 2;
+  reserved 3;
+  reserved 4;
+}
+
+// MachineStatusSpec describes state of a Machine.
+message MachineStatusSpec {
+  // HardwareStatus describes machine hardware status.
+  message HardwareStatus {
+    // Processor describes machine CPU.
+    message Processor {
+      // Number of cores.
+      uint32 core_count = 1;
+      // Number of threads.
+      uint32 thread_count = 2;
+      // CPU frequency in MHz.
+      uint32 frequency = 3;
+      // CPU manufacturer and model.
+      string description = 4;
+      // CPU manufacturer.
+      string manufacturer = 5;
+    }
+
+    // MemoryModule describes machine memory.
+    message MemoryModule {
+      // Size of memory in MB.
+      uint32 size_mb = 1;
+      // Memory manufacturer and model.
+      string description = 2;
+    }
+
+    // BlockDevice describes a block device.
+    message BlockDevice {
+      // Size indicates the disk size in bytes.
+      uint64 size = 1;
+      // Model idicates the disk model.
+      string model = 2;
+      // Linux blockdevice name (e.g. `/dev/sda`).
+      string linux_name = 3;
+      // Name as in `/sys/block/<dev>/device/name`.
+      string name = 4;
+      // Serial as in `/sys/block/<dev>/device/serial`.
+      string serial = 5;
+      // Uuid as in `/sys/block/<dev>/device/uuid`.
+      string uuid = 7;
+      // Wwid as in `/sys/block/<dev>/device/wwid`.
+      string wwid = 8;
+      // Type is a type of the disk: nvme, ssd, hdd, sd card.
+      string type = 9;
+      // BusPath is the bus path of the disk.
+      string bus_path = 10;
+    }
+
+    // CPU information.
+    repeated Processor processors = 1;
+    // Memory information.
+    repeated MemoryModule memory_modules = 2;
+    // Blockdevice information.
+    repeated BlockDevice blockdevices = 3;
+    // Machine architecture.
+    string arch = 4;
+  }
+
+  // NetworkStatus describes the status of a machine network .
+  message NetworkStatus {
+    // Physical network interfaces.
+    message NetworkLinkStatus {
+      // Linux interface name.
+      string linux_name = 1;
+      // MAC address.
+      string hardware_address = 2;
+      // Speed in Mbps.
+      uint32 speed_mbps = 3;
+      // Link status.
+      bool link_up = 4;
+      // Hardware description.
+      string description = 5;
+    };
+
+    // Current machine hostname.
+    string hostname = 1;
+    // Current machine domainname.
+    string domainname = 2;
+    // List of machine IPs.
+    repeated string addresses = 3;
+    // List of default gateway IPs.
+    repeated string default_gateways = 4;
+    // List of physical network interfaces.
+    repeated NetworkLinkStatus network_links = 5;
+  }
+
+  // PlatformMetadata describes platform-specific information.
+  message PlatformMetadata {
+    // Platform is the name of the platform (e.g. `aws`, `gcp`, `azure`).
+    string platform = 1;
+    // Hostname is the hostname of the machine.
+    string hostname = 2;
+    // Region (in the cloud).
+    string region = 3;
+    // Availability zone (in the cloud).
+    string zone = 4;
+    // Instance type (in the cloud).
+    string instance_type = 5;
+    // Instance ID (in the cloud).
+    string instance_id = 6;
+    // Provider ID (for the Node resource).
+    string provider_id = 7;
+    // Spot instance flag.
+    bool spot = 8;
+  }
+
+  // Talos version.
+  string talos_version = 1;
+
+  // Hardware-related information.
+  HardwareStatus hardware = 2;
+
+  // Network-related information.
+  NetworkStatus network = 3;
+
+  // Set if the last poll resulted in an error.
+  string last_error = 4;
+
+  // Management address is copied from the machine resource.
+  string management_address = 5;
+
+  // Connected is copied from the corresponding Link resource.
+  bool connected = 6;
+
+  // Maintenance flag means that the node is running in the maintenance mode.
+  bool maintenance = 7;
+
+  reserved 8;
+
+  // Cluster is the name of the cluster the machine belongs to.
+  string cluster = 9;
+
+  enum Role {
+    NONE = 0;
+    CONTROL_PLANE = 1;
+    WORKER = 2;
+  }
+
+  // Role is the role of the machine in the cluster.
+  Role role = 10;
+
+  // Platform-specific information.
+  PlatformMetadata platform_metadata = 11;
+}
+
+// TalosConfigSpec describes a Talos cluster config.
+message TalosConfigSpec {
+  // Ca certificate authority.
+  string ca = 1;
+
+  // Crt certificate.
+  string crt = 2;
+
+  // Key certificate key.
+  string key = 3;
+}
+
+// Cluster describes a Talos cluster.
+message ClusterSpec {
+  // InstallImage the installer image to use.
+  string install_image = 1 [deprecated = true];
+
+  // KubernetesVersion to use on the node.
+  string kubernetes_version = 2;
+
+  // TalosVersion cluster wide Talos version.
+  string talos_version = 3;
+}
+
+// ClusterMachineSpec describes a machine attached to a Cluster.
+message ClusterMachineSpec {
+  // List of patches combined from all sources, as a final list of patches to apply.
+  repeated string patches = 1;
+  // KubernetesVersion to use on the machine (copied from Cluster at the moment of creation).
+  string kubernetes_version = 2;
+}
+
+// ClsuterMachineTalosVersionSpec describes a machine Talos version.
+message ClusterMachineTalosVersionSpec {
+  string version = 1;
+}
+
+// ClusterMachineConfigSpec stores generated Talos node machine config.
+message ClusterMachineConfigSpec {
+  bytes data = 1;
+  string cluster_machine_version = 2;
+  string generation_error = 3;
+}
+
+// ClusterMachineConfigSpec stores generated Talos node machine config.
+message RedactedClusterMachineConfigSpec {
+  string data = 1;
+}
+
+// ClusterMachineIdentity keeps ClusterMachine related node information.
+message ClusterMachineIdentitySpec {
+  // NodeIdentity is Talos node identity from Identity resource.
+  string node_identity = 1;
+  // EtcdMemberId is the id of the node how it's represented in the etcd quorum.
+  uint64 etcd_member_id = 2;
+  // Nodename is the Kubernetes node name.
+  string nodename = 3;
+  // NodeIps are the IPs of the Kubernetes node.
+  repeated string node_ips = 8;
+}
+
+// ClusterMachineTemplateSpec
+message ClusterMachineTemplateSpec {
+  // InstallImage the installer image to use.
+  string install_image = 1;
+
+  // KubernetesVersion to use on the node.
+  string kubernetes_version = 2;
+
+  // InstallDisk Talos system disk.
+  string install_disk = 3;
+
+  // Patch represents machinery config patch.
+  string patch = 5;
+}
+
+enum ConfigApplyStatus {
+  UNKNOWN = 0;
+  PENDING = 1;
+  APPLIED = 2;
+  FAILED = 3;
+}
+
+// ClusterMachineStatusSpec
+message ClusterMachineStatusSpec {
+  // Ready is true if all services are healthy.
+  bool ready = 1;
+
+  enum Stage {
+    UNKNOWN = 0;
+    BOOTING = 1;
+    INSTALLING = 2;
+    UPGRADING = 6;
+    CONFIGURING = 3;
+    RUNNING = 4;
+    REBOOTING = 7;
+    SHUTTING_DOWN = 8;
+    DESTROYING = 5;
+  }
+
+  Stage stage = 2;
+
+  // ApidAvailable is true if the node is a control plane node and the apid service is healthy.
+  bool apid_available = 3;
+
+  bool config_up_to_date = 4;
+  string last_config_error = 5;
+
+  // Management address is copied from the machine status resource.
+  string management_address = 6;
+
+  ConfigApplyStatus config_apply_status = 7;
+}
+
+// Machines counts the number of machines in a set including health status.
+message Machines {
+  uint32 total = 1;
+  uint32 healthy = 2;
+}
+
+// ClusterStatusSpec aggregates general information about a cluster.
+message ClusterStatusSpec {
+  // Cluster is available when at least one controlplane node has APId up.
+  bool available = 1;
+
+  Machines machines = 2;
+
+  enum Phase {
+    UNKNOWN = 0;
+    SCALING_UP = 1;
+    SCALING_DOWN = 2;
+    RUNNING = 3;
+    DESTROYING = 4;
+  }
+
+  Phase phase = 3;
+
+  bool ready = 4;
+  bool kubernetesAPIReady = 5;
+  bool controlplaneReady = 6;
+}
+
+// ClusterConfigVersion keeps the version of Talos which was used for initial config generation.
+message ClusterConfigVersionSpec {
+  string version = 1;
+}
+
+// ClusterMachineConfigStatusSpec machine configuration status spec.
+message ClusterMachineConfigStatusSpec {
+  reserved 1;
+  reserved 2;
+
+  string cluster_machine_config_version = 3;
+  string cluster_machine_version = 4;
+  string cluster_machine_config_sha256 = 5;
+  string last_config_error = 6;
+  string talos_version = 7;
+}
+
+// ClusterBootstrapStatusSpec keeps track of bootstrap calls for a cluster.
+message ClusterBootstrapStatusSpec {
+  bool bootstrapped = 1;
+}
+
+// ClusterSecretsSpec describes cluster secrets.
+message ClusterSecretsSpec {
+  // Bytes holding serialized cluster secrets.
+  bytes data = 1;
+}
+
+// LoadBalancerConfigSpec describes the configuration of a load balancer.
+message LoadBalancerConfigSpec {
+  reserved 1;
+  string bind_port = 2;
+  // Full URL of the loadbalancer inside Omni environment.
+  string  siderolink_endpoint = 4;
+  // IP adresses of the endpoints
+  repeated string endpoints = 3;
+}
+
+// LoadBalancerStatusSpec reflects the status of a load balancer.
+message LoadBalancerStatusSpec {
+  reserved 1;
+  reserved 2;
+  bool healthy = 3;
+}
+
+// KubernetesVersionSpec represents an available Kubernetes version.
+message KubernetesVersionSpec {
+  string version = 1;
+}
+
+// TalosVersionSpec represents an available Talos version.
+message TalosVersionSpec {
+  string version = 1;
+  repeated string compatible_kubernetes_versions = 2;
+}
+
+// InstallationMediaSpec resource describes a Talos installation media that can be generated by the imager. It also describes the necessary parameters to be passed to the imager.
+message InstallationMediaSpec {
+  string name = 1;
+  string architecture = 2;
+  string platform = 3;
+  string type = 4;
+  string board = 5;
+  string contentType = 6;
+  string filename = 7;
+}
+
+// ConfigPatchSpec represents the machine config patch.
+message ConfigPatchSpec {
+  string data = 1;
+}
+
+// MachineSetPhaseSpec is machine set phase.
+enum MachineSetPhase {
+  Unknown = 0;
+  ScalingUp = 1;
+  ScalingDown = 2;
+  Running = 3;
+  Destroying = 4;
+  Failed = 5;
+  Reconfiguring = 6;
+}
+
+// MachineSetSpec describes the cluster machine group.
+message MachineSetSpec {
+  enum UpdateStrategy {
+    Unset = 0;
+    Rolling = 1;
+  }
+
+  UpdateStrategy update_strategy = 1;
+}
+
+// TalosUpgradeStatusSpec contains the status of the Talos upgrade process.
+message TalosUpgradeStatusSpec {
+  enum Phase {
+    Unknown = 0;
+    Upgrading = 1;
+    Done = 2;
+    Failed = 3;
+    Reverting = 4;
+  }
+
+  // Current upgrade phase.
+  Phase phase = 1;
+
+  // If phase is Failed, this contains the error message.
+  string error = 2;
+
+  // If phase is Upgrading, this contains the current upgrade step.
+  string step = 3;
+
+  // If phase is Upgrading, this contains the current upgrade step progress.
+  string status = 4;
+
+  // Last successful upgrade version.
+  string last_upgrade_version = 5;
+
+  // Current version of the upgrade (if phase == Upgrading).
+  string current_upgrade_version = 6;
+
+  // List of versions available for upgrade.
+  repeated string upgrade_versions = 7;
+}
+
+// MachineSetStatusSpec describes machine set status.
+message MachineSetStatusSpec {
+  MachineSetPhase phase = 1;
+  bool ready = 2;
+  string error = 3;
+  Machines machines = 4;
+}
+
+// MachineSetNodeSpec is a binding between ClusterMachine and MachineSet.
+message MachineSetNodeSpec {}
+
+// MachineLabelsSpec is the resource that adds user defined labels to the MachineStatus.
+message MachineLabelsSpec {}
+
+// MachineStatusSnapshotSpec describes latest known status of MachineStatus Talos resource.
+message MachineStatusSnapshotSpec {
+  machine.MachineStatusEvent machine_status = 1;
+}
+
+enum ConditionType {
+  UnknownCondition = 0;
+  Etcd = 1;
+}
+
+// ControlPlaneStatusSpec contains the status of the MachineSets which manage control plane nodes.
+message ControlPlaneStatusSpec {
+  message Condition {
+    enum Status {
+      Unknown = 0;
+      Ready = 1;
+      NotReady = 2;
+    }
+
+    enum Severity {
+      Info = 0;
+      Warning = 1;
+      Error = 2;
+    }
+
+    ConditionType type = 1;
+    string reason = 2;
+    Status status = 3;
+    Severity severity = 4;
+  }
+
+  repeated Condition conditions = 1;
+}
+
+// ClusterEndpointSpec contains a list of SideroLink (management) control plane endpoints.
+message ClusterEndpointSpec {
+  // List of SideroLink addresses for control plane nodes.
+  repeated string management_addresses = 1;
+}
+
+// KubernetesStatusSpec contains the status of the Kubernetes critical resources in the cluster.
+message KubernetesStatusSpec {
+  message NodeStatus {
+    string nodename = 1;
+    string kubelet_version = 2;
+    bool ready = 3;
+  }
+
+  // status of each node, sorted by nodename
+  repeated NodeStatus nodes = 1;
+
+  message StaticPodStatus {
+    string app = 1;
+    string version = 2;
+    bool ready = 3;
+  }
+
+  message NodeStaticPods {
+    string nodename = 1;
+    repeated StaticPodStatus static_pods = 2;
+  }
+
+  // status of each static pod on each node, sorted by nodename, then by pod's app
+  repeated NodeStaticPods static_pods = 2;
+}
+
+// KubernetesUpgradeStatus spec contains the status of the Kubernetes upgrade process.
+message KubernetesUpgradeStatusSpec {
+  enum Phase {
+    Unknown = 0;
+    Upgrading = 1;
+    Done = 2;
+    Failed = 3;
+    Reverting = 4;
+  }
+
+  // Current upgrade phase.
+  Phase phase = 1;
+
+  // If phase is Failed, this contains the error message.
+  string error = 2;
+
+  // If phase is Upgrading, this contains the current upgrade step.
+  string step = 3;
+
+  // If phase is Upgrading, this contains the current upgrade step progress.
+  string status = 4;
+
+  // Last successful upgrade version.
+  string last_upgrade_version = 5;
+
+  // Current version of the upgrade (if phase == Upgrading).
+  string current_upgrade_version = 7;
+
+  // List of versions available for upgrade.
+  repeated string upgrade_versions = 6;
+}
+
+// KubernetesUpgradeManifestStatus contains status of Kubernetes upgrade manifest sync.
+message KubernetesUpgradeManifestStatusSpec {
+  // Number of manifests out of sync.
+  int32 out_of_sync = 1;
+}

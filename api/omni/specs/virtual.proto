@@ -1,0 +1,9 @@
+syntax = "proto3";
+package specs;
+
+option go_package = "github.com/siderolabs/omni-client/api/omni/specs";
+
+message CurrentUserSpec {
+  string identity = 1;
+  repeated string scopes = 2;
+}
