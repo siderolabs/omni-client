@@ -7,8 +7,6 @@ package client
 import (
 	"context"
 	"encoding/base64"
-
-	"google.golang.org/grpc"
 )
 
 // BasicAuth adds basic auth for each gRPC request.
@@ -28,11 +26,4 @@ func (c BasicAuth) GetRequestMetadata(context.Context, ...string) (map[string]st
 // RequireTransportSecurity implements credentials.PerRPCCredentials.
 func (c BasicAuth) RequireTransportSecurity() bool {
 	return true
-}
-
-// WithBasicAuth creates option which adds basic auth to gRPC requests.
-func WithBasicAuth(auth string) grpc.DialOption {
-	return grpc.WithPerRPCCredentials(BasicAuth{
-		auth: auth,
-	})
 }

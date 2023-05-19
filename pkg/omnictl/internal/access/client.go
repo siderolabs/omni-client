@@ -14,7 +14,6 @@ import (
 	"github.com/cosi-project/runtime/pkg/resource"
 	"github.com/cosi-project/runtime/pkg/safe"
 	"github.com/cosi-project/runtime/pkg/state"
-	"google.golang.org/grpc"
 
 	"github.com/siderolabs/omni-client/pkg/client"
 	"github.com/siderolabs/omni-client/pkg/omni/resources"
@@ -22,6 +21,9 @@ import (
 	"github.com/siderolabs/omni-client/pkg/omnictl/config"
 	"github.com/siderolabs/omni-client/pkg/version"
 )
+
+// ServiceAccountKeyEnvVar is the name of the environment variable that contains the base64-encoded service account key JSON.
+const ServiceAccountKeyEnvVar = "OMNI_SERVICE_ACCOUNT_KEY"
 
 type clientOptions struct {
 	skipAuth bool
@@ -51,7 +53,7 @@ func WithClient(f func(ctx context.Context, client *client.Client) error, client
 	}
 
 	return WithContext(func(ctx context.Context) error {
-		var opts []grpc.DialOption
+		var opts []client.Option
 
 		conf, err := config.Current()
 		if err != nil {
@@ -77,15 +79,11 @@ func WithClient(f func(ctx context.Context, client *client.Client) error, client
 			opts = append(opts, client.WithBasicAuth(configCtx.Auth.Basic))
 		}
 
-		interceptorConfig, err := newAuthInterceptorConfig(contextName, configCtx.Auth.SideroV1.Identity)
-		if err != nil {
-			return err
-		}
-
-		authInterceptor := interceptorConfig.Interceptor()
-
-		if !cliOpts.skipAuth {
-			opts = append(opts, grpc.WithUnaryInterceptor(authInterceptor.Unary()), grpc.WithStreamInterceptor(authInterceptor.Stream()))
+		serviceAccountKey := os.Getenv(ServiceAccountKeyEnvVar)
+		if serviceAccountKey != "" {
+			opts = append(opts, client.WithServiceAccount(contextName, configCtx.Auth.SideroV1.Identity, serviceAccountKey))
+		} else {
+			opts = append(opts, client.WithUserAccount(contextName, configCtx.Auth.SideroV1.Identity))
 		}
 
 		if configCtx.URL == config.PlaceholderURL {
