@@ -25,11 +25,14 @@ const (
 )
 
 const (
-	// DefaultAccessGroup specifies the default Kubernetes group asserted in the token claims.
+	// DefaultAccessGroup specifies the default Kubernetes group asserted in the token claims if the user has modify access to the clusters.
 	//
-	// Later on we might want to customize access level based on authorization.
+	// If not, the user will only have the groups specified in the ACLs (AccessPolicies) in the token claims (will be empty if there is no matching ACL).
 	DefaultAccessGroup = "system:masters"
 )
 
 // GRPCMaxMessageSize is the maximum message size for gRPC server.
 const GRPCMaxMessageSize = 32 * 1024 * 1024
+
+// DisableValidation force disable resource validation on the Omni runtime for a particular resource (only for debug build).
+const DisableValidation = "disable-validation"

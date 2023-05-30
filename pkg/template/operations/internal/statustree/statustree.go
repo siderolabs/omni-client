@@ -38,6 +38,13 @@ func (t NodeWrapper) String() string {
 			kubernetesUpgradePhaseString(node.TypedSpec().Value.Phase),
 			node.TypedSpec().Value.Step,
 		)
+	case *omni.TalosUpgradeStatus:
+		return fmt.Sprintf(
+			"%s %s %s",
+			color.YellowString("Talos Upgrade"),
+			talosUpgradePhaseString(node.TypedSpec().Value.Phase),
+			node.TypedSpec().Value.Step,
+		)
 	case *omni.MachineSetStatus:
 		return fmt.Sprintf(
 			"%s %q %s %s (%d/%d)",
@@ -80,7 +87,7 @@ func (t NodeWrapper) String() string {
 func (t NodeWrapper) IsParentOf(r resource.Resource) bool {
 	switch node := t.Resource.(type) {
 	case *omni.ClusterStatus:
-		return r.Metadata().Type() == omni.MachineSetStatusType || r.Metadata().Type() == omni.KubernetesUpgradeStatusType
+		return r.Metadata().Type() == omni.MachineSetStatusType || r.Metadata().Type() == omni.KubernetesUpgradeStatusType || r.Metadata().Type() == omni.TalosUpgradeStatusType
 	case *omni.MachineSetStatus:
 		_, isControlPlane := node.Metadata().Labels().Get(omni.LabelControlPlaneRole)
 		if isControlPlane && r.Metadata().Type() == omni.ControlPlaneStatusType {
@@ -110,6 +117,8 @@ func (t NodeWrapper) Less(other NodeWrapper) bool {
 	switch {
 	case lType == omni.KubernetesUpgradeStatusType:
 		return true
+	case lType == omni.TalosUpgradeStatusType:
+		return rType == omni.KubernetesStatusType
 	case lType == omni.MachineSetStatusType && rType == omni.MachineSetStatusType:
 		_, lIsControlPlane := l.Metadata().Labels().Get(omni.LabelControlPlaneRole)
 

@@ -350,6 +350,6 @@ func TestDelete(t *testing.T) {
 	assert.Empty(t, syncDelete.Create)
 	assert.Empty(t, syncDelete.Update)
 	assert.Len(t, syncDelete.Destroy, 2)
-	assert.Len(t, syncDelete.Destroy[0], 5)
-	assert.Len(t, syncDelete.Destroy[1], 7)
+	assert.Len(t, syncDelete.Destroy[0], 0)
+	assert.Len(t, syncDelete.Destroy[1], 1)
 }

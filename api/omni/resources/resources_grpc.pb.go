@@ -20,12 +20,13 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	ResourceService_Get_FullMethodName    = "/omni.resources.ResourceService/Get"
-	ResourceService_List_FullMethodName   = "/omni.resources.ResourceService/List"
-	ResourceService_Create_FullMethodName = "/omni.resources.ResourceService/Create"
-	ResourceService_Update_FullMethodName = "/omni.resources.ResourceService/Update"
-	ResourceService_Delete_FullMethodName = "/omni.resources.ResourceService/Delete"
-	ResourceService_Watch_FullMethodName  = "/omni.resources.ResourceService/Watch"
+	ResourceService_Get_FullMethodName      = "/omni.resources.ResourceService/Get"
+	ResourceService_List_FullMethodName     = "/omni.resources.ResourceService/List"
+	ResourceService_Create_FullMethodName   = "/omni.resources.ResourceService/Create"
+	ResourceService_Update_FullMethodName   = "/omni.resources.ResourceService/Update"
+	ResourceService_Delete_FullMethodName   = "/omni.resources.ResourceService/Delete"
+	ResourceService_Teardown_FullMethodName = "/omni.resources.ResourceService/Teardown"
+	ResourceService_Watch_FullMethodName    = "/omni.resources.ResourceService/Watch"
 )
 
 // ResourceServiceClient is the client API for ResourceService service.
@@ -37,6 +38,7 @@ type ResourceServiceClient interface {
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
+	Teardown(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
 	Watch(ctx context.Context, in *WatchRequest, opts ...grpc.CallOption) (ResourceService_WatchClient, error)
 }
 
@@ -93,6 +95,15 @@ func (c *resourceServiceClient) Delete(ctx context.Context, in *DeleteRequest, o
 	return out, nil
 }
 
+func (c *resourceServiceClient) Teardown(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error) {
+	out := new(DeleteResponse)
+	err := c.cc.Invoke(ctx, ResourceService_Teardown_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *resourceServiceClient) Watch(ctx context.Context, in *WatchRequest, opts ...grpc.CallOption) (ResourceService_WatchClient, error) {
 	stream, err := c.cc.NewStream(ctx, &ResourceService_ServiceDesc.Streams[0], ResourceService_Watch_FullMethodName, opts...)
 	if err != nil {
@@ -134,6 +145,7 @@ type ResourceServiceServer interface {
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
 	Update(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	Delete(context.Context, *DeleteRequest) (*DeleteResponse, error)
+	Teardown(context.Context, *DeleteRequest) (*DeleteResponse, error)
 	Watch(*WatchRequest, ResourceService_WatchServer) error
 	mustEmbedUnimplementedResourceServiceServer()
 }
@@ -156,6 +168,9 @@ func (UnimplementedResourceServiceServer) Update(context.Context, *UpdateRequest
 }
 func (UnimplementedResourceServiceServer) Delete(context.Context, *DeleteRequest) (*DeleteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+}
+func (UnimplementedResourceServiceServer) Teardown(context.Context, *DeleteRequest) (*DeleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Teardown not implemented")
 }
 func (UnimplementedResourceServiceServer) Watch(*WatchRequest, ResourceService_WatchServer) error {
 	return status.Errorf(codes.Unimplemented, "method Watch not implemented")
@@ -263,6 +278,24 @@ func _ResourceService_Delete_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ResourceService_Teardown_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResourceServiceServer).Teardown(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ResourceService_Teardown_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResourceServiceServer).Teardown(ctx, req.(*DeleteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ResourceService_Watch_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(WatchRequest)
 	if err := stream.RecvMsg(m); err != nil {
@@ -310,6 +343,10 @@ var ResourceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Delete",
 			Handler:    _ResourceService_Delete_Handler,
+		},
+		{
+			MethodName: "Teardown",
+			Handler:    _ResourceService_Teardown_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

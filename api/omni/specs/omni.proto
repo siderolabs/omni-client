@@ -545,3 +545,10 @@ message KubernetesUpgradeManifestStatusSpec {
   // Number of manifests out of sync.
   int32 out_of_sync = 1;
 }
+
+
+// ClusterDestroyStatusSpec describes the state of cluster destroy.
+message ClusterDestroyStatusSpec {
+  // Phase describes the current destroy phase.
+  string phase = 1;
+}

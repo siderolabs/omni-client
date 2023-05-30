@@ -117,7 +117,7 @@ func deleteResources(cmd *cobra.Command, args []string) func(ctx context.Context
 				}
 
 				if event.Resource.Metadata().Phase() == resource.PhaseTearingDown && event.Resource.Metadata().Finalizers().Empty() {
-					if err = st.Destroy(ctx, event.Resource.Metadata()); err != nil {
+					if err = st.Destroy(ctx, event.Resource.Metadata()); err != nil && !state.IsNotFoundError(err) {
 						return err
 					}
 

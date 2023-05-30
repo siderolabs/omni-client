@@ -103,5 +103,6 @@ service ResourceService {
   rpc Create(CreateRequest) returns (CreateResponse);
   rpc Update(UpdateRequest) returns (UpdateResponse);
   rpc Delete(DeleteRequest) returns (DeleteResponse);
-	rpc Watch(WatchRequest) returns (stream WatchResponse);
+  rpc Teardown(DeleteRequest) returns (DeleteResponse);
+  rpc Watch(WatchRequest) returns (stream WatchResponse);
 }

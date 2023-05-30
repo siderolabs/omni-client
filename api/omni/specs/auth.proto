@@ -46,3 +46,55 @@ message PublicKeySpec {
   bool confirmed = 4;
   Identity identity = 5;
 }
+
+// AccessPolicyUserGroup describes a user group in the ACLs context.
+message AccessPolicyUserGroup {
+  message User {
+    string name = 1;
+  }
+
+  repeated User users = 1;
+}
+
+// AccessPolicyClusterGroup describes a cluster group in the ACLs context.
+message AccessPolicyClusterGroup {
+  message Cluster {
+    string name = 1;
+  }
+
+  repeated Cluster clusters = 1;
+}
+
+// AccessPolicyRule describes a rule in the ACLs context.
+message AccessPolicyRule {
+  message Kubernetes {
+    message Impersonate {
+      repeated string groups = 1;
+    }
+
+    Impersonate impersonate = 1;
+  }
+
+  repeated string users = 1;
+  repeated string clusters = 2;
+  Kubernetes kubernetes = 3;
+}
+
+message AccessPolicyTest {
+  message Expected {
+    repeated string kubernetes_impersonate_groups = 1;
+  }
+
+  string name = 1;
+  string user = 2;
+  string cluster = 3;
+  Expected expected = 4;
+}
+
+// AccessPolicySpec describes the access policy configuration.
+message AccessPolicySpec {
+   map<string, AccessPolicyUserGroup> user_groups = 1;
+   map<string, AccessPolicyClusterGroup> cluster_groups = 2;
+   repeated AccessPolicyRule rules = 3;
+   repeated AccessPolicyTest tests = 4;
+}

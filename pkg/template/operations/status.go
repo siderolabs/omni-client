@@ -75,6 +75,7 @@ func statusTemplate(ctx context.Context, tmpl *template.Template, out io.Writer,
 		omni.ControlPlaneStatusType,
 		omni.LoadBalancerStatusType,
 		omni.KubernetesUpgradeStatusType,
+		omni.TalosUpgradeStatusType,
 		omni.ClusterMachineStatusType,
 	}
 
@@ -211,6 +212,8 @@ func render(resources map[string]resource.Resource) ([]byte, bool) {
 			healthy = healthy && item.TypedSpec().Value.Phase == specs.MachineSetPhase_Running && item.TypedSpec().Value.Ready
 		case *omni.KubernetesUpgradeStatus:
 			healthy = healthy && item.TypedSpec().Value.Phase == specs.KubernetesUpgradeStatusSpec_Done
+		case *omni.TalosUpgradeStatus:
+			healthy = healthy && item.TypedSpec().Value.Phase == specs.TalosUpgradeStatusSpec_Done
 		}
 	}
 

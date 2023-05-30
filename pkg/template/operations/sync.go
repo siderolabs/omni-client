@@ -176,7 +176,7 @@ func syncDeleteResources(ctx context.Context, toDelete []resource.Resource, out 
 		case state.Updated, state.Created:
 			if _, ok := tearingDownResources[utils.Describe(event.Resource)]; ok {
 				if event.Resource.Metadata().Phase() == resource.PhaseTearingDown && event.Resource.Metadata().Finalizers().Empty() {
-					if err := st.Destroy(ctx, event.Resource.Metadata()); err != nil {
+					if err := st.Destroy(ctx, event.Resource.Metadata()); err != nil && !state.IsNotFoundError(err) {
 						return err
 					}
 

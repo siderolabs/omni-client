@@ -12,4 +12,5 @@ func init() {
 	registry.MustRegisterResource(IdentityType, &Identity{})
 	registry.MustRegisterResource(PublicKeyType, &PublicKey{})
 	registry.MustRegisterResource(UserType, &User{})
+	registry.MustRegisterResource(AccessPolicyType, &AccessPolicy{})
 }

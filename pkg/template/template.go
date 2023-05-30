@@ -184,7 +184,7 @@ func (t *Template) actualResources(ctx context.Context, st state.State) ([]resou
 func splitResourcesToDelete(toDelete []resource.Resource) [][]resource.Resource {
 	phases := make([][]resource.Resource, 2)
 
-	for _, r := range toDelete {
+	for _, r := range deduplicateDeletion(toDelete) {
 		switch r.Metadata().Type() {
 		case omni.MachineSetNodeType, omni.MachineSetType:
 			phases[0] = append(phases[0], r)
@@ -214,6 +214,10 @@ func (t *Template) Delete(ctx context.Context, st state.State) (*SyncResult, err
 	return &syncResult, nil
 }
 
+func metadataKey(md resource.Metadata) string {
+	return fmt.Sprintf("%s/%s/%s", md.Namespace(), md.Type(), md.ID())
+}
+
 // Sync the template against the resource state.
 func (t *Template) Sync(ctx context.Context, st state.State) (*SyncResult, error) {
 	clusterName, err := t.models.ClusterName()
@@ -229,10 +233,6 @@ func (t *Template) Sync(ctx context.Context, st state.State) (*SyncResult, error
 	actualResources, err := t.actualResources(ctx, st)
 	if err != nil {
 		return nil, err
-	}
-
-	metadataKey := func(md resource.Metadata) string {
-		return fmt.Sprintf("%s/%s/%s", md.Namespace(), md.Type(), md.ID())
 	}
 
 	expectedResourceMap := slices.ToMap(expectedResources, func(r resource.Resource) (string, resource.Resource) {
@@ -287,4 +287,39 @@ func (t *Template) Sync(ctx context.Context, st state.State) (*SyncResult, error
 	syncResult.Destroy = splitResourcesToDelete(toDelete)
 
 	return &syncResult, nil
+}
+
+func deduplicateDeletion(toDelete []resource.Resource) []resource.Resource {
+	toDeleteMap := slices.ToMap(toDelete, func(r resource.Resource) (string, resource.Resource) {
+		return metadataKey(*r.Metadata()), r
+	})
+
+	r := slices.Filter(toDelete, func(r resource.Resource) bool {
+		switch r.Metadata().Type() {
+		case omni.ClusterType:
+			return true
+		case omni.MachineSetNodeType:
+			machineSetName, ok := r.Metadata().Labels().Get(omni.LabelMachineSet)
+			if !ok {
+				return true
+			}
+
+			if _, ok := toDeleteMap[metadataKey(resource.NewMetadata(resources.DefaultNamespace, omni.MachineSetType, machineSetName, resource.VersionUndefined))]; ok {
+				return false
+			}
+		default:
+			clusterName, ok := r.Metadata().Labels().Get(omni.LabelCluster)
+			if !ok {
+				return true
+			}
+
+			if _, ok := toDeleteMap[metadataKey(resource.NewMetadata(resources.DefaultNamespace, omni.ClusterType, clusterName, resource.VersionUndefined))]; ok {
+				return false
+			}
+		}
+
+		return true
+	})
+
+	return r
 }

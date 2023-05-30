@@ -64,6 +64,27 @@ func kubernetesUpgradePhaseString(phase specs.KubernetesUpgradeStatusSpec_Phase)
 	return c(phaseString)
 }
 
+func talosUpgradePhaseString(phase specs.TalosUpgradeStatusSpec_Phase) string {
+	phaseString := phase.String()
+
+	var c func(string, ...any) string
+
+	switch phase {
+	case specs.TalosUpgradeStatusSpec_Done:
+		c = color.GreenString
+	case specs.TalosUpgradeStatusSpec_Upgrading, specs.TalosUpgradeStatusSpec_Reverting:
+		c = color.HiYellowString
+	case specs.TalosUpgradeStatusSpec_Failed:
+		c = color.HiRedString
+	case specs.TalosUpgradeStatusSpec_Unknown:
+		c = fmt.Sprintf
+	default:
+		c = fmt.Sprintf
+	}
+
+	return c(phaseString)
+}
+
 func machineSetPhaseString(phase specs.MachineSetPhase) string {
 	phaseString := phase.String()
 
