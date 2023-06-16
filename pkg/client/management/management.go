@@ -104,11 +104,11 @@ func (client *Client) LogsReader(ctx context.Context, machineID string, follow b
 }
 
 // CreateServiceAccount creates a service account and returns the public key ID.
-func (client *Client) CreateServiceAccount(ctx context.Context, armoredPGPPublicKey string, scopes []string, useUserScopes bool) (string, error) {
+func (client *Client) CreateServiceAccount(ctx context.Context, armoredPGPPublicKey string, role string, useUserRole bool) (string, error) {
 	resp, err := client.conn.CreateServiceAccount(ctx, &management.CreateServiceAccountRequest{
 		ArmoredPgpPublicKey: armoredPGPPublicKey,
-		Scopes:              scopes,
-		UseUserScopes:       useUserScopes,
+		Role:                role,
+		UseUserRole:         useUserRole,
 	})
 	if err != nil {
 		return "", err

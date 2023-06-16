@@ -5,6 +5,12 @@
 package auth
 
 const (
+	// SAMLLabelPrefix is the prefix added to all SAML attributes on the User resource.
+	// tsgen:SAMLLabelPrefix
+	SAMLLabelPrefix = "saml.omni.sidero.dev/"
+)
+
+const (
 	// LabelPublicKeyUserID is the label that defines the user ID of the public key.
 	LabelPublicKeyUserID = "user-id"
 
@@ -15,4 +21,12 @@ const (
 	// LabelIdentityTypeServiceAccount is set when the type of the identity is service account.
 	// tsgen:LabelIdentityTypeServiceAccount
 	LabelIdentityTypeServiceAccount = "type-service-account"
+)
+
+const (
+	// LabelSAMLRole is the roles attribute that is copied from SAML assertion.
+	LabelSAMLRole = SAMLLabelPrefix + "role"
+
+	// LabelSAMLGroups is the groups attribute that is copied from SAML assertion.
+	LabelSAMLGroups = SAMLLabelPrefix + "groups"
 )

@@ -27,11 +27,11 @@ require (
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/sergi/go-diff v1.3.1
 	github.com/siderolabs/gen v0.4.5
-	github.com/siderolabs/go-api-signature v0.2.3
+	github.com/siderolabs/go-api-signature v0.2.5-0.20230526232456-a034e9ff315b
 	github.com/siderolabs/go-kubeconfig v0.1.0
-	github.com/siderolabs/talos/pkg/machinery v1.4.4
+	github.com/siderolabs/talos/pkg/machinery v1.4.5
 	github.com/spf13/cobra v1.7.0
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.3
 	github.com/xlab/treeprint v1.2.0
 	go.uber.org/zap v1.24.0
 	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1
@@ -43,7 +43,7 @@ require (
 )
 
 require (
-	github.com/ProtonMail/go-crypto v0.0.0-20230426101702-58e86b294756 // indirect
+	github.com/ProtonMail/go-crypto v0.0.0-20230518184743-7afd39499903 // indirect
 	github.com/ProtonMail/go-mime v0.0.0-20230322103455-7d82a3887f2f // indirect
 	github.com/cloudflare/circl v1.3.3 // indirect
 	github.com/containerd/go-cni v1.1.9 // indirect

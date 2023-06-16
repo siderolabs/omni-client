@@ -28,14 +28,8 @@ func (this *CurrentUserSpec) EqualVT(that *CurrentUserSpec) bool {
 	if this.Identity != that.Identity {
 		return false
 	}
-	if len(this.Scopes) != len(that.Scopes) {
+	if this.Role != that.Role {
 		return false
-	}
-	for i, vx := range this.Scopes {
-		vy := that.Scopes[i]
-		if vx != vy {
-			return false
-		}
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
 }
@@ -77,14 +71,12 @@ func (m *CurrentUserSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
-	if len(m.Scopes) > 0 {
-		for iNdEx := len(m.Scopes) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.Scopes[iNdEx])
-			copy(dAtA[i:], m.Scopes[iNdEx])
-			i = encodeVarint(dAtA, i, uint64(len(m.Scopes[iNdEx])))
-			i--
-			dAtA[i] = 0x12
-		}
+	if len(m.Role) > 0 {
+		i -= len(m.Role)
+		copy(dAtA[i:], m.Role)
+		i = encodeVarint(dAtA, i, uint64(len(m.Role)))
+		i--
+		dAtA[i] = 0x1a
 	}
 	if len(m.Identity) > 0 {
 		i -= len(m.Identity)
@@ -106,11 +98,9 @@ func (m *CurrentUserSpec) SizeVT() (n int) {
 	if l > 0 {
 		n += 1 + l + sov(uint64(l))
 	}
-	if len(m.Scopes) > 0 {
-		for _, s := range m.Scopes {
-			l = len(s)
-			n += 1 + l + sov(uint64(l))
-		}
+	l = len(m.Role)
+	if l > 0 {
+		n += 1 + l + sov(uint64(l))
 	}
 	n += len(m.unknownFields)
 	return n
@@ -177,9 +167,9 @@ func (m *CurrentUserSpec) UnmarshalVT(dAtA []byte) error {
 			}
 			m.Identity = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Scopes", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Role", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -207,7 +197,7 @@ func (m *CurrentUserSpec) UnmarshalVT(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Scopes = append(m.Scopes, string(dAtA[iNdEx:postIndex]))
+			m.Role = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

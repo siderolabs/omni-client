@@ -19,14 +19,42 @@ message AuthConfigSpec {
     bool required = 2;
   }
 
+  message SAML {
+    bool enabled = 1;
+    string url = 2;
+    string metadata = 3;
+    // LabelRules defines custom rules on how to extract SAML attributes from the
+    // saml assertion and turn them into labels.
+    map<string, string> label_rules = 4;
+  }
+
   Auth0 auth0 = 1;
   Webauthn webauthn = 2;
   bool suspended = 3;
+  SAML saml = 4;
+}
+
+// SAMLAssertionSpec describes SAML assertion.
+message SAMLAssertionSpec {
+  // Data keeps JSON encoded SAML assertion.
+  bytes data = 1;
+
+  // Email is the identity that was read from the assertion.
+  string email = 2;
+
+  // Used marks SAML assertion as used.
+  bool used = 3;
 }
 
 // UserSpec describes a user.
 message UserSpec {
+  reserved 1;
+  // Scopes are deprecated, use roles instead.
+  //
+  // Deprecated: will be removed once all environments are migrated to use roles.
+  // TODO: remove after all environments are migrated to use roles.
   repeated string scopes = 2;
+  string role = 3;
 }
 
 // IdentitySpec describes a user identity.
@@ -41,16 +69,23 @@ message Identity {
 // PublicKeySpec describes a user or service account public key.
 message PublicKeySpec {
   bytes public_key = 1;
+  // Scopes are deprecated, use roles instead.
+  //
+  // Deprecated: will be removed once all environments are migrated to use roles.
+  // TODO: remove after all environments are migrated to use roles.
   repeated string scopes = 2;
   google.protobuf.Timestamp expiration = 3;
   bool confirmed = 4;
   Identity identity = 5;
+  string role = 6;
 }
 
 // AccessPolicyUserGroup describes a user group in the ACLs context.
 message AccessPolicyUserGroup {
   message User {
     string name = 1;
+    string match = 2;
+    repeated string label_selectors = 3;
   }
 
   repeated User users = 1;
@@ -60,6 +95,7 @@ message AccessPolicyUserGroup {
 message AccessPolicyClusterGroup {
   message Cluster {
     string name = 1;
+    string match = 2;
   }
 
   repeated Cluster clusters = 1;
@@ -78,16 +114,35 @@ message AccessPolicyRule {
   repeated string users = 1;
   repeated string clusters = 2;
   Kubernetes kubernetes = 3;
+  string role = 4;
 }
 
 message AccessPolicyTest {
   message Expected {
-    repeated string kubernetes_impersonate_groups = 1;
+    message Kubernetes {
+      message Impersonate {
+        repeated string groups = 1;
+      }
+
+      Impersonate impersonate = 1;
+    }
+
+    Kubernetes kubernetes = 1;
+    string role = 2;
+  }
+
+  message User {
+    string name = 1;
+    map<string, string> labels = 2;
+  }
+
+  message Cluster {
+    string name = 1;
   }
 
   string name = 1;
-  string user = 2;
-  string cluster = 3;
+  User user = 2;
+  Cluster cluster = 3;
   Expected expected = 4;
 }
 

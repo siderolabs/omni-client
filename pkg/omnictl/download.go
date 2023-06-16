@@ -20,6 +20,7 @@ import (
 	keyClient "github.com/siderolabs/go-api-signature/pkg/pgp/client"
 	"github.com/spf13/cobra"
 
+	pkgaccess "github.com/siderolabs/omni-client/pkg/access"
 	"github.com/siderolabs/omni-client/pkg/client"
 	"github.com/siderolabs/omni-client/pkg/omni/resources/omni"
 	"github.com/siderolabs/omni-client/pkg/omnictl/config"
@@ -225,12 +226,26 @@ func signRequest(req *http.Request) error {
 		return err
 	}
 
-	email := configCtx.Auth.SideroV1.Identity
-	provider := keyClient.NewKeyProvider("omni/keys")
+	var (
+		identity string
+		signer   message.Signer
+	)
 
-	key, err := provider.ReadValidKey(contextName, email)
-	if err != nil {
-		return err
+	serviceAccountKey := os.Getenv(access.ServiceAccountKeyEnvVar)
+	if serviceAccountKey != "" {
+		identity, signer, err = pkgaccess.ParseServiceAccountKey(serviceAccountKey)
+		if err != nil {
+			return fmt.Errorf("failed to parse service account key: %w", err)
+		}
+	} else {
+		identity = configCtx.Auth.SideroV1.Identity
+
+		provider := keyClient.NewKeyProvider("omni/keys")
+
+		signer, err = provider.ReadValidKey(contextName, identity)
+		if err != nil {
+			return fmt.Errorf("failed to read key: %w", err)
+		}
 	}
 
 	msg, err := message.NewHTTP(req)
@@ -238,7 +253,7 @@ func signRequest(req *http.Request) error {
 		return err
 	}
 
-	return msg.Sign(email, key)
+	return msg.Sign(identity, signer)
 }
 
 func currentConfigCtx() (name string, ctx *config.Context, err error) {

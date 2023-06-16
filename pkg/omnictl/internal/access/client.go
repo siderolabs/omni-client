@@ -22,8 +22,12 @@ import (
 	"github.com/siderolabs/omni-client/pkg/version"
 )
 
-// ServiceAccountKeyEnvVar is the name of the environment variable that contains the base64-encoded service account key JSON.
-const ServiceAccountKeyEnvVar = "OMNI_SERVICE_ACCOUNT_KEY"
+const (
+	// EndpointEnvVar is the name of the environment variable that contains the Omni endpoint.
+	EndpointEnvVar = "OMNI_ENDPOINT"
+	// ServiceAccountKeyEnvVar is the name of the environment variable that contains the base64-encoded service account key JSON.
+	ServiceAccountKeyEnvVar = "OMNI_SERVICE_ACCOUNT_KEY"
+)
 
 type clientOptions struct {
 	skipAuth bool
@@ -81,7 +85,7 @@ func WithClient(f func(ctx context.Context, client *client.Client) error, client
 
 		serviceAccountKey := os.Getenv(ServiceAccountKeyEnvVar)
 		if serviceAccountKey != "" {
-			opts = append(opts, client.WithServiceAccount(contextName, configCtx.Auth.SideroV1.Identity, serviceAccountKey))
+			opts = append(opts, client.WithServiceAccount(contextName, serviceAccountKey))
 		} else {
 			opts = append(opts, client.WithUserAccount(contextName, configCtx.Auth.SideroV1.Identity))
 		}
@@ -92,7 +96,7 @@ func WithClient(f func(ctx context.Context, client *client.Client) error, client
 
 		url := configCtx.URL
 
-		endpointEnv := os.Getenv("OMNI_ENDPOINT")
+		endpointEnv := os.Getenv(EndpointEnvVar)
 		if endpointEnv != "" {
 			url = endpointEnv
 		}

@@ -151,16 +151,10 @@ func (this *CreateServiceAccountRequest) EqualVT(that *CreateServiceAccountReque
 	if this.ArmoredPgpPublicKey != that.ArmoredPgpPublicKey {
 		return false
 	}
-	if len(this.Scopes) != len(that.Scopes) {
+	if this.UseUserRole != that.UseUserRole {
 		return false
 	}
-	for i, vx := range this.Scopes {
-		vy := that.Scopes[i]
-		if vx != vy {
-			return false
-		}
-	}
-	if this.UseUserScopes != that.UseUserScopes {
+	if this.Role != that.Role {
 		return false
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
@@ -309,14 +303,8 @@ func (this *ListServiceAccountsResponse_ServiceAccount) EqualVT(that *ListServic
 			}
 		}
 	}
-	if len(this.Scopes) != len(that.Scopes) {
+	if this.Role != that.Role {
 		return false
-	}
-	for i, vx := range this.Scopes {
-		vy := that.Scopes[i]
-		if vx != vy {
-			return false
-		}
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
 }
@@ -780,24 +768,22 @@ func (m *CreateServiceAccountRequest) MarshalToSizedBufferVT(dAtA []byte) (int, 
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
-	if m.UseUserScopes {
+	if len(m.Role) > 0 {
+		i -= len(m.Role)
+		copy(dAtA[i:], m.Role)
+		i = encodeVarint(dAtA, i, uint64(len(m.Role)))
 		i--
-		if m.UseUserScopes {
+		dAtA[i] = 0x22
+	}
+	if m.UseUserRole {
+		i--
+		if m.UseUserRole {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
 		i--
 		dAtA[i] = 0x18
-	}
-	if len(m.Scopes) > 0 {
-		for iNdEx := len(m.Scopes) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.Scopes[iNdEx])
-			copy(dAtA[i:], m.Scopes[iNdEx])
-			i = encodeVarint(dAtA, i, uint64(len(m.Scopes[iNdEx])))
-			i--
-			dAtA[i] = 0x12
-		}
 	}
 	if len(m.ArmoredPgpPublicKey) > 0 {
 		i -= len(m.ArmoredPgpPublicKey)
@@ -1075,14 +1061,12 @@ func (m *ListServiceAccountsResponse_ServiceAccount) MarshalToSizedBufferVT(dAtA
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
-	if len(m.Scopes) > 0 {
-		for iNdEx := len(m.Scopes) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.Scopes[iNdEx])
-			copy(dAtA[i:], m.Scopes[iNdEx])
-			i = encodeVarint(dAtA, i, uint64(len(m.Scopes[iNdEx])))
-			i--
-			dAtA[i] = 0x1a
-		}
+	if len(m.Role) > 0 {
+		i -= len(m.Role)
+		copy(dAtA[i:], m.Role)
+		i = encodeVarint(dAtA, i, uint64(len(m.Role)))
+		i--
+		dAtA[i] = 0x22
 	}
 	if len(m.PgpPublicKeys) > 0 {
 		for iNdEx := len(m.PgpPublicKeys) - 1; iNdEx >= 0; iNdEx-- {
@@ -1544,14 +1528,12 @@ func (m *CreateServiceAccountRequest) SizeVT() (n int) {
 	if l > 0 {
 		n += 1 + l + sov(uint64(l))
 	}
-	if len(m.Scopes) > 0 {
-		for _, s := range m.Scopes {
-			l = len(s)
-			n += 1 + l + sov(uint64(l))
-		}
-	}
-	if m.UseUserScopes {
+	if m.UseUserRole {
 		n += 2
+	}
+	l = len(m.Role)
+	if l > 0 {
+		n += 1 + l + sov(uint64(l))
 	}
 	n += len(m.unknownFields)
 	return n
@@ -1661,11 +1643,9 @@ func (m *ListServiceAccountsResponse_ServiceAccount) SizeVT() (n int) {
 			n += 1 + l + sov(uint64(l))
 		}
 	}
-	if len(m.Scopes) > 0 {
-		for _, s := range m.Scopes {
-			l = len(s)
-			n += 1 + l + sov(uint64(l))
-		}
+	l = len(m.Role)
+	if l > 0 {
+		n += 1 + l + sov(uint64(l))
 	}
 	n += len(m.unknownFields)
 	return n
@@ -2390,9 +2370,29 @@ func (m *CreateServiceAccountRequest) UnmarshalVT(dAtA []byte) error {
 			}
 			m.ArmoredPgpPublicKey = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UseUserRole", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.UseUserRole = bool(v != 0)
+		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Scopes", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Role", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2420,28 +2420,8 @@ func (m *CreateServiceAccountRequest) UnmarshalVT(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Scopes = append(m.Scopes, string(dAtA[iNdEx:postIndex]))
+			m.Role = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field UseUserScopes", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.UseUserScopes = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skip(dAtA[iNdEx:])
@@ -3082,9 +3062,9 @@ func (m *ListServiceAccountsResponse_ServiceAccount) UnmarshalVT(dAtA []byte) er
 				return err
 			}
 			iNdEx = postIndex
-		case 3:
+		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Scopes", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Role", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3112,7 +3092,7 @@ func (m *ListServiceAccountsResponse_ServiceAccount) UnmarshalVT(dAtA []byte) er
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Scopes = append(m.Scopes, string(dAtA[iNdEx:postIndex]))
+			m.Role = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

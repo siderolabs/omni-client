@@ -23,10 +23,10 @@ func WithBasicAuth(auth string) Option {
 	}
 }
 
-// WithServiceAccount creates the client for a context with identity and service account key.
-func WithServiceAccount(contextName, identity, key string) Option {
+// WithServiceAccount creates the client for a context with the given service account key.
+func WithServiceAccount(contextName, key string) Option {
 	return func() ([]grpc.DialOption, error) {
-		interceptorConfig, err := access.NewAuthInterceptorConfig(contextName, identity, key)
+		interceptorConfig, err := access.NewAuthInterceptorConfig(contextName, "", key)
 		if err != nil {
 			return nil, err
 		}

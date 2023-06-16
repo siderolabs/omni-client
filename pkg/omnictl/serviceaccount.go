@@ -24,10 +24,10 @@ import (
 
 var (
 	serviceAccountCreateFlags struct {
-		scopes []string
+		role string
 
-		useUserScopes bool
-		ttl           time.Duration
+		useUserRole bool
+		ttl         time.Duration
 	}
 
 	serviceAccountRenewFlags struct {
@@ -62,7 +62,7 @@ var (
 					return err
 				}
 
-				publicKeyID, err := client.Management().CreateServiceAccount(ctx, armoredPublicKey, serviceAccountCreateFlags.scopes, serviceAccountCreateFlags.useUserScopes)
+				publicKeyID, err := client.Management().CreateServiceAccount(ctx, armoredPublicKey, serviceAccountCreateFlags.role, serviceAccountCreateFlags.useUserRole)
 				if err != nil {
 					return err
 				}
@@ -75,8 +75,8 @@ var (
 				fmt.Printf("Created service account %q with public key ID %q\n", name, publicKeyID)
 				fmt.Printf("\n")
 				fmt.Printf("Set the following environment variables to use the service account:\n")
-				fmt.Printf("OMNI_ENDPOINT=%s\n", client.Endpoint())
-				fmt.Printf("OMNI_SERVICE_ACCOUNT_KEY=%s\n", encodedKey)
+				fmt.Printf("%s=%s\n", access.EndpointEnvVar, client.Endpoint())
+				fmt.Printf("%s=%s\n", access.ServiceAccountKeyEnvVar, encodedKey)
 				fmt.Printf("\n")
 				fmt.Printf("Note: Store the service account key securely, it will not be displayed again\n")
 
@@ -119,8 +119,8 @@ var (
 				fmt.Printf("Renewed service account %q by adding a public key with ID %q\n", name, publicKeyID)
 				fmt.Printf("\n")
 				fmt.Printf("Set the following environment variables to use the service account:\n")
-				fmt.Printf("OMNI_ENDPOINT=%s\n", client.Endpoint())
-				fmt.Printf("OMNI_SERVICE_ACCOUNT_KEY=%s\n", encodedKey)
+				fmt.Printf("%s=%s\n", access.EndpointEnvVar, client.Endpoint())
+				fmt.Printf("%s=%s\n", access.ServiceAccountKeyEnvVar, encodedKey)
 				fmt.Printf("\n")
 				fmt.Printf("Note: Store the service account key securely, it will not be displayed again\n")
 
@@ -148,7 +148,7 @@ var (
 				for _, sa := range serviceAccounts {
 					for i, publicKey := range sa.PgpPublicKeys {
 						if i == 0 {
-							fmt.Fprintf(writer, "%s\t%q\t%s\t%s\n", sa.Name, sa.Scopes, publicKey.Id, publicKey.Expiration.AsTime().String())
+							fmt.Fprintf(writer, "%s\t%q\t%s\t%s\n", sa.Name, sa.GetRole(), publicKey.Id, publicKey.Expiration.AsTime().String())
 						} else {
 							fmt.Fprintf(writer, "\t\t%s\t%s\n", publicKey.Id, publicKey.Expiration.AsTime().String())
 						}
@@ -211,8 +211,8 @@ func init() {
 	serviceAccountCmd.AddCommand(serviceAccountRenewCmd)
 
 	serviceAccountCreateCmd.Flags().DurationVarP(&serviceAccountCreateFlags.ttl, "ttl", "t", 365*24*time.Hour, "TTL for the service account key")
-	serviceAccountCreateCmd.Flags().StringSliceVarP(&serviceAccountCreateFlags.scopes, "scopes", "s", nil, "scopes of the service account. only used when --use-user-scopes=false")
-	serviceAccountCreateCmd.Flags().BoolVarP(&serviceAccountCreateFlags.useUserScopes, "use-user-scopes", "u", true, "use the scopes of the creating user. if true, --scopes is ignored")
+	serviceAccountCreateCmd.Flags().StringVarP(&serviceAccountCreateFlags.role, "role", "r", "", "role of the service account. only used when --set-role-from-user=false")
+	serviceAccountCreateCmd.Flags().BoolVarP(&serviceAccountCreateFlags.useUserRole, "use-user-role", "u", true, "use the role of the creating user. if true, --role is ignored")
 
 	serviceAccountRenewCmd.Flags().DurationVarP(&serviceAccountRenewFlags.ttl, "ttl", "t", 365*24*time.Hour, "TTL for the service account key")
 }

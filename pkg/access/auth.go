@@ -53,7 +53,7 @@ type AuthInterceptorConfig struct {
 // NewAuthInterceptorConfig creates new auth interceptor.
 func NewAuthInterceptorConfig(contextName, identity, serviceAccountKey string) (*AuthInterceptorConfig, error) {
 	if serviceAccountKey != "" {
-		envIdentity, signer, err := parseServiceAccountKey(serviceAccountKey)
+		envIdentity, signer, err := ParseServiceAccountKey(serviceAccountKey)
 		if err != nil {
 			return nil, err
 		}
@@ -105,7 +105,7 @@ func (c *AuthInterceptorConfig) Interceptor() *interceptor.Signature {
 			return false, err
 		}
 
-		enabled := authConfig.TypedSpec().Value.GetAuth0().GetEnabled() || authConfig.TypedSpec().Value.GetWebauthn().GetEnabled()
+		enabled := authres.Enabled(authConfig)
 
 		return enabled, nil
 	}
@@ -171,7 +171,10 @@ func (c *AuthInterceptorConfig) authenticate(ctx context.Context, cc *grpc.Clien
 	return pgpKey, nil
 }
 
-func parseServiceAccountKey(value string) (string, message.Signer, error) {
+// ParseServiceAccountKey parses a service account key from a base64 encoded JSON string.
+//
+// It returns the identity and the signer for the key.
+func ParseServiceAccountKey(value string) (string, message.Signer, error) {
 	saKeyJSON, err := base64.StdEncoding.DecodeString(value)
 	if err != nil {
 		return "", nil, err

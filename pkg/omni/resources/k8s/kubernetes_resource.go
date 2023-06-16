@@ -13,6 +13,14 @@ import (
 	"github.com/siderolabs/omni-client/pkg/omni/resources"
 )
 
+// NewKubernetesResource creates new cluster config version resource.
+func NewKubernetesResource(ns string, id resource.ID, spec KubernetesResourceSpec) *KubernetesResource {
+	return typed.NewResource[KubernetesResourceSpec, KubernetesResourceExtension](
+		resource.NewMetadata(ns, KubernetesResourceType, id, resource.VersionUndefined),
+		spec,
+	)
+}
+
 // KubernetesResourceType is the type of KubernetesResource resource.
 //
 // tsgen:KubernetesResourceType

@@ -44,9 +44,11 @@ message TalosconfigRequest {
 
 message CreateServiceAccountRequest {
   string armored_pgp_public_key = 1;
-  repeated string scopes = 2;
-  // If true, scopes will be ignored and the service account will be created with the scopes of the creating user.
-  bool use_user_scopes = 3;
+  reserved 2;
+  // UseUserRole indicates whether to use the role of the creating user.
+  // When true, role will be ignored and the service account will be created with the role of the creating user.
+  bool use_user_role = 3;
+  string role = 4;
 }
 
 message CreateServiceAccountResponse {
@@ -76,7 +78,8 @@ message ListServiceAccountsResponse {
 
     string name = 1;
     repeated PgpPublicKey pgp_public_keys = 2;
-    repeated string scopes = 3;
+    reserved 3;
+    string role = 4;
   }
 
   repeated ServiceAccount service_accounts = 1;

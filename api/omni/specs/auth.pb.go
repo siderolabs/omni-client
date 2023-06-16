@@ -32,6 +32,7 @@ type AuthConfigSpec struct {
 	Auth0     *AuthConfigSpec_Auth0    `protobuf:"bytes,1,opt,name=auth0,proto3" json:"auth0,omitempty"`
 	Webauthn  *AuthConfigSpec_Webauthn `protobuf:"bytes,2,opt,name=webauthn,proto3" json:"webauthn,omitempty"`
 	Suspended bool                     `protobuf:"varint,3,opt,name=suspended,proto3" json:"suspended,omitempty"`
+	Saml      *AuthConfigSpec_SAML     `protobuf:"bytes,4,opt,name=saml,proto3" json:"saml,omitempty"`
 }
 
 func (x *AuthConfigSpec) Reset() {
@@ -87,19 +88,98 @@ func (x *AuthConfigSpec) GetSuspended() bool {
 	return false
 }
 
+func (x *AuthConfigSpec) GetSaml() *AuthConfigSpec_SAML {
+	if x != nil {
+		return x.Saml
+	}
+	return nil
+}
+
+// SAMLAssertionSpec describes SAML assertion.
+type SAMLAssertionSpec struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Data keeps JSON encoded SAML assertion.
+	Data []byte `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+	// Email is the identity that was read from the assertion.
+	Email string `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
+	// Used marks SAML assertion as used.
+	Used bool `protobuf:"varint,3,opt,name=used,proto3" json:"used,omitempty"`
+}
+
+func (x *SAMLAssertionSpec) Reset() {
+	*x = SAMLAssertionSpec{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_omni_specs_auth_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SAMLAssertionSpec) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SAMLAssertionSpec) ProtoMessage() {}
+
+func (x *SAMLAssertionSpec) ProtoReflect() protoreflect.Message {
+	mi := &file_omni_specs_auth_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SAMLAssertionSpec.ProtoReflect.Descriptor instead.
+func (*SAMLAssertionSpec) Descriptor() ([]byte, []int) {
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *SAMLAssertionSpec) GetData() []byte {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+func (x *SAMLAssertionSpec) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *SAMLAssertionSpec) GetUsed() bool {
+	if x != nil {
+		return x.Used
+	}
+	return false
+}
+
 // UserSpec describes a user.
 type UserSpec struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// Scopes are deprecated, use roles instead.
+	//
+	// Deprecated: will be removed once all environments are migrated to use roles.
+	// TODO: remove after all environments are migrated to use roles.
 	Scopes []string `protobuf:"bytes,2,rep,name=scopes,proto3" json:"scopes,omitempty"`
+	Role   string   `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"`
 }
 
 func (x *UserSpec) Reset() {
 	*x = UserSpec{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_omni_specs_auth_proto_msgTypes[1]
+		mi := &file_omni_specs_auth_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -112,7 +192,7 @@ func (x *UserSpec) String() string {
 func (*UserSpec) ProtoMessage() {}
 
 func (x *UserSpec) ProtoReflect() protoreflect.Message {
-	mi := &file_omni_specs_auth_proto_msgTypes[1]
+	mi := &file_omni_specs_auth_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -125,7 +205,7 @@ func (x *UserSpec) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserSpec.ProtoReflect.Descriptor instead.
 func (*UserSpec) Descriptor() ([]byte, []int) {
-	return file_omni_specs_auth_proto_rawDescGZIP(), []int{1}
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *UserSpec) GetScopes() []string {
@@ -133,6 +213,13 @@ func (x *UserSpec) GetScopes() []string {
 		return x.Scopes
 	}
 	return nil
+}
+
+func (x *UserSpec) GetRole() string {
+	if x != nil {
+		return x.Role
+	}
+	return ""
 }
 
 // IdentitySpec describes a user identity.
@@ -147,7 +234,7 @@ type IdentitySpec struct {
 func (x *IdentitySpec) Reset() {
 	*x = IdentitySpec{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_omni_specs_auth_proto_msgTypes[2]
+		mi := &file_omni_specs_auth_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -160,7 +247,7 @@ func (x *IdentitySpec) String() string {
 func (*IdentitySpec) ProtoMessage() {}
 
 func (x *IdentitySpec) ProtoReflect() protoreflect.Message {
-	mi := &file_omni_specs_auth_proto_msgTypes[2]
+	mi := &file_omni_specs_auth_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -173,7 +260,7 @@ func (x *IdentitySpec) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IdentitySpec.ProtoReflect.Descriptor instead.
 func (*IdentitySpec) Descriptor() ([]byte, []int) {
-	return file_omni_specs_auth_proto_rawDescGZIP(), []int{2}
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *IdentitySpec) GetUserId() string {
@@ -194,7 +281,7 @@ type Identity struct {
 func (x *Identity) Reset() {
 	*x = Identity{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_omni_specs_auth_proto_msgTypes[3]
+		mi := &file_omni_specs_auth_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -207,7 +294,7 @@ func (x *Identity) String() string {
 func (*Identity) ProtoMessage() {}
 
 func (x *Identity) ProtoReflect() protoreflect.Message {
-	mi := &file_omni_specs_auth_proto_msgTypes[3]
+	mi := &file_omni_specs_auth_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -220,7 +307,7 @@ func (x *Identity) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Identity.ProtoReflect.Descriptor instead.
 func (*Identity) Descriptor() ([]byte, []int) {
-	return file_omni_specs_auth_proto_rawDescGZIP(), []int{3}
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *Identity) GetEmail() string {
@@ -236,17 +323,22 @@ type PublicKeySpec struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	PublicKey  []byte                 `protobuf:"bytes,1,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	PublicKey []byte `protobuf:"bytes,1,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	// Scopes are deprecated, use roles instead.
+	//
+	// Deprecated: will be removed once all environments are migrated to use roles.
+	// TODO: remove after all environments are migrated to use roles.
 	Scopes     []string               `protobuf:"bytes,2,rep,name=scopes,proto3" json:"scopes,omitempty"`
 	Expiration *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=expiration,proto3" json:"expiration,omitempty"`
 	Confirmed  bool                   `protobuf:"varint,4,opt,name=confirmed,proto3" json:"confirmed,omitempty"`
 	Identity   *Identity              `protobuf:"bytes,5,opt,name=identity,proto3" json:"identity,omitempty"`
+	Role       string                 `protobuf:"bytes,6,opt,name=role,proto3" json:"role,omitempty"`
 }
 
 func (x *PublicKeySpec) Reset() {
 	*x = PublicKeySpec{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_omni_specs_auth_proto_msgTypes[4]
+		mi := &file_omni_specs_auth_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -259,7 +351,7 @@ func (x *PublicKeySpec) String() string {
 func (*PublicKeySpec) ProtoMessage() {}
 
 func (x *PublicKeySpec) ProtoReflect() protoreflect.Message {
-	mi := &file_omni_specs_auth_proto_msgTypes[4]
+	mi := &file_omni_specs_auth_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -272,7 +364,7 @@ func (x *PublicKeySpec) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PublicKeySpec.ProtoReflect.Descriptor instead.
 func (*PublicKeySpec) Descriptor() ([]byte, []int) {
-	return file_omni_specs_auth_proto_rawDescGZIP(), []int{4}
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *PublicKeySpec) GetPublicKey() []byte {
@@ -310,6 +402,13 @@ func (x *PublicKeySpec) GetIdentity() *Identity {
 	return nil
 }
 
+func (x *PublicKeySpec) GetRole() string {
+	if x != nil {
+		return x.Role
+	}
+	return ""
+}
+
 // AccessPolicyUserGroup describes a user group in the ACLs context.
 type AccessPolicyUserGroup struct {
 	state         protoimpl.MessageState
@@ -322,7 +421,7 @@ type AccessPolicyUserGroup struct {
 func (x *AccessPolicyUserGroup) Reset() {
 	*x = AccessPolicyUserGroup{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_omni_specs_auth_proto_msgTypes[5]
+		mi := &file_omni_specs_auth_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -335,7 +434,7 @@ func (x *AccessPolicyUserGroup) String() string {
 func (*AccessPolicyUserGroup) ProtoMessage() {}
 
 func (x *AccessPolicyUserGroup) ProtoReflect() protoreflect.Message {
-	mi := &file_omni_specs_auth_proto_msgTypes[5]
+	mi := &file_omni_specs_auth_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -348,7 +447,7 @@ func (x *AccessPolicyUserGroup) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AccessPolicyUserGroup.ProtoReflect.Descriptor instead.
 func (*AccessPolicyUserGroup) Descriptor() ([]byte, []int) {
-	return file_omni_specs_auth_proto_rawDescGZIP(), []int{5}
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *AccessPolicyUserGroup) GetUsers() []*AccessPolicyUserGroup_User {
@@ -370,7 +469,7 @@ type AccessPolicyClusterGroup struct {
 func (x *AccessPolicyClusterGroup) Reset() {
 	*x = AccessPolicyClusterGroup{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_omni_specs_auth_proto_msgTypes[6]
+		mi := &file_omni_specs_auth_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -383,7 +482,7 @@ func (x *AccessPolicyClusterGroup) String() string {
 func (*AccessPolicyClusterGroup) ProtoMessage() {}
 
 func (x *AccessPolicyClusterGroup) ProtoReflect() protoreflect.Message {
-	mi := &file_omni_specs_auth_proto_msgTypes[6]
+	mi := &file_omni_specs_auth_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -396,7 +495,7 @@ func (x *AccessPolicyClusterGroup) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AccessPolicyClusterGroup.ProtoReflect.Descriptor instead.
 func (*AccessPolicyClusterGroup) Descriptor() ([]byte, []int) {
-	return file_omni_specs_auth_proto_rawDescGZIP(), []int{6}
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *AccessPolicyClusterGroup) GetClusters() []*AccessPolicyClusterGroup_Cluster {
@@ -415,12 +514,13 @@ type AccessPolicyRule struct {
 	Users      []string                     `protobuf:"bytes,1,rep,name=users,proto3" json:"users,omitempty"`
 	Clusters   []string                     `protobuf:"bytes,2,rep,name=clusters,proto3" json:"clusters,omitempty"`
 	Kubernetes *AccessPolicyRule_Kubernetes `protobuf:"bytes,3,opt,name=kubernetes,proto3" json:"kubernetes,omitempty"`
+	Role       string                       `protobuf:"bytes,4,opt,name=role,proto3" json:"role,omitempty"`
 }
 
 func (x *AccessPolicyRule) Reset() {
 	*x = AccessPolicyRule{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_omni_specs_auth_proto_msgTypes[7]
+		mi := &file_omni_specs_auth_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -433,7 +533,7 @@ func (x *AccessPolicyRule) String() string {
 func (*AccessPolicyRule) ProtoMessage() {}
 
 func (x *AccessPolicyRule) ProtoReflect() protoreflect.Message {
-	mi := &file_omni_specs_auth_proto_msgTypes[7]
+	mi := &file_omni_specs_auth_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -446,7 +546,7 @@ func (x *AccessPolicyRule) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AccessPolicyRule.ProtoReflect.Descriptor instead.
 func (*AccessPolicyRule) Descriptor() ([]byte, []int) {
-	return file_omni_specs_auth_proto_rawDescGZIP(), []int{7}
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *AccessPolicyRule) GetUsers() []string {
@@ -470,21 +570,28 @@ func (x *AccessPolicyRule) GetKubernetes() *AccessPolicyRule_Kubernetes {
 	return nil
 }
 
+func (x *AccessPolicyRule) GetRole() string {
+	if x != nil {
+		return x.Role
+	}
+	return ""
+}
+
 type AccessPolicyTest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
 	Name     string                     `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	User     string                     `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
-	Cluster  string                     `protobuf:"bytes,3,opt,name=cluster,proto3" json:"cluster,omitempty"`
+	User     *AccessPolicyTest_User     `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
+	Cluster  *AccessPolicyTest_Cluster  `protobuf:"bytes,3,opt,name=cluster,proto3" json:"cluster,omitempty"`
 	Expected *AccessPolicyTest_Expected `protobuf:"bytes,4,opt,name=expected,proto3" json:"expected,omitempty"`
 }
 
 func (x *AccessPolicyTest) Reset() {
 	*x = AccessPolicyTest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_omni_specs_auth_proto_msgTypes[8]
+		mi := &file_omni_specs_auth_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -497,7 +604,7 @@ func (x *AccessPolicyTest) String() string {
 func (*AccessPolicyTest) ProtoMessage() {}
 
 func (x *AccessPolicyTest) ProtoReflect() protoreflect.Message {
-	mi := &file_omni_specs_auth_proto_msgTypes[8]
+	mi := &file_omni_specs_auth_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -510,7 +617,7 @@ func (x *AccessPolicyTest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AccessPolicyTest.ProtoReflect.Descriptor instead.
 func (*AccessPolicyTest) Descriptor() ([]byte, []int) {
-	return file_omni_specs_auth_proto_rawDescGZIP(), []int{8}
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *AccessPolicyTest) GetName() string {
@@ -520,18 +627,18 @@ func (x *AccessPolicyTest) GetName() string {
 	return ""
 }
 
-func (x *AccessPolicyTest) GetUser() string {
+func (x *AccessPolicyTest) GetUser() *AccessPolicyTest_User {
 	if x != nil {
 		return x.User
 	}
-	return ""
+	return nil
 }
 
-func (x *AccessPolicyTest) GetCluster() string {
+func (x *AccessPolicyTest) GetCluster() *AccessPolicyTest_Cluster {
 	if x != nil {
 		return x.Cluster
 	}
-	return ""
+	return nil
 }
 
 func (x *AccessPolicyTest) GetExpected() *AccessPolicyTest_Expected {
@@ -556,7 +663,7 @@ type AccessPolicySpec struct {
 func (x *AccessPolicySpec) Reset() {
 	*x = AccessPolicySpec{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_omni_specs_auth_proto_msgTypes[9]
+		mi := &file_omni_specs_auth_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -569,7 +676,7 @@ func (x *AccessPolicySpec) String() string {
 func (*AccessPolicySpec) ProtoMessage() {}
 
 func (x *AccessPolicySpec) ProtoReflect() protoreflect.Message {
-	mi := &file_omni_specs_auth_proto_msgTypes[9]
+	mi := &file_omni_specs_auth_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -582,7 +689,7 @@ func (x *AccessPolicySpec) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AccessPolicySpec.ProtoReflect.Descriptor instead.
 func (*AccessPolicySpec) Descriptor() ([]byte, []int) {
-	return file_omni_specs_auth_proto_rawDescGZIP(), []int{9}
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *AccessPolicySpec) GetUserGroups() map[string]*AccessPolicyUserGroup {
@@ -626,7 +733,7 @@ type AuthConfigSpec_Auth0 struct {
 func (x *AuthConfigSpec_Auth0) Reset() {
 	*x = AuthConfigSpec_Auth0{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_omni_specs_auth_proto_msgTypes[10]
+		mi := &file_omni_specs_auth_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -639,7 +746,7 @@ func (x *AuthConfigSpec_Auth0) String() string {
 func (*AuthConfigSpec_Auth0) ProtoMessage() {}
 
 func (x *AuthConfigSpec_Auth0) ProtoReflect() protoreflect.Message {
-	mi := &file_omni_specs_auth_proto_msgTypes[10]
+	mi := &file_omni_specs_auth_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -688,7 +795,7 @@ type AuthConfigSpec_Webauthn struct {
 func (x *AuthConfigSpec_Webauthn) Reset() {
 	*x = AuthConfigSpec_Webauthn{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_omni_specs_auth_proto_msgTypes[11]
+		mi := &file_omni_specs_auth_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -701,7 +808,7 @@ func (x *AuthConfigSpec_Webauthn) String() string {
 func (*AuthConfigSpec_Webauthn) ProtoMessage() {}
 
 func (x *AuthConfigSpec_Webauthn) ProtoReflect() protoreflect.Message {
-	mi := &file_omni_specs_auth_proto_msgTypes[11]
+	mi := &file_omni_specs_auth_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -731,18 +838,93 @@ func (x *AuthConfigSpec_Webauthn) GetRequired() bool {
 	return false
 }
 
+type AuthConfigSpec_SAML struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Enabled  bool   `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	Url      string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
+	Metadata string `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	// LabelRules defines custom rules on how to extract SAML attributes from the
+	// saml assertion and turn them into labels.
+	LabelRules map[string]string `protobuf:"bytes,4,rep,name=label_rules,json=labelRules,proto3" json:"label_rules,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (x *AuthConfigSpec_SAML) Reset() {
+	*x = AuthConfigSpec_SAML{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_omni_specs_auth_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AuthConfigSpec_SAML) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AuthConfigSpec_SAML) ProtoMessage() {}
+
+func (x *AuthConfigSpec_SAML) ProtoReflect() protoreflect.Message {
+	mi := &file_omni_specs_auth_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AuthConfigSpec_SAML.ProtoReflect.Descriptor instead.
+func (*AuthConfigSpec_SAML) Descriptor() ([]byte, []int) {
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{0, 2}
+}
+
+func (x *AuthConfigSpec_SAML) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
+func (x *AuthConfigSpec_SAML) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+func (x *AuthConfigSpec_SAML) GetMetadata() string {
+	if x != nil {
+		return x.Metadata
+	}
+	return ""
+}
+
+func (x *AuthConfigSpec_SAML) GetLabelRules() map[string]string {
+	if x != nil {
+		return x.LabelRules
+	}
+	return nil
+}
+
 type AccessPolicyUserGroup_User struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Name           string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Match          string   `protobuf:"bytes,2,opt,name=match,proto3" json:"match,omitempty"`
+	LabelSelectors []string `protobuf:"bytes,3,rep,name=label_selectors,json=labelSelectors,proto3" json:"label_selectors,omitempty"`
 }
 
 func (x *AccessPolicyUserGroup_User) Reset() {
 	*x = AccessPolicyUserGroup_User{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_omni_specs_auth_proto_msgTypes[12]
+		mi := &file_omni_specs_auth_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -755,7 +937,7 @@ func (x *AccessPolicyUserGroup_User) String() string {
 func (*AccessPolicyUserGroup_User) ProtoMessage() {}
 
 func (x *AccessPolicyUserGroup_User) ProtoReflect() protoreflect.Message {
-	mi := &file_omni_specs_auth_proto_msgTypes[12]
+	mi := &file_omni_specs_auth_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -768,7 +950,7 @@ func (x *AccessPolicyUserGroup_User) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AccessPolicyUserGroup_User.ProtoReflect.Descriptor instead.
 func (*AccessPolicyUserGroup_User) Descriptor() ([]byte, []int) {
-	return file_omni_specs_auth_proto_rawDescGZIP(), []int{5, 0}
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{6, 0}
 }
 
 func (x *AccessPolicyUserGroup_User) GetName() string {
@@ -778,18 +960,33 @@ func (x *AccessPolicyUserGroup_User) GetName() string {
 	return ""
 }
 
+func (x *AccessPolicyUserGroup_User) GetMatch() string {
+	if x != nil {
+		return x.Match
+	}
+	return ""
+}
+
+func (x *AccessPolicyUserGroup_User) GetLabelSelectors() []string {
+	if x != nil {
+		return x.LabelSelectors
+	}
+	return nil
+}
+
 type AccessPolicyClusterGroup_Cluster struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Name  string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Match string `protobuf:"bytes,2,opt,name=match,proto3" json:"match,omitempty"`
 }
 
 func (x *AccessPolicyClusterGroup_Cluster) Reset() {
 	*x = AccessPolicyClusterGroup_Cluster{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_omni_specs_auth_proto_msgTypes[13]
+		mi := &file_omni_specs_auth_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -802,7 +999,7 @@ func (x *AccessPolicyClusterGroup_Cluster) String() string {
 func (*AccessPolicyClusterGroup_Cluster) ProtoMessage() {}
 
 func (x *AccessPolicyClusterGroup_Cluster) ProtoReflect() protoreflect.Message {
-	mi := &file_omni_specs_auth_proto_msgTypes[13]
+	mi := &file_omni_specs_auth_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -815,12 +1012,19 @@ func (x *AccessPolicyClusterGroup_Cluster) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AccessPolicyClusterGroup_Cluster.ProtoReflect.Descriptor instead.
 func (*AccessPolicyClusterGroup_Cluster) Descriptor() ([]byte, []int) {
-	return file_omni_specs_auth_proto_rawDescGZIP(), []int{6, 0}
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{7, 0}
 }
 
 func (x *AccessPolicyClusterGroup_Cluster) GetName() string {
 	if x != nil {
 		return x.Name
+	}
+	return ""
+}
+
+func (x *AccessPolicyClusterGroup_Cluster) GetMatch() string {
+	if x != nil {
+		return x.Match
 	}
 	return ""
 }
@@ -836,7 +1040,7 @@ type AccessPolicyRule_Kubernetes struct {
 func (x *AccessPolicyRule_Kubernetes) Reset() {
 	*x = AccessPolicyRule_Kubernetes{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_omni_specs_auth_proto_msgTypes[14]
+		mi := &file_omni_specs_auth_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -849,7 +1053,7 @@ func (x *AccessPolicyRule_Kubernetes) String() string {
 func (*AccessPolicyRule_Kubernetes) ProtoMessage() {}
 
 func (x *AccessPolicyRule_Kubernetes) ProtoReflect() protoreflect.Message {
-	mi := &file_omni_specs_auth_proto_msgTypes[14]
+	mi := &file_omni_specs_auth_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -862,7 +1066,7 @@ func (x *AccessPolicyRule_Kubernetes) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AccessPolicyRule_Kubernetes.ProtoReflect.Descriptor instead.
 func (*AccessPolicyRule_Kubernetes) Descriptor() ([]byte, []int) {
-	return file_omni_specs_auth_proto_rawDescGZIP(), []int{7, 0}
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{8, 0}
 }
 
 func (x *AccessPolicyRule_Kubernetes) GetImpersonate() *AccessPolicyRule_Kubernetes_Impersonate {
@@ -883,7 +1087,7 @@ type AccessPolicyRule_Kubernetes_Impersonate struct {
 func (x *AccessPolicyRule_Kubernetes_Impersonate) Reset() {
 	*x = AccessPolicyRule_Kubernetes_Impersonate{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_omni_specs_auth_proto_msgTypes[15]
+		mi := &file_omni_specs_auth_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -896,7 +1100,7 @@ func (x *AccessPolicyRule_Kubernetes_Impersonate) String() string {
 func (*AccessPolicyRule_Kubernetes_Impersonate) ProtoMessage() {}
 
 func (x *AccessPolicyRule_Kubernetes_Impersonate) ProtoReflect() protoreflect.Message {
-	mi := &file_omni_specs_auth_proto_msgTypes[15]
+	mi := &file_omni_specs_auth_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -909,7 +1113,7 @@ func (x *AccessPolicyRule_Kubernetes_Impersonate) ProtoReflect() protoreflect.Me
 
 // Deprecated: Use AccessPolicyRule_Kubernetes_Impersonate.ProtoReflect.Descriptor instead.
 func (*AccessPolicyRule_Kubernetes_Impersonate) Descriptor() ([]byte, []int) {
-	return file_omni_specs_auth_proto_rawDescGZIP(), []int{7, 0, 0}
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{8, 0, 0}
 }
 
 func (x *AccessPolicyRule_Kubernetes_Impersonate) GetGroups() []string {
@@ -924,13 +1128,14 @@ type AccessPolicyTest_Expected struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	KubernetesImpersonateGroups []string `protobuf:"bytes,1,rep,name=kubernetes_impersonate_groups,json=kubernetesImpersonateGroups,proto3" json:"kubernetes_impersonate_groups,omitempty"`
+	Kubernetes *AccessPolicyTest_Expected_Kubernetes `protobuf:"bytes,1,opt,name=kubernetes,proto3" json:"kubernetes,omitempty"`
+	Role       string                                `protobuf:"bytes,2,opt,name=role,proto3" json:"role,omitempty"`
 }
 
 func (x *AccessPolicyTest_Expected) Reset() {
 	*x = AccessPolicyTest_Expected{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_omni_specs_auth_proto_msgTypes[16]
+		mi := &file_omni_specs_auth_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -943,7 +1148,7 @@ func (x *AccessPolicyTest_Expected) String() string {
 func (*AccessPolicyTest_Expected) ProtoMessage() {}
 
 func (x *AccessPolicyTest_Expected) ProtoReflect() protoreflect.Message {
-	mi := &file_omni_specs_auth_proto_msgTypes[16]
+	mi := &file_omni_specs_auth_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -956,12 +1161,215 @@ func (x *AccessPolicyTest_Expected) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AccessPolicyTest_Expected.ProtoReflect.Descriptor instead.
 func (*AccessPolicyTest_Expected) Descriptor() ([]byte, []int) {
-	return file_omni_specs_auth_proto_rawDescGZIP(), []int{8, 0}
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{9, 0}
 }
 
-func (x *AccessPolicyTest_Expected) GetKubernetesImpersonateGroups() []string {
+func (x *AccessPolicyTest_Expected) GetKubernetes() *AccessPolicyTest_Expected_Kubernetes {
 	if x != nil {
-		return x.KubernetesImpersonateGroups
+		return x.Kubernetes
+	}
+	return nil
+}
+
+func (x *AccessPolicyTest_Expected) GetRole() string {
+	if x != nil {
+		return x.Role
+	}
+	return ""
+}
+
+type AccessPolicyTest_User struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Name   string            `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Labels map[string]string `protobuf:"bytes,2,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (x *AccessPolicyTest_User) Reset() {
+	*x = AccessPolicyTest_User{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_omni_specs_auth_proto_msgTypes[20]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AccessPolicyTest_User) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AccessPolicyTest_User) ProtoMessage() {}
+
+func (x *AccessPolicyTest_User) ProtoReflect() protoreflect.Message {
+	mi := &file_omni_specs_auth_proto_msgTypes[20]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AccessPolicyTest_User.ProtoReflect.Descriptor instead.
+func (*AccessPolicyTest_User) Descriptor() ([]byte, []int) {
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{9, 1}
+}
+
+func (x *AccessPolicyTest_User) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *AccessPolicyTest_User) GetLabels() map[string]string {
+	if x != nil {
+		return x.Labels
+	}
+	return nil
+}
+
+type AccessPolicyTest_Cluster struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+}
+
+func (x *AccessPolicyTest_Cluster) Reset() {
+	*x = AccessPolicyTest_Cluster{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_omni_specs_auth_proto_msgTypes[21]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AccessPolicyTest_Cluster) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AccessPolicyTest_Cluster) ProtoMessage() {}
+
+func (x *AccessPolicyTest_Cluster) ProtoReflect() protoreflect.Message {
+	mi := &file_omni_specs_auth_proto_msgTypes[21]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AccessPolicyTest_Cluster.ProtoReflect.Descriptor instead.
+func (*AccessPolicyTest_Cluster) Descriptor() ([]byte, []int) {
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{9, 2}
+}
+
+func (x *AccessPolicyTest_Cluster) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+type AccessPolicyTest_Expected_Kubernetes struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Impersonate *AccessPolicyTest_Expected_Kubernetes_Impersonate `protobuf:"bytes,1,opt,name=impersonate,proto3" json:"impersonate,omitempty"`
+}
+
+func (x *AccessPolicyTest_Expected_Kubernetes) Reset() {
+	*x = AccessPolicyTest_Expected_Kubernetes{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_omni_specs_auth_proto_msgTypes[22]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AccessPolicyTest_Expected_Kubernetes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AccessPolicyTest_Expected_Kubernetes) ProtoMessage() {}
+
+func (x *AccessPolicyTest_Expected_Kubernetes) ProtoReflect() protoreflect.Message {
+	mi := &file_omni_specs_auth_proto_msgTypes[22]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AccessPolicyTest_Expected_Kubernetes.ProtoReflect.Descriptor instead.
+func (*AccessPolicyTest_Expected_Kubernetes) Descriptor() ([]byte, []int) {
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{9, 0, 0}
+}
+
+func (x *AccessPolicyTest_Expected_Kubernetes) GetImpersonate() *AccessPolicyTest_Expected_Kubernetes_Impersonate {
+	if x != nil {
+		return x.Impersonate
+	}
+	return nil
+}
+
+type AccessPolicyTest_Expected_Kubernetes_Impersonate struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Groups []string `protobuf:"bytes,1,rep,name=groups,proto3" json:"groups,omitempty"`
+}
+
+func (x *AccessPolicyTest_Expected_Kubernetes_Impersonate) Reset() {
+	*x = AccessPolicyTest_Expected_Kubernetes_Impersonate{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_omni_specs_auth_proto_msgTypes[23]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AccessPolicyTest_Expected_Kubernetes_Impersonate) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AccessPolicyTest_Expected_Kubernetes_Impersonate) ProtoMessage() {}
+
+func (x *AccessPolicyTest_Expected_Kubernetes_Impersonate) ProtoReflect() protoreflect.Message {
+	mi := &file_omni_specs_auth_proto_msgTypes[23]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AccessPolicyTest_Expected_Kubernetes_Impersonate.ProtoReflect.Descriptor instead.
+func (*AccessPolicyTest_Expected_Kubernetes_Impersonate) Descriptor() ([]byte, []int) {
+	return file_omni_specs_auth_proto_rawDescGZIP(), []int{9, 0, 0, 0}
+}
+
+func (x *AccessPolicyTest_Expected_Kubernetes_Impersonate) GetGroups() []string {
+	if x != nil {
+		return x.Groups
 	}
 	return nil
 }
@@ -974,7 +1382,7 @@ var file_omni_specs_auth_proto_rawDesc = []byte{
 	0x74, 0x61, 0x6c, 0x6f, 0x73, 0x2f, 0x6d, 0x61, 0x63, 0x68, 0x69, 0x6e, 0x65, 0x2f, 0x6d, 0x61,
 	0x63, 0x68, 0x69, 0x6e, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1f, 0x67, 0x6f, 0x6f,
 	0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x74, 0x69, 0x6d,
-	0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xb7, 0x02, 0x0a,
+	0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xc4, 0x04, 0x0a,
 	0x0e, 0x41, 0x75, 0x74, 0x68, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x53, 0x70, 0x65, 0x63, 0x12,
 	0x31, 0x0a, 0x05, 0x61, 0x75, 0x74, 0x68, 0x30, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b,
 	0x2e, 0x73, 0x70, 0x65, 0x63, 0x73, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x43, 0x6f, 0x6e, 0x66, 0x69,
@@ -984,7 +1392,10 @@ var file_omni_specs_auth_proto_rawDesc = []byte{
 	0x68, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x53, 0x70, 0x65, 0x63, 0x2e, 0x57, 0x65, 0x62, 0x61,
 	0x75, 0x74, 0x68, 0x6e, 0x52, 0x08, 0x77, 0x65, 0x62, 0x61, 0x75, 0x74, 0x68, 0x6e, 0x12, 0x1c,
 	0x0a, 0x09, 0x73, 0x75, 0x73, 0x70, 0x65, 0x6e, 0x64, 0x65, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x08, 0x52, 0x09, 0x73, 0x75, 0x73, 0x70, 0x65, 0x6e, 0x64, 0x65, 0x64, 0x1a, 0x56, 0x0a, 0x05,
+	0x08, 0x52, 0x09, 0x73, 0x75, 0x73, 0x70, 0x65, 0x6e, 0x64, 0x65, 0x64, 0x12, 0x2e, 0x0a, 0x04,
+	0x73, 0x61, 0x6d, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x73, 0x70, 0x65,
+	0x63, 0x73, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x53, 0x70, 0x65,
+	0x63, 0x2e, 0x53, 0x41, 0x4d, 0x4c, 0x52, 0x04, 0x73, 0x61, 0x6d, 0x6c, 0x1a, 0x56, 0x0a, 0x05,
 	0x41, 0x75, 0x74, 0x68, 0x30, 0x12, 0x18, 0x0a, 0x07, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64,
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x12,
 	0x16, 0x0a, 0x06, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
@@ -994,73 +1405,128 @@ var file_omni_specs_auth_proto_rawDesc = []byte{
 	0x12, 0x18, 0x0a, 0x07, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
 	0x08, 0x52, 0x07, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x72, 0x65,
 	0x71, 0x75, 0x69, 0x72, 0x65, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x72, 0x65,
-	0x71, 0x75, 0x69, 0x72, 0x65, 0x64, 0x22, 0x22, 0x0a, 0x08, 0x55, 0x73, 0x65, 0x72, 0x53, 0x70,
+	0x71, 0x75, 0x69, 0x72, 0x65, 0x64, 0x1a, 0xda, 0x01, 0x0a, 0x04, 0x53, 0x41, 0x4d, 0x4c, 0x12,
+	0x18, 0x0a, 0x07, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08,
+	0x52, 0x07, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x6d,
+	0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6d,
+	0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x12, 0x4b, 0x0a, 0x0b, 0x6c, 0x61, 0x62, 0x65, 0x6c,
+	0x5f, 0x72, 0x75, 0x6c, 0x65, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x2a, 0x2e, 0x73,
+	0x70, 0x65, 0x63, 0x73, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x53,
+	0x70, 0x65, 0x63, 0x2e, 0x53, 0x41, 0x4d, 0x4c, 0x2e, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x52, 0x75,
+	0x6c, 0x65, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x0a, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x52,
+	0x75, 0x6c, 0x65, 0x73, 0x1a, 0x3d, 0x0a, 0x0f, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x52, 0x75, 0x6c,
+	0x65, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a,
+	0x02, 0x38, 0x01, 0x22, 0x51, 0x0a, 0x11, 0x53, 0x41, 0x4d, 0x4c, 0x41, 0x73, 0x73, 0x65, 0x72,
+	0x74, 0x69, 0x6f, 0x6e, 0x53, 0x70, 0x65, 0x63, 0x12, 0x12, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x12, 0x14, 0x0a, 0x05,
+	0x65, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x6d, 0x61,
+	0x69, 0x6c, 0x12, 0x12, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08,
+	0x52, 0x04, 0x75, 0x73, 0x65, 0x64, 0x22, 0x3c, 0x0a, 0x08, 0x55, 0x73, 0x65, 0x72, 0x53, 0x70,
 	0x65, 0x63, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x63, 0x6f, 0x70, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03,
-	0x28, 0x09, 0x52, 0x06, 0x73, 0x63, 0x6f, 0x70, 0x65, 0x73, 0x22, 0x27, 0x0a, 0x0c, 0x49, 0x64,
-	0x65, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x53, 0x70, 0x65, 0x63, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73,
-	0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65,
-	0x72, 0x49, 0x64, 0x22, 0x20, 0x0a, 0x08, 0x49, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x12,
-	0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
-	0x65, 0x6d, 0x61, 0x69, 0x6c, 0x22, 0xcd, 0x01, 0x0a, 0x0d, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63,
-	0x4b, 0x65, 0x79, 0x53, 0x70, 0x65, 0x63, 0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69,
-	0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x09, 0x70, 0x75, 0x62,
-	0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x63, 0x6f, 0x70, 0x65, 0x73,
-	0x18, 0x02, 0x20, 0x03, 0x28, 0x09, 0x52, 0x06, 0x73, 0x63, 0x6f, 0x70, 0x65, 0x73, 0x12, 0x3a,
-	0x0a, 0x0a, 0x65, 0x78, 0x70, 0x69, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x0a,
-	0x65, 0x78, 0x70, 0x69, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1c, 0x0a, 0x09, 0x63, 0x6f,
-	0x6e, 0x66, 0x69, 0x72, 0x6d, 0x65, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x09, 0x63,
-	0x6f, 0x6e, 0x66, 0x69, 0x72, 0x6d, 0x65, 0x64, 0x12, 0x2b, 0x0a, 0x08, 0x69, 0x64, 0x65, 0x6e,
-	0x74, 0x69, 0x74, 0x79, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x73, 0x70, 0x65,
-	0x63, 0x73, 0x2e, 0x49, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x52, 0x08, 0x69, 0x64, 0x65,
-	0x6e, 0x74, 0x69, 0x74, 0x79, 0x22, 0x6c, 0x0a, 0x15, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50,
-	0x6f, 0x6c, 0x69, 0x63, 0x79, 0x55, 0x73, 0x65, 0x72, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x12, 0x37,
-	0x0a, 0x05, 0x75, 0x73, 0x65, 0x72, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x21, 0x2e,
-	0x73, 0x70, 0x65, 0x63, 0x73, 0x2e, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x6f, 0x6c, 0x69,
-	0x63, 0x79, 0x55, 0x73, 0x65, 0x72, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x2e, 0x55, 0x73, 0x65, 0x72,
-	0x52, 0x05, 0x75, 0x73, 0x65, 0x72, 0x73, 0x1a, 0x1a, 0x0a, 0x04, 0x55, 0x73, 0x65, 0x72, 0x12,
-	0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e,
-	0x61, 0x6d, 0x65, 0x22, 0x7e, 0x0a, 0x18, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x6f, 0x6c,
-	0x69, 0x63, 0x79, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x12,
-	0x43, 0x0a, 0x08, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28,
-	0x0b, 0x32, 0x27, 0x2e, 0x73, 0x70, 0x65, 0x63, 0x73, 0x2e, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73,
-	0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x47, 0x72, 0x6f,
-	0x75, 0x70, 0x2e, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x52, 0x08, 0x63, 0x6c, 0x75, 0x73,
-	0x74, 0x65, 0x72, 0x73, 0x1a, 0x1d, 0x0a, 0x07, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x12,
-	0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e,
-	0x61, 0x6d, 0x65, 0x22, 0x90, 0x02, 0x0a, 0x10, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x6f,
-	0x6c, 0x69, 0x63, 0x79, 0x52, 0x75, 0x6c, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x75, 0x73, 0x65, 0x72,
-	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x05, 0x75, 0x73, 0x65, 0x72, 0x73, 0x12, 0x1a,
-	0x0a, 0x08, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09,
-	0x52, 0x08, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x73, 0x12, 0x42, 0x0a, 0x0a, 0x6b, 0x75,
-	0x62, 0x65, 0x72, 0x6e, 0x65, 0x74, 0x65, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22,
-	0x2e, 0x73, 0x70, 0x65, 0x63, 0x73, 0x2e, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x6f, 0x6c,
-	0x69, 0x63, 0x79, 0x52, 0x75, 0x6c, 0x65, 0x2e, 0x4b, 0x75, 0x62, 0x65, 0x72, 0x6e, 0x65, 0x74,
-	0x65, 0x73, 0x52, 0x0a, 0x6b, 0x75, 0x62, 0x65, 0x72, 0x6e, 0x65, 0x74, 0x65, 0x73, 0x1a, 0x85,
-	0x01, 0x0a, 0x0a, 0x4b, 0x75, 0x62, 0x65, 0x72, 0x6e, 0x65, 0x74, 0x65, 0x73, 0x12, 0x50, 0x0a,
-	0x0b, 0x69, 0x6d, 0x70, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61, 0x74, 0x65, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x2e, 0x2e, 0x73, 0x70, 0x65, 0x63, 0x73, 0x2e, 0x41, 0x63, 0x63, 0x65, 0x73,
-	0x73, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x52, 0x75, 0x6c, 0x65, 0x2e, 0x4b, 0x75, 0x62, 0x65,
-	0x72, 0x6e, 0x65, 0x74, 0x65, 0x73, 0x2e, 0x49, 0x6d, 0x70, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61,
-	0x74, 0x65, 0x52, 0x0b, 0x69, 0x6d, 0x70, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61, 0x74, 0x65, 0x1a,
-	0x25, 0x0a, 0x0b, 0x49, 0x6d, 0x70, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61, 0x74, 0x65, 0x12, 0x16,
-	0x0a, 0x06, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x06,
-	0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x22, 0xe2, 0x01, 0x0a, 0x10, 0x41, 0x63, 0x63, 0x65, 0x73,
-	0x73, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x54, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x6e,
+	0x28, 0x09, 0x52, 0x06, 0x73, 0x63, 0x6f, 0x70, 0x65, 0x73, 0x12, 0x12, 0x0a, 0x04, 0x72, 0x6f,
+	0x6c, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x72, 0x6f, 0x6c, 0x65, 0x4a, 0x04,
+	0x08, 0x01, 0x10, 0x02, 0x22, 0x27, 0x0a, 0x0c, 0x49, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x79,
+	0x53, 0x70, 0x65, 0x63, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x22, 0x20, 0x0a,
+	0x08, 0x49, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61,
+	0x69, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x22,
+	0xe1, 0x01, 0x0a, 0x0d, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x53, 0x70, 0x65,
+	0x63, 0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79,
+	0x12, 0x16, 0x0a, 0x06, 0x73, 0x63, 0x6f, 0x70, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09,
+	0x52, 0x06, 0x73, 0x63, 0x6f, 0x70, 0x65, 0x73, 0x12, 0x3a, 0x0a, 0x0a, 0x65, 0x78, 0x70, 0x69,
+	0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67,
+	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54,
+	0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x0a, 0x65, 0x78, 0x70, 0x69, 0x72, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1c, 0x0a, 0x09, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x72, 0x6d, 0x65,
+	0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x09, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x72, 0x6d,
+	0x65, 0x64, 0x12, 0x2b, 0x0a, 0x08, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x18, 0x05,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x73, 0x70, 0x65, 0x63, 0x73, 0x2e, 0x49, 0x64, 0x65,
+	0x6e, 0x74, 0x69, 0x74, 0x79, 0x52, 0x08, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x74, 0x79, 0x12,
+	0x12, 0x0a, 0x04, 0x72, 0x6f, 0x6c, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x72,
+	0x6f, 0x6c, 0x65, 0x22, 0xab, 0x01, 0x0a, 0x15, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x6f,
+	0x6c, 0x69, 0x63, 0x79, 0x55, 0x73, 0x65, 0x72, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x12, 0x37, 0x0a,
+	0x05, 0x75, 0x73, 0x65, 0x72, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x21, 0x2e, 0x73,
+	0x70, 0x65, 0x63, 0x73, 0x2e, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x6f, 0x6c, 0x69, 0x63,
+	0x79, 0x55, 0x73, 0x65, 0x72, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52,
+	0x05, 0x75, 0x73, 0x65, 0x72, 0x73, 0x1a, 0x59, 0x0a, 0x04, 0x55, 0x73, 0x65, 0x72, 0x12, 0x12,
+	0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61,
+	0x6d, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x6d, 0x61, 0x74, 0x63, 0x68, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x6d, 0x61, 0x74, 0x63, 0x68, 0x12, 0x27, 0x0a, 0x0f, 0x6c, 0x61, 0x62, 0x65,
+	0x6c, 0x5f, 0x73, 0x65, 0x6c, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28,
+	0x09, 0x52, 0x0e, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x53, 0x65, 0x6c, 0x65, 0x63, 0x74, 0x6f, 0x72,
+	0x73, 0x22, 0x94, 0x01, 0x0a, 0x18, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x6f, 0x6c, 0x69,
+	0x63, 0x79, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x12, 0x43,
+	0x0a, 0x08, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x27, 0x2e, 0x73, 0x70, 0x65, 0x63, 0x73, 0x2e, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50,
+	0x6f, 0x6c, 0x69, 0x63, 0x79, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x47, 0x72, 0x6f, 0x75,
+	0x70, 0x2e, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x52, 0x08, 0x63, 0x6c, 0x75, 0x73, 0x74,
+	0x65, 0x72, 0x73, 0x1a, 0x33, 0x0a, 0x07, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x12, 0x12,
+	0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61,
+	0x6d, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x6d, 0x61, 0x74, 0x63, 0x68, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x6d, 0x61, 0x74, 0x63, 0x68, 0x22, 0xa4, 0x02, 0x0a, 0x10, 0x41, 0x63, 0x63,
+	0x65, 0x73, 0x73, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x52, 0x75, 0x6c, 0x65, 0x12, 0x14, 0x0a,
+	0x05, 0x75, 0x73, 0x65, 0x72, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x05, 0x75, 0x73,
+	0x65, 0x72, 0x73, 0x12, 0x1a, 0x0a, 0x08, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x73, 0x18,
+	0x02, 0x20, 0x03, 0x28, 0x09, 0x52, 0x08, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x73, 0x12,
+	0x42, 0x0a, 0x0a, 0x6b, 0x75, 0x62, 0x65, 0x72, 0x6e, 0x65, 0x74, 0x65, 0x73, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x73, 0x70, 0x65, 0x63, 0x73, 0x2e, 0x41, 0x63, 0x63, 0x65,
+	0x73, 0x73, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x52, 0x75, 0x6c, 0x65, 0x2e, 0x4b, 0x75, 0x62,
+	0x65, 0x72, 0x6e, 0x65, 0x74, 0x65, 0x73, 0x52, 0x0a, 0x6b, 0x75, 0x62, 0x65, 0x72, 0x6e, 0x65,
+	0x74, 0x65, 0x73, 0x12, 0x12, 0x0a, 0x04, 0x72, 0x6f, 0x6c, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x04, 0x72, 0x6f, 0x6c, 0x65, 0x1a, 0x85, 0x01, 0x0a, 0x0a, 0x4b, 0x75, 0x62, 0x65,
+	0x72, 0x6e, 0x65, 0x74, 0x65, 0x73, 0x12, 0x50, 0x0a, 0x0b, 0x69, 0x6d, 0x70, 0x65, 0x72, 0x73,
+	0x6f, 0x6e, 0x61, 0x74, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x2e, 0x2e, 0x73, 0x70,
+	0x65, 0x63, 0x73, 0x2e, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79,
+	0x52, 0x75, 0x6c, 0x65, 0x2e, 0x4b, 0x75, 0x62, 0x65, 0x72, 0x6e, 0x65, 0x74, 0x65, 0x73, 0x2e,
+	0x49, 0x6d, 0x70, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61, 0x74, 0x65, 0x52, 0x0b, 0x69, 0x6d, 0x70,
+	0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61, 0x74, 0x65, 0x1a, 0x25, 0x0a, 0x0b, 0x49, 0x6d, 0x70, 0x65,
+	0x72, 0x73, 0x6f, 0x6e, 0x61, 0x74, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x67, 0x72, 0x6f, 0x75, 0x70,
+	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x06, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x22,
+	0x89, 0x05, 0x0a, 0x10, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79,
+	0x54, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x30, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x73, 0x70, 0x65, 0x63, 0x73, 0x2e, 0x41,
+	0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x54, 0x65, 0x73, 0x74, 0x2e,
+	0x55, 0x73, 0x65, 0x72, 0x52, 0x04, 0x75, 0x73, 0x65, 0x72, 0x12, 0x39, 0x0a, 0x07, 0x63, 0x6c,
+	0x75, 0x73, 0x74, 0x65, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x73, 0x70,
+	0x65, 0x63, 0x73, 0x2e, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79,
+	0x54, 0x65, 0x73, 0x74, 0x2e, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x52, 0x07, 0x63, 0x6c,
+	0x75, 0x73, 0x74, 0x65, 0x72, 0x12, 0x3c, 0x0a, 0x08, 0x65, 0x78, 0x70, 0x65, 0x63, 0x74, 0x65,
+	0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x73, 0x70, 0x65, 0x63, 0x73, 0x2e,
+	0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x54, 0x65, 0x73, 0x74,
+	0x2e, 0x45, 0x78, 0x70, 0x65, 0x63, 0x74, 0x65, 0x64, 0x52, 0x08, 0x65, 0x78, 0x70, 0x65, 0x63,
+	0x74, 0x65, 0x64, 0x1a, 0xfc, 0x01, 0x0a, 0x08, 0x45, 0x78, 0x70, 0x65, 0x63, 0x74, 0x65, 0x64,
+	0x12, 0x4b, 0x0a, 0x0a, 0x6b, 0x75, 0x62, 0x65, 0x72, 0x6e, 0x65, 0x74, 0x65, 0x73, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x2b, 0x2e, 0x73, 0x70, 0x65, 0x63, 0x73, 0x2e, 0x41, 0x63, 0x63,
+	0x65, 0x73, 0x73, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x54, 0x65, 0x73, 0x74, 0x2e, 0x45, 0x78,
+	0x70, 0x65, 0x63, 0x74, 0x65, 0x64, 0x2e, 0x4b, 0x75, 0x62, 0x65, 0x72, 0x6e, 0x65, 0x74, 0x65,
+	0x73, 0x52, 0x0a, 0x6b, 0x75, 0x62, 0x65, 0x72, 0x6e, 0x65, 0x74, 0x65, 0x73, 0x12, 0x12, 0x0a,
+	0x04, 0x72, 0x6f, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x72, 0x6f, 0x6c,
+	0x65, 0x1a, 0x8e, 0x01, 0x0a, 0x0a, 0x4b, 0x75, 0x62, 0x65, 0x72, 0x6e, 0x65, 0x74, 0x65, 0x73,
+	0x12, 0x59, 0x0a, 0x0b, 0x69, 0x6d, 0x70, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61, 0x74, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x37, 0x2e, 0x73, 0x70, 0x65, 0x63, 0x73, 0x2e, 0x41, 0x63,
+	0x63, 0x65, 0x73, 0x73, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x54, 0x65, 0x73, 0x74, 0x2e, 0x45,
+	0x78, 0x70, 0x65, 0x63, 0x74, 0x65, 0x64, 0x2e, 0x4b, 0x75, 0x62, 0x65, 0x72, 0x6e, 0x65, 0x74,
+	0x65, 0x73, 0x2e, 0x49, 0x6d, 0x70, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61, 0x74, 0x65, 0x52, 0x0b,
+	0x69, 0x6d, 0x70, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61, 0x74, 0x65, 0x1a, 0x25, 0x0a, 0x0b, 0x49,
+	0x6d, 0x70, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61, 0x74, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x67, 0x72,
+	0x6f, 0x75, 0x70, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x06, 0x67, 0x72, 0x6f, 0x75,
+	0x70, 0x73, 0x1a, 0x97, 0x01, 0x0a, 0x04, 0x55, 0x73, 0x65, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x6e,
 	0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12,
-	0x12, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x75,
-	0x73, 0x65, 0x72, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x12, 0x3c, 0x0a,
-	0x08, 0x65, 0x78, 0x70, 0x65, 0x63, 0x74, 0x65, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32,
-	0x20, 0x2e, 0x73, 0x70, 0x65, 0x63, 0x73, 0x2e, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x6f,
-	0x6c, 0x69, 0x63, 0x79, 0x54, 0x65, 0x73, 0x74, 0x2e, 0x45, 0x78, 0x70, 0x65, 0x63, 0x74, 0x65,
-	0x64, 0x52, 0x08, 0x65, 0x78, 0x70, 0x65, 0x63, 0x74, 0x65, 0x64, 0x1a, 0x4e, 0x0a, 0x08, 0x45,
-	0x78, 0x70, 0x65, 0x63, 0x74, 0x65, 0x64, 0x12, 0x42, 0x0a, 0x1d, 0x6b, 0x75, 0x62, 0x65, 0x72,
-	0x6e, 0x65, 0x74, 0x65, 0x73, 0x5f, 0x69, 0x6d, 0x70, 0x65, 0x72, 0x73, 0x6f, 0x6e, 0x61, 0x74,
-	0x65, 0x5f, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x1b,
-	0x6b, 0x75, 0x62, 0x65, 0x72, 0x6e, 0x65, 0x74, 0x65, 0x73, 0x49, 0x6d, 0x70, 0x65, 0x72, 0x73,
-	0x6f, 0x6e, 0x61, 0x74, 0x65, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x22, 0xcd, 0x03, 0x0a, 0x10,
+	0x40, 0x0a, 0x06, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32,
+	0x28, 0x2e, 0x73, 0x70, 0x65, 0x63, 0x73, 0x2e, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x6f,
+	0x6c, 0x69, 0x63, 0x79, 0x54, 0x65, 0x73, 0x74, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x2e, 0x4c, 0x61,
+	0x62, 0x65, 0x6c, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x06, 0x6c, 0x61, 0x62, 0x65, 0x6c,
+	0x73, 0x1a, 0x39, 0x0a, 0x0b, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79,
+	0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b,
+	0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x1a, 0x1d, 0x0a, 0x07,
+	0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0xcd, 0x03, 0x0a, 0x10,
 	0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x50, 0x6f, 0x6c, 0x69, 0x63, 0x79, 0x53, 0x70, 0x65, 0x63,
 	0x12, 0x48, 0x0a, 0x0b, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x18,
 	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x73, 0x70, 0x65, 0x63, 0x73, 0x2e, 0x41, 0x63,
@@ -1108,50 +1574,65 @@ func file_omni_specs_auth_proto_rawDescGZIP() []byte {
 	return file_omni_specs_auth_proto_rawDescData
 }
 
-var file_omni_specs_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
+var file_omni_specs_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
 var file_omni_specs_auth_proto_goTypes = []interface{}{
-	(*AuthConfigSpec)(nil),                          // 0: specs.AuthConfigSpec
-	(*UserSpec)(nil),                                // 1: specs.UserSpec
-	(*IdentitySpec)(nil),                            // 2: specs.IdentitySpec
-	(*Identity)(nil),                                // 3: specs.Identity
-	(*PublicKeySpec)(nil),                           // 4: specs.PublicKeySpec
-	(*AccessPolicyUserGroup)(nil),                   // 5: specs.AccessPolicyUserGroup
-	(*AccessPolicyClusterGroup)(nil),                // 6: specs.AccessPolicyClusterGroup
-	(*AccessPolicyRule)(nil),                        // 7: specs.AccessPolicyRule
-	(*AccessPolicyTest)(nil),                        // 8: specs.AccessPolicyTest
-	(*AccessPolicySpec)(nil),                        // 9: specs.AccessPolicySpec
-	(*AuthConfigSpec_Auth0)(nil),                    // 10: specs.AuthConfigSpec.Auth0
-	(*AuthConfigSpec_Webauthn)(nil),                 // 11: specs.AuthConfigSpec.Webauthn
-	(*AccessPolicyUserGroup_User)(nil),              // 12: specs.AccessPolicyUserGroup.User
-	(*AccessPolicyClusterGroup_Cluster)(nil),        // 13: specs.AccessPolicyClusterGroup.Cluster
-	(*AccessPolicyRule_Kubernetes)(nil),             // 14: specs.AccessPolicyRule.Kubernetes
-	(*AccessPolicyRule_Kubernetes_Impersonate)(nil), // 15: specs.AccessPolicyRule.Kubernetes.Impersonate
-	(*AccessPolicyTest_Expected)(nil),               // 16: specs.AccessPolicyTest.Expected
-	nil,                                             // 17: specs.AccessPolicySpec.UserGroupsEntry
-	nil,                                             // 18: specs.AccessPolicySpec.ClusterGroupsEntry
-	(*timestamppb.Timestamp)(nil),                   // 19: google.protobuf.Timestamp
+	(*AuthConfigSpec)(nil),                                   // 0: specs.AuthConfigSpec
+	(*SAMLAssertionSpec)(nil),                                // 1: specs.SAMLAssertionSpec
+	(*UserSpec)(nil),                                         // 2: specs.UserSpec
+	(*IdentitySpec)(nil),                                     // 3: specs.IdentitySpec
+	(*Identity)(nil),                                         // 4: specs.Identity
+	(*PublicKeySpec)(nil),                                    // 5: specs.PublicKeySpec
+	(*AccessPolicyUserGroup)(nil),                            // 6: specs.AccessPolicyUserGroup
+	(*AccessPolicyClusterGroup)(nil),                         // 7: specs.AccessPolicyClusterGroup
+	(*AccessPolicyRule)(nil),                                 // 8: specs.AccessPolicyRule
+	(*AccessPolicyTest)(nil),                                 // 9: specs.AccessPolicyTest
+	(*AccessPolicySpec)(nil),                                 // 10: specs.AccessPolicySpec
+	(*AuthConfigSpec_Auth0)(nil),                             // 11: specs.AuthConfigSpec.Auth0
+	(*AuthConfigSpec_Webauthn)(nil),                          // 12: specs.AuthConfigSpec.Webauthn
+	(*AuthConfigSpec_SAML)(nil),                              // 13: specs.AuthConfigSpec.SAML
+	nil,                                                      // 14: specs.AuthConfigSpec.SAML.LabelRulesEntry
+	(*AccessPolicyUserGroup_User)(nil),                       // 15: specs.AccessPolicyUserGroup.User
+	(*AccessPolicyClusterGroup_Cluster)(nil),                 // 16: specs.AccessPolicyClusterGroup.Cluster
+	(*AccessPolicyRule_Kubernetes)(nil),                      // 17: specs.AccessPolicyRule.Kubernetes
+	(*AccessPolicyRule_Kubernetes_Impersonate)(nil),          // 18: specs.AccessPolicyRule.Kubernetes.Impersonate
+	(*AccessPolicyTest_Expected)(nil),                        // 19: specs.AccessPolicyTest.Expected
+	(*AccessPolicyTest_User)(nil),                            // 20: specs.AccessPolicyTest.User
+	(*AccessPolicyTest_Cluster)(nil),                         // 21: specs.AccessPolicyTest.Cluster
+	(*AccessPolicyTest_Expected_Kubernetes)(nil),             // 22: specs.AccessPolicyTest.Expected.Kubernetes
+	(*AccessPolicyTest_Expected_Kubernetes_Impersonate)(nil), // 23: specs.AccessPolicyTest.Expected.Kubernetes.Impersonate
+	nil,                           // 24: specs.AccessPolicyTest.User.LabelsEntry
+	nil,                           // 25: specs.AccessPolicySpec.UserGroupsEntry
+	nil,                           // 26: specs.AccessPolicySpec.ClusterGroupsEntry
+	(*timestamppb.Timestamp)(nil), // 27: google.protobuf.Timestamp
 }
 var file_omni_specs_auth_proto_depIdxs = []int32{
-	10, // 0: specs.AuthConfigSpec.auth0:type_name -> specs.AuthConfigSpec.Auth0
-	11, // 1: specs.AuthConfigSpec.webauthn:type_name -> specs.AuthConfigSpec.Webauthn
-	19, // 2: specs.PublicKeySpec.expiration:type_name -> google.protobuf.Timestamp
-	3,  // 3: specs.PublicKeySpec.identity:type_name -> specs.Identity
-	12, // 4: specs.AccessPolicyUserGroup.users:type_name -> specs.AccessPolicyUserGroup.User
-	13, // 5: specs.AccessPolicyClusterGroup.clusters:type_name -> specs.AccessPolicyClusterGroup.Cluster
-	14, // 6: specs.AccessPolicyRule.kubernetes:type_name -> specs.AccessPolicyRule.Kubernetes
-	16, // 7: specs.AccessPolicyTest.expected:type_name -> specs.AccessPolicyTest.Expected
-	17, // 8: specs.AccessPolicySpec.user_groups:type_name -> specs.AccessPolicySpec.UserGroupsEntry
-	18, // 9: specs.AccessPolicySpec.cluster_groups:type_name -> specs.AccessPolicySpec.ClusterGroupsEntry
-	7,  // 10: specs.AccessPolicySpec.rules:type_name -> specs.AccessPolicyRule
-	8,  // 11: specs.AccessPolicySpec.tests:type_name -> specs.AccessPolicyTest
-	15, // 12: specs.AccessPolicyRule.Kubernetes.impersonate:type_name -> specs.AccessPolicyRule.Kubernetes.Impersonate
-	5,  // 13: specs.AccessPolicySpec.UserGroupsEntry.value:type_name -> specs.AccessPolicyUserGroup
-	6,  // 14: specs.AccessPolicySpec.ClusterGroupsEntry.value:type_name -> specs.AccessPolicyClusterGroup
-	15, // [15:15] is the sub-list for method output_type
-	15, // [15:15] is the sub-list for method input_type
-	15, // [15:15] is the sub-list for extension type_name
-	15, // [15:15] is the sub-list for extension extendee
-	0,  // [0:15] is the sub-list for field type_name
+	11, // 0: specs.AuthConfigSpec.auth0:type_name -> specs.AuthConfigSpec.Auth0
+	12, // 1: specs.AuthConfigSpec.webauthn:type_name -> specs.AuthConfigSpec.Webauthn
+	13, // 2: specs.AuthConfigSpec.saml:type_name -> specs.AuthConfigSpec.SAML
+	27, // 3: specs.PublicKeySpec.expiration:type_name -> google.protobuf.Timestamp
+	4,  // 4: specs.PublicKeySpec.identity:type_name -> specs.Identity
+	15, // 5: specs.AccessPolicyUserGroup.users:type_name -> specs.AccessPolicyUserGroup.User
+	16, // 6: specs.AccessPolicyClusterGroup.clusters:type_name -> specs.AccessPolicyClusterGroup.Cluster
+	17, // 7: specs.AccessPolicyRule.kubernetes:type_name -> specs.AccessPolicyRule.Kubernetes
+	20, // 8: specs.AccessPolicyTest.user:type_name -> specs.AccessPolicyTest.User
+	21, // 9: specs.AccessPolicyTest.cluster:type_name -> specs.AccessPolicyTest.Cluster
+	19, // 10: specs.AccessPolicyTest.expected:type_name -> specs.AccessPolicyTest.Expected
+	25, // 11: specs.AccessPolicySpec.user_groups:type_name -> specs.AccessPolicySpec.UserGroupsEntry
+	26, // 12: specs.AccessPolicySpec.cluster_groups:type_name -> specs.AccessPolicySpec.ClusterGroupsEntry
+	8,  // 13: specs.AccessPolicySpec.rules:type_name -> specs.AccessPolicyRule
+	9,  // 14: specs.AccessPolicySpec.tests:type_name -> specs.AccessPolicyTest
+	14, // 15: specs.AuthConfigSpec.SAML.label_rules:type_name -> specs.AuthConfigSpec.SAML.LabelRulesEntry
+	18, // 16: specs.AccessPolicyRule.Kubernetes.impersonate:type_name -> specs.AccessPolicyRule.Kubernetes.Impersonate
+	22, // 17: specs.AccessPolicyTest.Expected.kubernetes:type_name -> specs.AccessPolicyTest.Expected.Kubernetes
+	24, // 18: specs.AccessPolicyTest.User.labels:type_name -> specs.AccessPolicyTest.User.LabelsEntry
+	23, // 19: specs.AccessPolicyTest.Expected.Kubernetes.impersonate:type_name -> specs.AccessPolicyTest.Expected.Kubernetes.Impersonate
+	6,  // 20: specs.AccessPolicySpec.UserGroupsEntry.value:type_name -> specs.AccessPolicyUserGroup
+	7,  // 21: specs.AccessPolicySpec.ClusterGroupsEntry.value:type_name -> specs.AccessPolicyClusterGroup
+	22, // [22:22] is the sub-list for method output_type
+	22, // [22:22] is the sub-list for method input_type
+	22, // [22:22] is the sub-list for extension type_name
+	22, // [22:22] is the sub-list for extension extendee
+	0,  // [0:22] is the sub-list for field type_name
 }
 
 func init() { file_omni_specs_auth_proto_init() }
@@ -1173,7 +1654,7 @@ func file_omni_specs_auth_proto_init() {
 			}
 		}
 		file_omni_specs_auth_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserSpec); i {
+			switch v := v.(*SAMLAssertionSpec); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1185,7 +1666,7 @@ func file_omni_specs_auth_proto_init() {
 			}
 		}
 		file_omni_specs_auth_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*IdentitySpec); i {
+			switch v := v.(*UserSpec); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1197,7 +1678,7 @@ func file_omni_specs_auth_proto_init() {
 			}
 		}
 		file_omni_specs_auth_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Identity); i {
+			switch v := v.(*IdentitySpec); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1209,7 +1690,7 @@ func file_omni_specs_auth_proto_init() {
 			}
 		}
 		file_omni_specs_auth_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PublicKeySpec); i {
+			switch v := v.(*Identity); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1221,7 +1702,7 @@ func file_omni_specs_auth_proto_init() {
 			}
 		}
 		file_omni_specs_auth_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AccessPolicyUserGroup); i {
+			switch v := v.(*PublicKeySpec); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1233,7 +1714,7 @@ func file_omni_specs_auth_proto_init() {
 			}
 		}
 		file_omni_specs_auth_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AccessPolicyClusterGroup); i {
+			switch v := v.(*AccessPolicyUserGroup); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1245,7 +1726,7 @@ func file_omni_specs_auth_proto_init() {
 			}
 		}
 		file_omni_specs_auth_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AccessPolicyRule); i {
+			switch v := v.(*AccessPolicyClusterGroup); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1257,7 +1738,7 @@ func file_omni_specs_auth_proto_init() {
 			}
 		}
 		file_omni_specs_auth_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AccessPolicyTest); i {
+			switch v := v.(*AccessPolicyRule); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1269,7 +1750,7 @@ func file_omni_specs_auth_proto_init() {
 			}
 		}
 		file_omni_specs_auth_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AccessPolicySpec); i {
+			switch v := v.(*AccessPolicyTest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1281,7 +1762,7 @@ func file_omni_specs_auth_proto_init() {
 			}
 		}
 		file_omni_specs_auth_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AuthConfigSpec_Auth0); i {
+			switch v := v.(*AccessPolicySpec); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1293,7 +1774,7 @@ func file_omni_specs_auth_proto_init() {
 			}
 		}
 		file_omni_specs_auth_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AuthConfigSpec_Webauthn); i {
+			switch v := v.(*AuthConfigSpec_Auth0); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1305,7 +1786,7 @@ func file_omni_specs_auth_proto_init() {
 			}
 		}
 		file_omni_specs_auth_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AccessPolicyUserGroup_User); i {
+			switch v := v.(*AuthConfigSpec_Webauthn); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1317,19 +1798,7 @@ func file_omni_specs_auth_proto_init() {
 			}
 		}
 		file_omni_specs_auth_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AccessPolicyClusterGroup_Cluster); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_omni_specs_auth_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AccessPolicyRule_Kubernetes); i {
+			switch v := v.(*AuthConfigSpec_SAML); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1341,7 +1810,7 @@ func file_omni_specs_auth_proto_init() {
 			}
 		}
 		file_omni_specs_auth_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AccessPolicyRule_Kubernetes_Impersonate); i {
+			switch v := v.(*AccessPolicyUserGroup_User); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1353,7 +1822,91 @@ func file_omni_specs_auth_proto_init() {
 			}
 		}
 		file_omni_specs_auth_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AccessPolicyClusterGroup_Cluster); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_omni_specs_auth_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AccessPolicyRule_Kubernetes); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_omni_specs_auth_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AccessPolicyRule_Kubernetes_Impersonate); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_omni_specs_auth_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*AccessPolicyTest_Expected); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_omni_specs_auth_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AccessPolicyTest_User); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_omni_specs_auth_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AccessPolicyTest_Cluster); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_omni_specs_auth_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AccessPolicyTest_Expected_Kubernetes); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_omni_specs_auth_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AccessPolicyTest_Expected_Kubernetes_Impersonate); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1371,7 +1924,7 @@ func file_omni_specs_auth_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_omni_specs_auth_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   19,
+			NumMessages:   27,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
