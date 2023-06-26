@@ -34,7 +34,6 @@ require (
 	github.com/stretchr/testify v1.8.3
 	github.com/xlab/treeprint v1.2.0
 	go.uber.org/zap v1.24.0
-	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1
 	golang.org/x/term v0.8.0
 	google.golang.org/grpc v1.55.0
 	google.golang.org/protobuf v1.30.0

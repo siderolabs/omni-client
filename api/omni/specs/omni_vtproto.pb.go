@@ -372,6 +372,9 @@ func (this *MachineStatusSpec) EqualVT(that *MachineStatusSpec) bool {
 	if !this.PlatformMetadata.EqualVT(that.PlatformMetadata) {
 		return false
 	}
+	if this.InitialLabelsLoaded != that.InitialLabelsLoaded {
+		return false
+	}
 	return string(this.unknownFields) == string(that.unknownFields)
 }
 
@@ -1963,6 +1966,16 @@ func (m *MachineStatusSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 	if m.unknownFields != nil {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
+	}
+	if m.InitialLabelsLoaded {
+		i--
+		if m.InitialLabelsLoaded {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x60
 	}
 	if m.PlatformMetadata != nil {
 		size, err := m.PlatformMetadata.MarshalToSizedBufferVT(dAtA[:i])
@@ -4298,6 +4311,9 @@ func (m *MachineStatusSpec) SizeVT() (n int) {
 	if m.PlatformMetadata != nil {
 		l = m.PlatformMetadata.SizeVT()
 		n += 1 + l + sov(uint64(l))
+	}
+	if m.InitialLabelsLoaded {
+		n += 2
 	}
 	n += len(m.unknownFields)
 	return n
@@ -6969,6 +6985,26 @@ func (m *MachineStatusSpec) UnmarshalVT(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		case 12:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field InitialLabelsLoaded", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.InitialLabelsLoaded = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skip(dAtA[iNdEx:])

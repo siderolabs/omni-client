@@ -159,6 +159,9 @@ message MachineStatusSpec {
 
   // Platform-specific information.
   PlatformMetadata platform_metadata = 11;
+
+  // InitialLabelLoaded is the flag that makes machine status controller pull initial machine labels from meta only once.
+  bool initial_labels_loaded = 12;
 }
 
 // TalosConfigSpec describes a Talos cluster config.

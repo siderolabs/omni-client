@@ -55,8 +55,8 @@ func (CurrentUserExtension) ResourceDefinition() meta.ResourceDefinitionSpec {
 				JSONPath: "{.identity}",
 			},
 			{
-				Name:     "Scopes",
-				JSONPath: "{.scopes}",
+				Name:     "Role",
+				JSONPath: "{.role}",
 			},
 		},
 	}

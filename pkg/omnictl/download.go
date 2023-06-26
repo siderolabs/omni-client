@@ -6,6 +6,7 @@ package omnictl
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -32,6 +33,7 @@ type downloadFlags struct {
 	architecture string
 
 	output string
+	labels []string
 }
 
 var downloadCmdFlags downloadFlags
@@ -39,6 +41,7 @@ var downloadCmdFlags downloadFlags
 func init() {
 	downloadCmd.Flags().StringVar(&downloadCmdFlags.architecture, "arch", "amd64", "Image architecture to download (amd64, arm64)")
 	downloadCmd.Flags().StringVar(&downloadCmdFlags.output, "output", ".", "Output file or directory, defaults to current working directory")
+	downloadCmd.Flags().StringArrayVar(&downloadCmdFlags.labels, "initial-labels", nil, "Bake initial labels into the generated installation media")
 
 	RootCmd.AddCommand(downloadCmd)
 }
@@ -212,6 +215,20 @@ func createRequest(ctx context.Context, client *client.Client, image *omni.Insta
 		return nil, err
 	}
 
+	if downloadCmdFlags.labels != nil {
+		var labels []byte
+
+		labels, err = getMachineLabels()
+		if err != nil {
+			return nil, err
+		}
+
+		query := u.Query()
+		query.Add("initialLabels", string(labels))
+
+		u.RawQuery = query.Encode()
+	}
+
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u.String(), nil)
 	if err != nil {
 		return nil, err
@@ -254,6 +271,27 @@ func signRequest(req *http.Request) error {
 	}
 
 	return msg.Sign(identity, signer)
+}
+
+func getMachineLabels() ([]byte, error) {
+	labels := map[string]string{}
+
+	for _, l := range downloadCmdFlags.labels {
+		parts := strings.Split(l, "=")
+		if len(parts) > 2 {
+			return nil, fmt.Errorf("malformed label %s", l)
+		}
+
+		value := ""
+
+		if len(parts) > 1 {
+			value = parts[1]
+		}
+
+		labels[parts[0]] = value
+	}
+
+	return json.Marshal(labels)
 }
 
 func currentConfigCtx() (name string, ctx *config.Context, err error) {

@@ -9,4 +9,6 @@ import "github.com/siderolabs/omni-client/pkg/omni/resources/registry"
 
 func init() {
 	registry.MustRegisterResource(CurrentUserType, &CurrentUser{})
+	registry.MustRegisterResource(ClusterPermissionsType, &ClusterPermissions{})
+	registry.MustRegisterResource(PermissionsType, &Permissions{})
 }
