@@ -87,9 +87,11 @@ func deleteResources(cmd *cobra.Command, args []string) func(ctx context.Context
 		// set up a watch for all resources of kind
 		watchCh := make(chan state.Event)
 
-		err = st.WatchKind(ctx, resource.NewMetadata(deleteCmdFlags.namespace, rd.TypedSpec().Type, "", resource.VersionUndefined), watchCh, state.WithBootstrapContents(true))
-		if err != nil {
-			return err
+		for _, resourceID := range resourceIDs {
+			err = st.Watch(ctx, resource.NewMetadata(deleteCmdFlags.namespace, rd.TypedSpec().Type, resourceID, resource.VersionUndefined), watchCh)
+			if err != nil {
+				return err
+			}
 		}
 
 		resourceIDsLeft := map[resource.ID]struct{}{}
