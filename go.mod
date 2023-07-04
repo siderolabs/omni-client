@@ -16,7 +16,7 @@ require (
 	github.com/ProtonMail/gopenpgp/v2 v2.7.1
 	github.com/adrg/xdg v0.4.0
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cosi-project/runtime v0.3.1-alpha.2.0.20230511165115-82b69d862a7a
+	github.com/cosi-project/runtime v0.3.1-alpha.5
 	github.com/fatih/color v1.15.0
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.2
@@ -29,13 +29,13 @@ require (
 	github.com/siderolabs/gen v0.4.5
 	github.com/siderolabs/go-api-signature v0.2.5-0.20230526232456-a034e9ff315b
 	github.com/siderolabs/go-kubeconfig v0.1.0
-	github.com/siderolabs/talos/pkg/machinery v1.4.5
+	github.com/siderolabs/talos/pkg/machinery v1.5.0-alpha.1
 	github.com/spf13/cobra v1.7.0
-	github.com/stretchr/testify v1.8.3
+	github.com/stretchr/testify v1.8.4
 	github.com/xlab/treeprint v1.2.0
 	go.uber.org/zap v1.24.0
 	golang.org/x/term v0.8.0
-	google.golang.org/grpc v1.55.0
+	google.golang.org/grpc v1.56.1
 	google.golang.org/protobuf v1.30.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/client-go v0.27.1
@@ -59,14 +59,14 @@ require (
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/imdario/mergo v0.3.6 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/josharian/native v1.0.0 // indirect
-	github.com/jsimonetti/rtnetlink v1.3.1 // indirect
+	github.com/josharian/native v1.1.0 // indirect
+	github.com/jsimonetti/rtnetlink v1.3.3 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mdlayher/ethtool v0.0.0-20221212131811-ba3b4bc2e02c // indirect
-	github.com/mdlayher/genetlink v1.3.1 // indirect
-	github.com/mdlayher/netlink v1.7.1 // indirect
-	github.com/mdlayher/socket v0.4.0 // indirect
+	github.com/mdlayher/ethtool v0.1.0 // indirect
+	github.com/mdlayher/genetlink v1.3.2 // indirect
+	github.com/mdlayher/netlink v1.7.2 // indirect
+	github.com/mdlayher/socket v0.4.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/opencontainers/runtime-spec v1.0.3-0.20210326190908-1c3f411f0417 // indirect
@@ -77,7 +77,6 @@ require (
 	github.com/ryanuber/go-glob v1.0.0 // indirect
 	github.com/siderolabs/crypto v0.4.0 // indirect
 	github.com/siderolabs/go-blockdevice v0.4.5 // indirect
-	github.com/siderolabs/go-debug v0.2.2 // indirect
 	github.com/siderolabs/go-pointer v1.0.0 // indirect
 	github.com/siderolabs/net v0.4.0 // indirect
 	github.com/siderolabs/protoenc v0.2.0 // indirect
@@ -86,13 +85,15 @@ require (
 	go.uber.org/multierr v1.8.0 // indirect
 	golang.org/x/crypto v0.8.0 // indirect
 	golang.org/x/net v0.9.0 // indirect
-	golang.org/x/oauth2 v0.6.0 // indirect
+	golang.org/x/oauth2 v0.7.0 // indirect
 	golang.org/x/sync v0.2.0 // indirect
-	golang.org/x/sys v0.8.0 // indirect
+	golang.org/x/sys v0.9.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
+	google.golang.org/genproto v0.0.0-20230526203410-71b5a4ffd15e // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20230525234035-dd9d682886f9 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230530153820-e85fd2cbaebc // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	k8s.io/apimachinery v0.27.1 // indirect

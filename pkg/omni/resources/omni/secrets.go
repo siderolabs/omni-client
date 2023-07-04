@@ -12,8 +12,7 @@ import (
 	"github.com/cosi-project/runtime/pkg/resource/meta"
 	"github.com/cosi-project/runtime/pkg/resource/protobuf"
 	"github.com/cosi-project/runtime/pkg/resource/typed"
-	"github.com/siderolabs/talos/pkg/machinery/config/types/v1alpha1/generate"
-	"github.com/siderolabs/talos/pkg/machinery/role"
+	"github.com/siderolabs/talos/pkg/machinery/config/generate/secrets"
 
 	"github.com/siderolabs/omni-client/api/omni/specs"
 	"github.com/siderolabs/omni-client/pkg/omni/resources"
@@ -54,25 +53,15 @@ func (ClusterSecretsExtension) ResourceDefinition() meta.ResourceDefinitionSpec 
 }
 
 // ToSecretsBundle decodes the resource into generate.SecretsBundle resource.
-func ToSecretsBundle(secrets *ClusterSecrets) (*generate.SecretsBundle, error) {
-	secretBundle := &generate.SecretsBundle{}
+func ToSecretsBundle(clusterSecrets *ClusterSecrets) (*secrets.Bundle, error) {
+	secretBundle := &secrets.Bundle{}
 
-	err := json.Unmarshal(secrets.TypedSpec().Value.Data, secretBundle)
+	err := json.Unmarshal(clusterSecrets.TypedSpec().Value.Data, secretBundle)
 	if err != nil {
 		return nil, err
 	}
 
-	secretBundle.Clock = generate.NewClock()
+	secretBundle.Clock = secrets.NewFixedClock(time.Now())
 
-	secretBundle.Certs.Admin, err = generate.NewAdminCertificateAndKey(
-		secretBundle.Clock.Now(),
-		secretBundle.Certs.OS,
-		role.All,
-		time.Hour*24*365*5)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return secretBundle, nil
+	return secretBundle, err
 }
