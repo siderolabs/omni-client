@@ -210,9 +210,12 @@ func init() {
 	serviceAccountCmd.AddCommand(serviceAccountDestroyCmd)
 	serviceAccountCmd.AddCommand(serviceAccountRenewCmd)
 
+	roleFlag := "role"
+	useUserRoleFlag := "use-user-role"
+
 	serviceAccountCreateCmd.Flags().DurationVarP(&serviceAccountCreateFlags.ttl, "ttl", "t", 365*24*time.Hour, "TTL for the service account key")
-	serviceAccountCreateCmd.Flags().StringVarP(&serviceAccountCreateFlags.role, "role", "r", "", "role of the service account. only used when --set-role-from-user=false")
-	serviceAccountCreateCmd.Flags().BoolVarP(&serviceAccountCreateFlags.useUserRole, "use-user-role", "u", true, "use the role of the creating user. if true, --role is ignored")
+	serviceAccountCreateCmd.Flags().StringVarP(&serviceAccountCreateFlags.role, roleFlag, "r", "", "role of the service account. only used when --"+useUserRoleFlag+"=false")
+	serviceAccountCreateCmd.Flags().BoolVarP(&serviceAccountCreateFlags.useUserRole, useUserRoleFlag, "u", true, "use the role of the creating user. if true, --"+roleFlag+" is ignored")
 
 	serviceAccountRenewCmd.Flags().DurationVarP(&serviceAccountRenewFlags.ttl, "ttl", "t", 365*24*time.Hour, "TTL for the service account key")
 }
