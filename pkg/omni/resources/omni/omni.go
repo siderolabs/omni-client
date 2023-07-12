@@ -39,6 +39,7 @@ func init() {
 	registry.MustRegisterResource(MachineStatusLinkType, &MachineStatusLink{})
 	registry.MustRegisterResource(LoadBalancerConfigType, &LoadBalancerConfig{})
 	registry.MustRegisterResource(LoadBalancerStatusType, &LoadBalancerStatus{})
+	registry.MustRegisterResource(OngoingTaskType, &OngoingTask{})
 	registry.MustRegisterResource(RedactedClusterMachineConfigType, &RedactedClusterMachineConfig{})
 	registry.MustRegisterResource(TalosConfigType, &TalosConfig{})
 	registry.MustRegisterResource(TalosVersionType, &TalosVersion{})

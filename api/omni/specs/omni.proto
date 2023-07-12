@@ -554,3 +554,16 @@ message ClusterDestroyStatusSpec {
   // Phase describes the current destroy phase.
   string phase = 1;
 }
+
+// OngoingTaskSpec describes any ongoing tasks.
+message OngoingTaskSpec {
+  // Title of the ongoing task.
+  string title = 1;
+
+  // Details contains the detailed task description.
+  oneof details {
+    TalosUpgradeStatusSpec talos_upgrade = 2;
+    KubernetesUpgradeStatusSpec kubernetes_upgrade = 3;
+    ClusterDestroyStatusSpec destroy = 4;
+  }
+}
