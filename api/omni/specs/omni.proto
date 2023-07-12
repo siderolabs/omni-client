@@ -178,6 +178,11 @@ message TalosConfigSpec {
 
 // Cluster describes a Talos cluster.
 message ClusterSpec {
+  message Features {
+    // EnableWorkloadProxy enables workload proxy.
+    bool enable_workload_proxy = 1;
+  }
+
   // InstallImage the installer image to use.
   string install_image = 1 [deprecated = true];
 
@@ -186,6 +191,9 @@ message ClusterSpec {
 
   // TalosVersion cluster wide Talos version.
   string talos_version = 3;
+
+  // Features are the cluster features.
+  Features features = 4;
 }
 
 // ClusterMachineSpec describes a machine attached to a Cluster.

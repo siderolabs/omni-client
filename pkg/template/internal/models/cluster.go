@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/go-version"
 	"github.com/siderolabs/gen/pair"
 
+	"github.com/siderolabs/omni-client/api/omni/specs"
 	"github.com/siderolabs/omni-client/pkg/constants"
 	"github.com/siderolabs/omni-client/pkg/omni/resources"
 	"github.com/siderolabs/omni-client/pkg/omni/resources/omni"
@@ -23,7 +24,7 @@ import (
 const KindCluster = "Cluster"
 
 // Cluster is a top-level template object.
-type Cluster struct {
+type Cluster struct { //nolint:govet
 	Meta `yaml:",inline"`
 
 	// Name is the name of the cluster.
@@ -38,8 +39,17 @@ type Cluster struct {
 	// Talos settings.
 	Talos TalosCluster `yaml:"talos"`
 
+	// Features settings.
+	Features Features `yaml:"features"`
+
 	// Cluster-wide patches.
 	Patches PatchList `yaml:"patches"`
+}
+
+// Features is a cluster features setting.
+type Features struct {
+	// EnableWorkloadProxy enables workload proxy.
+	EnableWorkloadProxy bool `yaml:"enableWorkloadProxy"`
 }
 
 // KubernetesCluster is a Kubernetes cluster settings.
@@ -131,6 +141,10 @@ func (cluster *Cluster) Translate(TranslateContext) ([]resource.Resource, error)
 
 	for key, value := range cluster.Labels {
 		clusterResource.Metadata().Labels().Set(key, value)
+	}
+
+	clusterResource.TypedSpec().Value.Features = &specs.ClusterSpec_Features{
+		EnableWorkloadProxy: cluster.Features.EnableWorkloadProxy,
 	}
 
 	clusterResource.TypedSpec().Value.KubernetesVersion = strings.TrimLeft(cluster.Kubernetes.Version, "v")

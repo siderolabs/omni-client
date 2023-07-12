@@ -11,6 +11,8 @@ spec:
     installimage: ""
     kubernetesversion: 1.18.2
     talosversion: 1.3.0
+    features:
+        enableworkloadproxy: false
 ---
 metadata:
     namespace: default
