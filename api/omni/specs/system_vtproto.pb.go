@@ -19,6 +19,43 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+func (m *DBVersionSpec) CloneVT() *DBVersionSpec {
+	if m == nil {
+		return (*DBVersionSpec)(nil)
+	}
+	r := &DBVersionSpec{
+		Version: m.Version,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *DBVersionSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *SysVersionSpec) CloneVT() *SysVersionSpec {
+	if m == nil {
+		return (*SysVersionSpec)(nil)
+	}
+	r := &SysVersionSpec{
+		BackendVersion: m.BackendVersion,
+		InstanceName:   m.InstanceName,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *SysVersionSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
 func (this *DBVersionSpec) EqualVT(that *DBVersionSpec) bool {
 	if this == that {
 		return true

@@ -20,6 +20,99 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+func (m *SiderolinkConfigSpec) CloneVT() *SiderolinkConfigSpec {
+	if m == nil {
+		return (*SiderolinkConfigSpec)(nil)
+	}
+	r := &SiderolinkConfigSpec{
+		PrivateKey:         m.PrivateKey,
+		PublicKey:          m.PublicKey,
+		WireguardEndpoint:  m.WireguardEndpoint,
+		ApiEndpoint:        m.ApiEndpoint,
+		Subnet:             m.Subnet,
+		ServerAddress:      m.ServerAddress,
+		JoinToken:          m.JoinToken,
+		AdvertisedEndpoint: m.AdvertisedEndpoint,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *SiderolinkConfigSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *SiderolinkSpec) CloneVT() *SiderolinkSpec {
+	if m == nil {
+		return (*SiderolinkSpec)(nil)
+	}
+	r := &SiderolinkSpec{
+		NodeSubnet:    m.NodeSubnet,
+		NodePublicKey: m.NodePublicKey,
+		LastEndpoint:  m.LastEndpoint,
+		Connected:     m.Connected,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *SiderolinkSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *SiderolinkCounterSpec) CloneVT() *SiderolinkCounterSpec {
+	if m == nil {
+		return (*SiderolinkCounterSpec)(nil)
+	}
+	r := &SiderolinkCounterSpec{
+		BytesReceived: m.BytesReceived,
+		BytesSent:     m.BytesSent,
+	}
+	if rhs := m.LastAlive; rhs != nil {
+		if vtpb, ok := interface{}(rhs).(interface{ CloneVT() *timestamppb.Timestamp }); ok {
+			r.LastAlive = vtpb.CloneVT()
+		} else {
+			r.LastAlive = proto.Clone(rhs).(*timestamppb.Timestamp)
+		}
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *SiderolinkCounterSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ConnectionParamsSpec) CloneVT() *ConnectionParamsSpec {
+	if m == nil {
+		return (*ConnectionParamsSpec)(nil)
+	}
+	r := &ConnectionParamsSpec{
+		Args:              m.Args,
+		ApiEndpoint:       m.ApiEndpoint,
+		WireguardEndpoint: m.WireguardEndpoint,
+		JoinToken:         m.JoinToken,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ConnectionParamsSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
 func (this *SiderolinkConfigSpec) EqualVT(that *SiderolinkConfigSpec) bool {
 	if this == that {
 		return true

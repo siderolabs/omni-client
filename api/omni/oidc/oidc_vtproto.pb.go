@@ -20,6 +20,42 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+func (m *AuthenticateRequest) CloneVT() *AuthenticateRequest {
+	if m == nil {
+		return (*AuthenticateRequest)(nil)
+	}
+	r := &AuthenticateRequest{
+		AuthRequestId: m.AuthRequestId,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AuthenticateRequest) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *AuthenticateResponse) CloneVT() *AuthenticateResponse {
+	if m == nil {
+		return (*AuthenticateResponse)(nil)
+	}
+	r := &AuthenticateResponse{
+		RedirectUrl: m.RedirectUrl,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AuthenticateResponse) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
 func (this *AuthenticateRequest) EqualVT(that *AuthenticateRequest) bool {
 	if this == that {
 		return true

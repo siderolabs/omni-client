@@ -20,6 +20,24 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+func (m *Context) CloneVT() *Context {
+	if m == nil {
+		return (*Context)(nil)
+	}
+	r := &Context{
+		Name: m.Name,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *Context) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
 func (this *Context) EqualVT(that *Context) bool {
 	if this == that {
 		return true

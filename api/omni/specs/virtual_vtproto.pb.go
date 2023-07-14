@@ -19,6 +19,77 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+func (m *CurrentUserSpec) CloneVT() *CurrentUserSpec {
+	if m == nil {
+		return (*CurrentUserSpec)(nil)
+	}
+	r := &CurrentUserSpec{
+		Identity: m.Identity,
+		Role:     m.Role,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *CurrentUserSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *PermissionsSpec) CloneVT() *PermissionsSpec {
+	if m == nil {
+		return (*PermissionsSpec)(nil)
+	}
+	r := &PermissionsSpec{
+		CanReadClusters:               m.CanReadClusters,
+		CanCreateClusters:             m.CanCreateClusters,
+		CanManageUsers:                m.CanManageUsers,
+		CanReadMachines:               m.CanReadMachines,
+		CanRemoveMachines:             m.CanRemoveMachines,
+		CanReadMachineLogs:            m.CanReadMachineLogs,
+		CanReadMachineConfigPatches:   m.CanReadMachineConfigPatches,
+		CanManageMachineConfigPatches: m.CanManageMachineConfigPatches,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *PermissionsSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ClusterPermissionsSpec) CloneVT() *ClusterPermissionsSpec {
+	if m == nil {
+		return (*ClusterPermissionsSpec)(nil)
+	}
+	r := &ClusterPermissionsSpec{
+		CanAddMachines:             m.CanAddMachines,
+		CanRemoveMachines:          m.CanRemoveMachines,
+		CanRebootMachines:          m.CanRebootMachines,
+		CanUpdateKubernetes:        m.CanUpdateKubernetes,
+		CanDownloadKubeconfig:      m.CanDownloadKubeconfig,
+		CanSyncKubernetesManifests: m.CanSyncKubernetesManifests,
+		CanUpdateTalos:             m.CanUpdateTalos,
+		CanDownloadTalosconfig:     m.CanDownloadTalosconfig,
+		CanReadConfigPatches:       m.CanReadConfigPatches,
+		CanManageConfigPatches:     m.CanManageConfigPatches,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ClusterPermissionsSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
 func (this *CurrentUserSpec) EqualVT(that *CurrentUserSpec) bool {
 	if this == that {
 		return true

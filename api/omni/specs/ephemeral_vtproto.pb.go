@@ -19,6 +19,26 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+func (m *MachineStatusLinkSpec) CloneVT() *MachineStatusLinkSpec {
+	if m == nil {
+		return (*MachineStatusLinkSpec)(nil)
+	}
+	r := &MachineStatusLinkSpec{
+		MessageStatus:     m.MessageStatus.CloneVT(),
+		SiderolinkCounter: m.SiderolinkCounter.CloneVT(),
+		MachineCreatedAt:  m.MachineCreatedAt,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *MachineStatusLinkSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
 func (this *MachineStatusLinkSpec) EqualVT(that *MachineStatusLinkSpec) bool {
 	if this == that {
 		return true

@@ -20,6 +20,1101 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+func (m *MachineSpec) CloneVT() *MachineSpec {
+	if m == nil {
+		return (*MachineSpec)(nil)
+	}
+	r := &MachineSpec{
+		ManagementAddress: m.ManagementAddress,
+		Connected:         m.Connected,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *MachineSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *MachineStatusSpec_HardwareStatus_Processor) CloneVT() *MachineStatusSpec_HardwareStatus_Processor {
+	if m == nil {
+		return (*MachineStatusSpec_HardwareStatus_Processor)(nil)
+	}
+	r := &MachineStatusSpec_HardwareStatus_Processor{
+		CoreCount:    m.CoreCount,
+		ThreadCount:  m.ThreadCount,
+		Frequency:    m.Frequency,
+		Description:  m.Description,
+		Manufacturer: m.Manufacturer,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *MachineStatusSpec_HardwareStatus_Processor) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *MachineStatusSpec_HardwareStatus_MemoryModule) CloneVT() *MachineStatusSpec_HardwareStatus_MemoryModule {
+	if m == nil {
+		return (*MachineStatusSpec_HardwareStatus_MemoryModule)(nil)
+	}
+	r := &MachineStatusSpec_HardwareStatus_MemoryModule{
+		SizeMb:      m.SizeMb,
+		Description: m.Description,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *MachineStatusSpec_HardwareStatus_MemoryModule) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *MachineStatusSpec_HardwareStatus_BlockDevice) CloneVT() *MachineStatusSpec_HardwareStatus_BlockDevice {
+	if m == nil {
+		return (*MachineStatusSpec_HardwareStatus_BlockDevice)(nil)
+	}
+	r := &MachineStatusSpec_HardwareStatus_BlockDevice{
+		Size:      m.Size,
+		Model:     m.Model,
+		LinuxName: m.LinuxName,
+		Name:      m.Name,
+		Serial:    m.Serial,
+		Uuid:      m.Uuid,
+		Wwid:      m.Wwid,
+		Type:      m.Type,
+		BusPath:   m.BusPath,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *MachineStatusSpec_HardwareStatus_BlockDevice) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *MachineStatusSpec_HardwareStatus) CloneVT() *MachineStatusSpec_HardwareStatus {
+	if m == nil {
+		return (*MachineStatusSpec_HardwareStatus)(nil)
+	}
+	r := &MachineStatusSpec_HardwareStatus{
+		Arch: m.Arch,
+	}
+	if rhs := m.Processors; rhs != nil {
+		tmpContainer := make([]*MachineStatusSpec_HardwareStatus_Processor, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v.CloneVT()
+		}
+		r.Processors = tmpContainer
+	}
+	if rhs := m.MemoryModules; rhs != nil {
+		tmpContainer := make([]*MachineStatusSpec_HardwareStatus_MemoryModule, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v.CloneVT()
+		}
+		r.MemoryModules = tmpContainer
+	}
+	if rhs := m.Blockdevices; rhs != nil {
+		tmpContainer := make([]*MachineStatusSpec_HardwareStatus_BlockDevice, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v.CloneVT()
+		}
+		r.Blockdevices = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *MachineStatusSpec_HardwareStatus) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *MachineStatusSpec_NetworkStatus_NetworkLinkStatus) CloneVT() *MachineStatusSpec_NetworkStatus_NetworkLinkStatus {
+	if m == nil {
+		return (*MachineStatusSpec_NetworkStatus_NetworkLinkStatus)(nil)
+	}
+	r := &MachineStatusSpec_NetworkStatus_NetworkLinkStatus{
+		LinuxName:       m.LinuxName,
+		HardwareAddress: m.HardwareAddress,
+		SpeedMbps:       m.SpeedMbps,
+		LinkUp:          m.LinkUp,
+		Description:     m.Description,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *MachineStatusSpec_NetworkStatus_NetworkLinkStatus) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *MachineStatusSpec_NetworkStatus) CloneVT() *MachineStatusSpec_NetworkStatus {
+	if m == nil {
+		return (*MachineStatusSpec_NetworkStatus)(nil)
+	}
+	r := &MachineStatusSpec_NetworkStatus{
+		Hostname:   m.Hostname,
+		Domainname: m.Domainname,
+	}
+	if rhs := m.Addresses; rhs != nil {
+		tmpContainer := make([]string, len(rhs))
+		copy(tmpContainer, rhs)
+		r.Addresses = tmpContainer
+	}
+	if rhs := m.DefaultGateways; rhs != nil {
+		tmpContainer := make([]string, len(rhs))
+		copy(tmpContainer, rhs)
+		r.DefaultGateways = tmpContainer
+	}
+	if rhs := m.NetworkLinks; rhs != nil {
+		tmpContainer := make([]*MachineStatusSpec_NetworkStatus_NetworkLinkStatus, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v.CloneVT()
+		}
+		r.NetworkLinks = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *MachineStatusSpec_NetworkStatus) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *MachineStatusSpec_PlatformMetadata) CloneVT() *MachineStatusSpec_PlatformMetadata {
+	if m == nil {
+		return (*MachineStatusSpec_PlatformMetadata)(nil)
+	}
+	r := &MachineStatusSpec_PlatformMetadata{
+		Platform:     m.Platform,
+		Hostname:     m.Hostname,
+		Region:       m.Region,
+		Zone:         m.Zone,
+		InstanceType: m.InstanceType,
+		InstanceId:   m.InstanceId,
+		ProviderId:   m.ProviderId,
+		Spot:         m.Spot,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *MachineStatusSpec_PlatformMetadata) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *MachineStatusSpec) CloneVT() *MachineStatusSpec {
+	if m == nil {
+		return (*MachineStatusSpec)(nil)
+	}
+	r := &MachineStatusSpec{
+		TalosVersion:        m.TalosVersion,
+		Hardware:            m.Hardware.CloneVT(),
+		Network:             m.Network.CloneVT(),
+		LastError:           m.LastError,
+		ManagementAddress:   m.ManagementAddress,
+		Connected:           m.Connected,
+		Maintenance:         m.Maintenance,
+		Cluster:             m.Cluster,
+		Role:                m.Role,
+		PlatformMetadata:    m.PlatformMetadata.CloneVT(),
+		InitialLabelsLoaded: m.InitialLabelsLoaded,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *MachineStatusSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *TalosConfigSpec) CloneVT() *TalosConfigSpec {
+	if m == nil {
+		return (*TalosConfigSpec)(nil)
+	}
+	r := &TalosConfigSpec{
+		Ca:  m.Ca,
+		Crt: m.Crt,
+		Key: m.Key,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *TalosConfigSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ClusterSpec_Features) CloneVT() *ClusterSpec_Features {
+	if m == nil {
+		return (*ClusterSpec_Features)(nil)
+	}
+	r := &ClusterSpec_Features{
+		EnableWorkloadProxy: m.EnableWorkloadProxy,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ClusterSpec_Features) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ClusterSpec) CloneVT() *ClusterSpec {
+	if m == nil {
+		return (*ClusterSpec)(nil)
+	}
+	r := &ClusterSpec{
+		InstallImage:      m.InstallImage,
+		KubernetesVersion: m.KubernetesVersion,
+		TalosVersion:      m.TalosVersion,
+		Features:          m.Features.CloneVT(),
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ClusterSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ClusterMachineSpec) CloneVT() *ClusterMachineSpec {
+	if m == nil {
+		return (*ClusterMachineSpec)(nil)
+	}
+	r := &ClusterMachineSpec{
+		KubernetesVersion: m.KubernetesVersion,
+	}
+	if rhs := m.Patches; rhs != nil {
+		tmpContainer := make([]string, len(rhs))
+		copy(tmpContainer, rhs)
+		r.Patches = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ClusterMachineSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ClusterMachineTalosVersionSpec) CloneVT() *ClusterMachineTalosVersionSpec {
+	if m == nil {
+		return (*ClusterMachineTalosVersionSpec)(nil)
+	}
+	r := &ClusterMachineTalosVersionSpec{
+		Version: m.Version,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ClusterMachineTalosVersionSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ClusterMachineConfigSpec) CloneVT() *ClusterMachineConfigSpec {
+	if m == nil {
+		return (*ClusterMachineConfigSpec)(nil)
+	}
+	r := &ClusterMachineConfigSpec{
+		ClusterMachineVersion: m.ClusterMachineVersion,
+		GenerationError:       m.GenerationError,
+	}
+	if rhs := m.Data; rhs != nil {
+		tmpBytes := make([]byte, len(rhs))
+		copy(tmpBytes, rhs)
+		r.Data = tmpBytes
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ClusterMachineConfigSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *RedactedClusterMachineConfigSpec) CloneVT() *RedactedClusterMachineConfigSpec {
+	if m == nil {
+		return (*RedactedClusterMachineConfigSpec)(nil)
+	}
+	r := &RedactedClusterMachineConfigSpec{
+		Data: m.Data,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *RedactedClusterMachineConfigSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ClusterMachineIdentitySpec) CloneVT() *ClusterMachineIdentitySpec {
+	if m == nil {
+		return (*ClusterMachineIdentitySpec)(nil)
+	}
+	r := &ClusterMachineIdentitySpec{
+		NodeIdentity: m.NodeIdentity,
+		EtcdMemberId: m.EtcdMemberId,
+		Nodename:     m.Nodename,
+	}
+	if rhs := m.NodeIps; rhs != nil {
+		tmpContainer := make([]string, len(rhs))
+		copy(tmpContainer, rhs)
+		r.NodeIps = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ClusterMachineIdentitySpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ClusterMachineTemplateSpec) CloneVT() *ClusterMachineTemplateSpec {
+	if m == nil {
+		return (*ClusterMachineTemplateSpec)(nil)
+	}
+	r := &ClusterMachineTemplateSpec{
+		InstallImage:      m.InstallImage,
+		KubernetesVersion: m.KubernetesVersion,
+		InstallDisk:       m.InstallDisk,
+		Patch:             m.Patch,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ClusterMachineTemplateSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ClusterMachineStatusSpec) CloneVT() *ClusterMachineStatusSpec {
+	if m == nil {
+		return (*ClusterMachineStatusSpec)(nil)
+	}
+	r := &ClusterMachineStatusSpec{
+		Ready:             m.Ready,
+		Stage:             m.Stage,
+		ApidAvailable:     m.ApidAvailable,
+		ConfigUpToDate:    m.ConfigUpToDate,
+		LastConfigError:   m.LastConfigError,
+		ManagementAddress: m.ManagementAddress,
+		ConfigApplyStatus: m.ConfigApplyStatus,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ClusterMachineStatusSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *Machines) CloneVT() *Machines {
+	if m == nil {
+		return (*Machines)(nil)
+	}
+	r := &Machines{
+		Total:   m.Total,
+		Healthy: m.Healthy,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *Machines) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ClusterStatusSpec) CloneVT() *ClusterStatusSpec {
+	if m == nil {
+		return (*ClusterStatusSpec)(nil)
+	}
+	r := &ClusterStatusSpec{
+		Available:          m.Available,
+		Machines:           m.Machines.CloneVT(),
+		Phase:              m.Phase,
+		Ready:              m.Ready,
+		KubernetesAPIReady: m.KubernetesAPIReady,
+		ControlplaneReady:  m.ControlplaneReady,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ClusterStatusSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ClusterConfigVersionSpec) CloneVT() *ClusterConfigVersionSpec {
+	if m == nil {
+		return (*ClusterConfigVersionSpec)(nil)
+	}
+	r := &ClusterConfigVersionSpec{
+		Version: m.Version,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ClusterConfigVersionSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ClusterMachineConfigStatusSpec) CloneVT() *ClusterMachineConfigStatusSpec {
+	if m == nil {
+		return (*ClusterMachineConfigStatusSpec)(nil)
+	}
+	r := &ClusterMachineConfigStatusSpec{
+		ClusterMachineConfigVersion: m.ClusterMachineConfigVersion,
+		ClusterMachineVersion:       m.ClusterMachineVersion,
+		ClusterMachineConfigSha256:  m.ClusterMachineConfigSha256,
+		LastConfigError:             m.LastConfigError,
+		TalosVersion:                m.TalosVersion,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ClusterMachineConfigStatusSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ClusterBootstrapStatusSpec) CloneVT() *ClusterBootstrapStatusSpec {
+	if m == nil {
+		return (*ClusterBootstrapStatusSpec)(nil)
+	}
+	r := &ClusterBootstrapStatusSpec{
+		Bootstrapped: m.Bootstrapped,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ClusterBootstrapStatusSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ClusterSecretsSpec) CloneVT() *ClusterSecretsSpec {
+	if m == nil {
+		return (*ClusterSecretsSpec)(nil)
+	}
+	r := &ClusterSecretsSpec{}
+	if rhs := m.Data; rhs != nil {
+		tmpBytes := make([]byte, len(rhs))
+		copy(tmpBytes, rhs)
+		r.Data = tmpBytes
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ClusterSecretsSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *LoadBalancerConfigSpec) CloneVT() *LoadBalancerConfigSpec {
+	if m == nil {
+		return (*LoadBalancerConfigSpec)(nil)
+	}
+	r := &LoadBalancerConfigSpec{
+		BindPort:           m.BindPort,
+		SiderolinkEndpoint: m.SiderolinkEndpoint,
+	}
+	if rhs := m.Endpoints; rhs != nil {
+		tmpContainer := make([]string, len(rhs))
+		copy(tmpContainer, rhs)
+		r.Endpoints = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *LoadBalancerConfigSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *LoadBalancerStatusSpec) CloneVT() *LoadBalancerStatusSpec {
+	if m == nil {
+		return (*LoadBalancerStatusSpec)(nil)
+	}
+	r := &LoadBalancerStatusSpec{
+		Healthy: m.Healthy,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *LoadBalancerStatusSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *KubernetesVersionSpec) CloneVT() *KubernetesVersionSpec {
+	if m == nil {
+		return (*KubernetesVersionSpec)(nil)
+	}
+	r := &KubernetesVersionSpec{
+		Version: m.Version,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *KubernetesVersionSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *TalosVersionSpec) CloneVT() *TalosVersionSpec {
+	if m == nil {
+		return (*TalosVersionSpec)(nil)
+	}
+	r := &TalosVersionSpec{
+		Version: m.Version,
+	}
+	if rhs := m.CompatibleKubernetesVersions; rhs != nil {
+		tmpContainer := make([]string, len(rhs))
+		copy(tmpContainer, rhs)
+		r.CompatibleKubernetesVersions = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *TalosVersionSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *InstallationMediaSpec) CloneVT() *InstallationMediaSpec {
+	if m == nil {
+		return (*InstallationMediaSpec)(nil)
+	}
+	r := &InstallationMediaSpec{
+		Name:         m.Name,
+		Architecture: m.Architecture,
+		Platform:     m.Platform,
+		Type:         m.Type,
+		Board:        m.Board,
+		ContentType:  m.ContentType,
+		Filename:     m.Filename,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *InstallationMediaSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ConfigPatchSpec) CloneVT() *ConfigPatchSpec {
+	if m == nil {
+		return (*ConfigPatchSpec)(nil)
+	}
+	r := &ConfigPatchSpec{
+		Data: m.Data,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ConfigPatchSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *MachineSetSpec) CloneVT() *MachineSetSpec {
+	if m == nil {
+		return (*MachineSetSpec)(nil)
+	}
+	r := &MachineSetSpec{
+		UpdateStrategy: m.UpdateStrategy,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *MachineSetSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *TalosUpgradeStatusSpec) CloneVT() *TalosUpgradeStatusSpec {
+	if m == nil {
+		return (*TalosUpgradeStatusSpec)(nil)
+	}
+	r := &TalosUpgradeStatusSpec{
+		Phase:                 m.Phase,
+		Error:                 m.Error,
+		Step:                  m.Step,
+		Status:                m.Status,
+		LastUpgradeVersion:    m.LastUpgradeVersion,
+		CurrentUpgradeVersion: m.CurrentUpgradeVersion,
+	}
+	if rhs := m.UpgradeVersions; rhs != nil {
+		tmpContainer := make([]string, len(rhs))
+		copy(tmpContainer, rhs)
+		r.UpgradeVersions = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *TalosUpgradeStatusSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *MachineSetStatusSpec) CloneVT() *MachineSetStatusSpec {
+	if m == nil {
+		return (*MachineSetStatusSpec)(nil)
+	}
+	r := &MachineSetStatusSpec{
+		Phase:    m.Phase,
+		Ready:    m.Ready,
+		Error:    m.Error,
+		Machines: m.Machines.CloneVT(),
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *MachineSetStatusSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *MachineSetNodeSpec) CloneVT() *MachineSetNodeSpec {
+	if m == nil {
+		return (*MachineSetNodeSpec)(nil)
+	}
+	r := &MachineSetNodeSpec{}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *MachineSetNodeSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *MachineLabelsSpec) CloneVT() *MachineLabelsSpec {
+	if m == nil {
+		return (*MachineLabelsSpec)(nil)
+	}
+	r := &MachineLabelsSpec{}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *MachineLabelsSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *MachineStatusSnapshotSpec) CloneVT() *MachineStatusSnapshotSpec {
+	if m == nil {
+		return (*MachineStatusSnapshotSpec)(nil)
+	}
+	r := &MachineStatusSnapshotSpec{}
+	if rhs := m.MachineStatus; rhs != nil {
+		if vtpb, ok := interface{}(rhs).(interface {
+			CloneVT() *machine.MachineStatusEvent
+		}); ok {
+			r.MachineStatus = vtpb.CloneVT()
+		} else {
+			r.MachineStatus = proto.Clone(rhs).(*machine.MachineStatusEvent)
+		}
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *MachineStatusSnapshotSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ControlPlaneStatusSpec_Condition) CloneVT() *ControlPlaneStatusSpec_Condition {
+	if m == nil {
+		return (*ControlPlaneStatusSpec_Condition)(nil)
+	}
+	r := &ControlPlaneStatusSpec_Condition{
+		Type:     m.Type,
+		Reason:   m.Reason,
+		Status:   m.Status,
+		Severity: m.Severity,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ControlPlaneStatusSpec_Condition) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ControlPlaneStatusSpec) CloneVT() *ControlPlaneStatusSpec {
+	if m == nil {
+		return (*ControlPlaneStatusSpec)(nil)
+	}
+	r := &ControlPlaneStatusSpec{}
+	if rhs := m.Conditions; rhs != nil {
+		tmpContainer := make([]*ControlPlaneStatusSpec_Condition, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v.CloneVT()
+		}
+		r.Conditions = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ControlPlaneStatusSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ClusterEndpointSpec) CloneVT() *ClusterEndpointSpec {
+	if m == nil {
+		return (*ClusterEndpointSpec)(nil)
+	}
+	r := &ClusterEndpointSpec{}
+	if rhs := m.ManagementAddresses; rhs != nil {
+		tmpContainer := make([]string, len(rhs))
+		copy(tmpContainer, rhs)
+		r.ManagementAddresses = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ClusterEndpointSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *KubernetesStatusSpec_NodeStatus) CloneVT() *KubernetesStatusSpec_NodeStatus {
+	if m == nil {
+		return (*KubernetesStatusSpec_NodeStatus)(nil)
+	}
+	r := &KubernetesStatusSpec_NodeStatus{
+		Nodename:       m.Nodename,
+		KubeletVersion: m.KubeletVersion,
+		Ready:          m.Ready,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *KubernetesStatusSpec_NodeStatus) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *KubernetesStatusSpec_StaticPodStatus) CloneVT() *KubernetesStatusSpec_StaticPodStatus {
+	if m == nil {
+		return (*KubernetesStatusSpec_StaticPodStatus)(nil)
+	}
+	r := &KubernetesStatusSpec_StaticPodStatus{
+		App:     m.App,
+		Version: m.Version,
+		Ready:   m.Ready,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *KubernetesStatusSpec_StaticPodStatus) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *KubernetesStatusSpec_NodeStaticPods) CloneVT() *KubernetesStatusSpec_NodeStaticPods {
+	if m == nil {
+		return (*KubernetesStatusSpec_NodeStaticPods)(nil)
+	}
+	r := &KubernetesStatusSpec_NodeStaticPods{
+		Nodename: m.Nodename,
+	}
+	if rhs := m.StaticPods; rhs != nil {
+		tmpContainer := make([]*KubernetesStatusSpec_StaticPodStatus, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v.CloneVT()
+		}
+		r.StaticPods = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *KubernetesStatusSpec_NodeStaticPods) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *KubernetesStatusSpec) CloneVT() *KubernetesStatusSpec {
+	if m == nil {
+		return (*KubernetesStatusSpec)(nil)
+	}
+	r := &KubernetesStatusSpec{}
+	if rhs := m.Nodes; rhs != nil {
+		tmpContainer := make([]*KubernetesStatusSpec_NodeStatus, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v.CloneVT()
+		}
+		r.Nodes = tmpContainer
+	}
+	if rhs := m.StaticPods; rhs != nil {
+		tmpContainer := make([]*KubernetesStatusSpec_NodeStaticPods, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v.CloneVT()
+		}
+		r.StaticPods = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *KubernetesStatusSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *KubernetesUpgradeStatusSpec) CloneVT() *KubernetesUpgradeStatusSpec {
+	if m == nil {
+		return (*KubernetesUpgradeStatusSpec)(nil)
+	}
+	r := &KubernetesUpgradeStatusSpec{
+		Phase:                 m.Phase,
+		Error:                 m.Error,
+		Step:                  m.Step,
+		Status:                m.Status,
+		LastUpgradeVersion:    m.LastUpgradeVersion,
+		CurrentUpgradeVersion: m.CurrentUpgradeVersion,
+	}
+	if rhs := m.UpgradeVersions; rhs != nil {
+		tmpContainer := make([]string, len(rhs))
+		copy(tmpContainer, rhs)
+		r.UpgradeVersions = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *KubernetesUpgradeStatusSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *KubernetesUpgradeManifestStatusSpec) CloneVT() *KubernetesUpgradeManifestStatusSpec {
+	if m == nil {
+		return (*KubernetesUpgradeManifestStatusSpec)(nil)
+	}
+	r := &KubernetesUpgradeManifestStatusSpec{
+		OutOfSync: m.OutOfSync,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *KubernetesUpgradeManifestStatusSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ClusterDestroyStatusSpec) CloneVT() *ClusterDestroyStatusSpec {
+	if m == nil {
+		return (*ClusterDestroyStatusSpec)(nil)
+	}
+	r := &ClusterDestroyStatusSpec{
+		Phase: m.Phase,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ClusterDestroyStatusSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *OngoingTaskSpec) CloneVT() *OngoingTaskSpec {
+	if m == nil {
+		return (*OngoingTaskSpec)(nil)
+	}
+	r := &OngoingTaskSpec{
+		Title: m.Title,
+	}
+	if m.Details != nil {
+		r.Details = m.Details.(interface {
+			CloneVT() isOngoingTaskSpec_Details
+		}).CloneVT()
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *OngoingTaskSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *OngoingTaskSpec_TalosUpgrade) CloneVT() isOngoingTaskSpec_Details {
+	if m == nil {
+		return (*OngoingTaskSpec_TalosUpgrade)(nil)
+	}
+	r := &OngoingTaskSpec_TalosUpgrade{
+		TalosUpgrade: m.TalosUpgrade.CloneVT(),
+	}
+	return r
+}
+
+func (m *OngoingTaskSpec_KubernetesUpgrade) CloneVT() isOngoingTaskSpec_Details {
+	if m == nil {
+		return (*OngoingTaskSpec_KubernetesUpgrade)(nil)
+	}
+	r := &OngoingTaskSpec_KubernetesUpgrade{
+		KubernetesUpgrade: m.KubernetesUpgrade.CloneVT(),
+	}
+	return r
+}
+
+func (m *OngoingTaskSpec_Destroy) CloneVT() isOngoingTaskSpec_Details {
+	if m == nil {
+		return (*OngoingTaskSpec_Destroy)(nil)
+	}
+	r := &OngoingTaskSpec_Destroy{
+		Destroy: m.Destroy.CloneVT(),
+	}
+	return r
+}
+
 func (this *MachineSpec) EqualVT(that *MachineSpec) bool {
 	if this == that {
 		return true

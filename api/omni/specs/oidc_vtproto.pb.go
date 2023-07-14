@@ -20,6 +20,34 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+func (m *JWTPublicKeySpec) CloneVT() *JWTPublicKeySpec {
+	if m == nil {
+		return (*JWTPublicKeySpec)(nil)
+	}
+	r := &JWTPublicKeySpec{}
+	if rhs := m.PublicKey; rhs != nil {
+		tmpBytes := make([]byte, len(rhs))
+		copy(tmpBytes, rhs)
+		r.PublicKey = tmpBytes
+	}
+	if rhs := m.Expiration; rhs != nil {
+		if vtpb, ok := interface{}(rhs).(interface{ CloneVT() *timestamppb.Timestamp }); ok {
+			r.Expiration = vtpb.CloneVT()
+		} else {
+			r.Expiration = proto.Clone(rhs).(*timestamppb.Timestamp)
+		}
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *JWTPublicKeySpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
 func (this *JWTPublicKeySpec) EqualVT(that *JWTPublicKeySpec) bool {
 	if this == that {
 		return true

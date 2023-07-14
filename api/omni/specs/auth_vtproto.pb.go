@@ -21,6 +21,536 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+func (m *AuthConfigSpec_Auth0) CloneVT() *AuthConfigSpec_Auth0 {
+	if m == nil {
+		return (*AuthConfigSpec_Auth0)(nil)
+	}
+	r := &AuthConfigSpec_Auth0{
+		Enabled:  m.Enabled,
+		Domain:   m.Domain,
+		ClientId: m.ClientId,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AuthConfigSpec_Auth0) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *AuthConfigSpec_Webauthn) CloneVT() *AuthConfigSpec_Webauthn {
+	if m == nil {
+		return (*AuthConfigSpec_Webauthn)(nil)
+	}
+	r := &AuthConfigSpec_Webauthn{
+		Enabled:  m.Enabled,
+		Required: m.Required,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AuthConfigSpec_Webauthn) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *AuthConfigSpec_SAML) CloneVT() *AuthConfigSpec_SAML {
+	if m == nil {
+		return (*AuthConfigSpec_SAML)(nil)
+	}
+	r := &AuthConfigSpec_SAML{
+		Enabled:  m.Enabled,
+		Url:      m.Url,
+		Metadata: m.Metadata,
+	}
+	if rhs := m.LabelRules; rhs != nil {
+		tmpContainer := make(map[string]string, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v
+		}
+		r.LabelRules = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AuthConfigSpec_SAML) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *AuthConfigSpec) CloneVT() *AuthConfigSpec {
+	if m == nil {
+		return (*AuthConfigSpec)(nil)
+	}
+	r := &AuthConfigSpec{
+		Auth0:     m.Auth0.CloneVT(),
+		Webauthn:  m.Webauthn.CloneVT(),
+		Suspended: m.Suspended,
+		Saml:      m.Saml.CloneVT(),
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AuthConfigSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *SAMLAssertionSpec) CloneVT() *SAMLAssertionSpec {
+	if m == nil {
+		return (*SAMLAssertionSpec)(nil)
+	}
+	r := &SAMLAssertionSpec{
+		Email: m.Email,
+		Used:  m.Used,
+	}
+	if rhs := m.Data; rhs != nil {
+		tmpBytes := make([]byte, len(rhs))
+		copy(tmpBytes, rhs)
+		r.Data = tmpBytes
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *SAMLAssertionSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *UserSpec) CloneVT() *UserSpec {
+	if m == nil {
+		return (*UserSpec)(nil)
+	}
+	r := &UserSpec{
+		Role: m.Role,
+	}
+	if rhs := m.Scopes; rhs != nil {
+		tmpContainer := make([]string, len(rhs))
+		copy(tmpContainer, rhs)
+		r.Scopes = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *UserSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *IdentitySpec) CloneVT() *IdentitySpec {
+	if m == nil {
+		return (*IdentitySpec)(nil)
+	}
+	r := &IdentitySpec{
+		UserId: m.UserId,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *IdentitySpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *Identity) CloneVT() *Identity {
+	if m == nil {
+		return (*Identity)(nil)
+	}
+	r := &Identity{
+		Email: m.Email,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *Identity) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *PublicKeySpec) CloneVT() *PublicKeySpec {
+	if m == nil {
+		return (*PublicKeySpec)(nil)
+	}
+	r := &PublicKeySpec{
+		Confirmed: m.Confirmed,
+		Identity:  m.Identity.CloneVT(),
+		Role:      m.Role,
+	}
+	if rhs := m.PublicKey; rhs != nil {
+		tmpBytes := make([]byte, len(rhs))
+		copy(tmpBytes, rhs)
+		r.PublicKey = tmpBytes
+	}
+	if rhs := m.Scopes; rhs != nil {
+		tmpContainer := make([]string, len(rhs))
+		copy(tmpContainer, rhs)
+		r.Scopes = tmpContainer
+	}
+	if rhs := m.Expiration; rhs != nil {
+		if vtpb, ok := interface{}(rhs).(interface{ CloneVT() *timestamppb.Timestamp }); ok {
+			r.Expiration = vtpb.CloneVT()
+		} else {
+			r.Expiration = proto.Clone(rhs).(*timestamppb.Timestamp)
+		}
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *PublicKeySpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *AccessPolicyUserGroup_User) CloneVT() *AccessPolicyUserGroup_User {
+	if m == nil {
+		return (*AccessPolicyUserGroup_User)(nil)
+	}
+	r := &AccessPolicyUserGroup_User{
+		Name:  m.Name,
+		Match: m.Match,
+	}
+	if rhs := m.LabelSelectors; rhs != nil {
+		tmpContainer := make([]string, len(rhs))
+		copy(tmpContainer, rhs)
+		r.LabelSelectors = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AccessPolicyUserGroup_User) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *AccessPolicyUserGroup) CloneVT() *AccessPolicyUserGroup {
+	if m == nil {
+		return (*AccessPolicyUserGroup)(nil)
+	}
+	r := &AccessPolicyUserGroup{}
+	if rhs := m.Users; rhs != nil {
+		tmpContainer := make([]*AccessPolicyUserGroup_User, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v.CloneVT()
+		}
+		r.Users = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AccessPolicyUserGroup) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *AccessPolicyClusterGroup_Cluster) CloneVT() *AccessPolicyClusterGroup_Cluster {
+	if m == nil {
+		return (*AccessPolicyClusterGroup_Cluster)(nil)
+	}
+	r := &AccessPolicyClusterGroup_Cluster{
+		Name:  m.Name,
+		Match: m.Match,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AccessPolicyClusterGroup_Cluster) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *AccessPolicyClusterGroup) CloneVT() *AccessPolicyClusterGroup {
+	if m == nil {
+		return (*AccessPolicyClusterGroup)(nil)
+	}
+	r := &AccessPolicyClusterGroup{}
+	if rhs := m.Clusters; rhs != nil {
+		tmpContainer := make([]*AccessPolicyClusterGroup_Cluster, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v.CloneVT()
+		}
+		r.Clusters = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AccessPolicyClusterGroup) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *AccessPolicyRule_Kubernetes_Impersonate) CloneVT() *AccessPolicyRule_Kubernetes_Impersonate {
+	if m == nil {
+		return (*AccessPolicyRule_Kubernetes_Impersonate)(nil)
+	}
+	r := &AccessPolicyRule_Kubernetes_Impersonate{}
+	if rhs := m.Groups; rhs != nil {
+		tmpContainer := make([]string, len(rhs))
+		copy(tmpContainer, rhs)
+		r.Groups = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AccessPolicyRule_Kubernetes_Impersonate) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *AccessPolicyRule_Kubernetes) CloneVT() *AccessPolicyRule_Kubernetes {
+	if m == nil {
+		return (*AccessPolicyRule_Kubernetes)(nil)
+	}
+	r := &AccessPolicyRule_Kubernetes{
+		Impersonate: m.Impersonate.CloneVT(),
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AccessPolicyRule_Kubernetes) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *AccessPolicyRule) CloneVT() *AccessPolicyRule {
+	if m == nil {
+		return (*AccessPolicyRule)(nil)
+	}
+	r := &AccessPolicyRule{
+		Kubernetes: m.Kubernetes.CloneVT(),
+		Role:       m.Role,
+	}
+	if rhs := m.Users; rhs != nil {
+		tmpContainer := make([]string, len(rhs))
+		copy(tmpContainer, rhs)
+		r.Users = tmpContainer
+	}
+	if rhs := m.Clusters; rhs != nil {
+		tmpContainer := make([]string, len(rhs))
+		copy(tmpContainer, rhs)
+		r.Clusters = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AccessPolicyRule) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *AccessPolicyTest_Expected_Kubernetes_Impersonate) CloneVT() *AccessPolicyTest_Expected_Kubernetes_Impersonate {
+	if m == nil {
+		return (*AccessPolicyTest_Expected_Kubernetes_Impersonate)(nil)
+	}
+	r := &AccessPolicyTest_Expected_Kubernetes_Impersonate{}
+	if rhs := m.Groups; rhs != nil {
+		tmpContainer := make([]string, len(rhs))
+		copy(tmpContainer, rhs)
+		r.Groups = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AccessPolicyTest_Expected_Kubernetes_Impersonate) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *AccessPolicyTest_Expected_Kubernetes) CloneVT() *AccessPolicyTest_Expected_Kubernetes {
+	if m == nil {
+		return (*AccessPolicyTest_Expected_Kubernetes)(nil)
+	}
+	r := &AccessPolicyTest_Expected_Kubernetes{
+		Impersonate: m.Impersonate.CloneVT(),
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AccessPolicyTest_Expected_Kubernetes) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *AccessPolicyTest_Expected) CloneVT() *AccessPolicyTest_Expected {
+	if m == nil {
+		return (*AccessPolicyTest_Expected)(nil)
+	}
+	r := &AccessPolicyTest_Expected{
+		Kubernetes: m.Kubernetes.CloneVT(),
+		Role:       m.Role,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AccessPolicyTest_Expected) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *AccessPolicyTest_User) CloneVT() *AccessPolicyTest_User {
+	if m == nil {
+		return (*AccessPolicyTest_User)(nil)
+	}
+	r := &AccessPolicyTest_User{
+		Name: m.Name,
+	}
+	if rhs := m.Labels; rhs != nil {
+		tmpContainer := make(map[string]string, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v
+		}
+		r.Labels = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AccessPolicyTest_User) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *AccessPolicyTest_Cluster) CloneVT() *AccessPolicyTest_Cluster {
+	if m == nil {
+		return (*AccessPolicyTest_Cluster)(nil)
+	}
+	r := &AccessPolicyTest_Cluster{
+		Name: m.Name,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AccessPolicyTest_Cluster) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *AccessPolicyTest) CloneVT() *AccessPolicyTest {
+	if m == nil {
+		return (*AccessPolicyTest)(nil)
+	}
+	r := &AccessPolicyTest{
+		Name:     m.Name,
+		User:     m.User.CloneVT(),
+		Cluster:  m.Cluster.CloneVT(),
+		Expected: m.Expected.CloneVT(),
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AccessPolicyTest) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *AccessPolicySpec) CloneVT() *AccessPolicySpec {
+	if m == nil {
+		return (*AccessPolicySpec)(nil)
+	}
+	r := &AccessPolicySpec{}
+	if rhs := m.UserGroups; rhs != nil {
+		tmpContainer := make(map[string]*AccessPolicyUserGroup, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v.CloneVT()
+		}
+		r.UserGroups = tmpContainer
+	}
+	if rhs := m.ClusterGroups; rhs != nil {
+		tmpContainer := make(map[string]*AccessPolicyClusterGroup, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v.CloneVT()
+		}
+		r.ClusterGroups = tmpContainer
+	}
+	if rhs := m.Rules; rhs != nil {
+		tmpContainer := make([]*AccessPolicyRule, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v.CloneVT()
+		}
+		r.Rules = tmpContainer
+	}
+	if rhs := m.Tests; rhs != nil {
+		tmpContainer := make([]*AccessPolicyTest, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v.CloneVT()
+		}
+		r.Tests = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *AccessPolicySpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
 func (this *AuthConfigSpec_Auth0) EqualVT(that *AuthConfigSpec_Auth0) bool {
 	if this == that {
 		return true

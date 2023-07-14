@@ -22,6 +22,405 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+func (m *KubeconfigResponse) CloneVT() *KubeconfigResponse {
+	if m == nil {
+		return (*KubeconfigResponse)(nil)
+	}
+	r := &KubeconfigResponse{}
+	if rhs := m.Kubeconfig; rhs != nil {
+		tmpBytes := make([]byte, len(rhs))
+		copy(tmpBytes, rhs)
+		r.Kubeconfig = tmpBytes
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *KubeconfigResponse) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *TalosconfigResponse) CloneVT() *TalosconfigResponse {
+	if m == nil {
+		return (*TalosconfigResponse)(nil)
+	}
+	r := &TalosconfigResponse{}
+	if rhs := m.Talosconfig; rhs != nil {
+		tmpBytes := make([]byte, len(rhs))
+		copy(tmpBytes, rhs)
+		r.Talosconfig = tmpBytes
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *TalosconfigResponse) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *OmniconfigResponse) CloneVT() *OmniconfigResponse {
+	if m == nil {
+		return (*OmniconfigResponse)(nil)
+	}
+	r := &OmniconfigResponse{}
+	if rhs := m.Omniconfig; rhs != nil {
+		tmpBytes := make([]byte, len(rhs))
+		copy(tmpBytes, rhs)
+		r.Omniconfig = tmpBytes
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *OmniconfigResponse) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *MachineLogsRequest) CloneVT() *MachineLogsRequest {
+	if m == nil {
+		return (*MachineLogsRequest)(nil)
+	}
+	r := &MachineLogsRequest{
+		MachineId: m.MachineId,
+		Follow:    m.Follow,
+		TailLines: m.TailLines,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *MachineLogsRequest) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ValidateConfigRequest) CloneVT() *ValidateConfigRequest {
+	if m == nil {
+		return (*ValidateConfigRequest)(nil)
+	}
+	r := &ValidateConfigRequest{
+		Config: m.Config,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ValidateConfigRequest) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *TalosconfigRequest) CloneVT() *TalosconfigRequest {
+	if m == nil {
+		return (*TalosconfigRequest)(nil)
+	}
+	r := &TalosconfigRequest{
+		Admin: m.Admin,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *TalosconfigRequest) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *CreateServiceAccountRequest) CloneVT() *CreateServiceAccountRequest {
+	if m == nil {
+		return (*CreateServiceAccountRequest)(nil)
+	}
+	r := &CreateServiceAccountRequest{
+		ArmoredPgpPublicKey: m.ArmoredPgpPublicKey,
+		UseUserRole:         m.UseUserRole,
+		Role:                m.Role,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *CreateServiceAccountRequest) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *CreateServiceAccountResponse) CloneVT() *CreateServiceAccountResponse {
+	if m == nil {
+		return (*CreateServiceAccountResponse)(nil)
+	}
+	r := &CreateServiceAccountResponse{
+		PublicKeyId: m.PublicKeyId,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *CreateServiceAccountResponse) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *RenewServiceAccountRequest) CloneVT() *RenewServiceAccountRequest {
+	if m == nil {
+		return (*RenewServiceAccountRequest)(nil)
+	}
+	r := &RenewServiceAccountRequest{
+		Name:                m.Name,
+		ArmoredPgpPublicKey: m.ArmoredPgpPublicKey,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *RenewServiceAccountRequest) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *RenewServiceAccountResponse) CloneVT() *RenewServiceAccountResponse {
+	if m == nil {
+		return (*RenewServiceAccountResponse)(nil)
+	}
+	r := &RenewServiceAccountResponse{
+		PublicKeyId: m.PublicKeyId,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *RenewServiceAccountResponse) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *DestroyServiceAccountRequest) CloneVT() *DestroyServiceAccountRequest {
+	if m == nil {
+		return (*DestroyServiceAccountRequest)(nil)
+	}
+	r := &DestroyServiceAccountRequest{
+		Name: m.Name,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *DestroyServiceAccountRequest) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ListServiceAccountsResponse_ServiceAccount_PgpPublicKey) CloneVT() *ListServiceAccountsResponse_ServiceAccount_PgpPublicKey {
+	if m == nil {
+		return (*ListServiceAccountsResponse_ServiceAccount_PgpPublicKey)(nil)
+	}
+	r := &ListServiceAccountsResponse_ServiceAccount_PgpPublicKey{
+		Id:      m.Id,
+		Armored: m.Armored,
+	}
+	if rhs := m.Expiration; rhs != nil {
+		if vtpb, ok := interface{}(rhs).(interface{ CloneVT() *timestamppb.Timestamp }); ok {
+			r.Expiration = vtpb.CloneVT()
+		} else {
+			r.Expiration = proto.Clone(rhs).(*timestamppb.Timestamp)
+		}
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ListServiceAccountsResponse_ServiceAccount_PgpPublicKey) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ListServiceAccountsResponse_ServiceAccount) CloneVT() *ListServiceAccountsResponse_ServiceAccount {
+	if m == nil {
+		return (*ListServiceAccountsResponse_ServiceAccount)(nil)
+	}
+	r := &ListServiceAccountsResponse_ServiceAccount{
+		Name: m.Name,
+		Role: m.Role,
+	}
+	if rhs := m.PgpPublicKeys; rhs != nil {
+		tmpContainer := make([]*ListServiceAccountsResponse_ServiceAccount_PgpPublicKey, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v.CloneVT()
+		}
+		r.PgpPublicKeys = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ListServiceAccountsResponse_ServiceAccount) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *ListServiceAccountsResponse) CloneVT() *ListServiceAccountsResponse {
+	if m == nil {
+		return (*ListServiceAccountsResponse)(nil)
+	}
+	r := &ListServiceAccountsResponse{}
+	if rhs := m.ServiceAccounts; rhs != nil {
+		tmpContainer := make([]*ListServiceAccountsResponse_ServiceAccount, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v.CloneVT()
+		}
+		r.ServiceAccounts = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ListServiceAccountsResponse) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *KubeconfigRequest) CloneVT() *KubeconfigRequest {
+	if m == nil {
+		return (*KubeconfigRequest)(nil)
+	}
+	r := &KubeconfigRequest{
+		ServiceAccount:     m.ServiceAccount,
+		ServiceAccountUser: m.ServiceAccountUser,
+	}
+	if rhs := m.ServiceAccountTtl; rhs != nil {
+		if vtpb, ok := interface{}(rhs).(interface{ CloneVT() *durationpb.Duration }); ok {
+			r.ServiceAccountTtl = vtpb.CloneVT()
+		} else {
+			r.ServiceAccountTtl = proto.Clone(rhs).(*durationpb.Duration)
+		}
+	}
+	if rhs := m.ServiceAccountGroups; rhs != nil {
+		tmpContainer := make([]string, len(rhs))
+		copy(tmpContainer, rhs)
+		r.ServiceAccountGroups = tmpContainer
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *KubeconfigRequest) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *KubernetesUpgradePreChecksRequest) CloneVT() *KubernetesUpgradePreChecksRequest {
+	if m == nil {
+		return (*KubernetesUpgradePreChecksRequest)(nil)
+	}
+	r := &KubernetesUpgradePreChecksRequest{
+		NewVersion: m.NewVersion,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *KubernetesUpgradePreChecksRequest) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *KubernetesUpgradePreChecksResponse) CloneVT() *KubernetesUpgradePreChecksResponse {
+	if m == nil {
+		return (*KubernetesUpgradePreChecksResponse)(nil)
+	}
+	r := &KubernetesUpgradePreChecksResponse{
+		Ok:     m.Ok,
+		Reason: m.Reason,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *KubernetesUpgradePreChecksResponse) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *KubernetesSyncManifestRequest) CloneVT() *KubernetesSyncManifestRequest {
+	if m == nil {
+		return (*KubernetesSyncManifestRequest)(nil)
+	}
+	r := &KubernetesSyncManifestRequest{
+		DryRun: m.DryRun,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *KubernetesSyncManifestRequest) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *KubernetesSyncManifestResponse) CloneVT() *KubernetesSyncManifestResponse {
+	if m == nil {
+		return (*KubernetesSyncManifestResponse)(nil)
+	}
+	r := &KubernetesSyncManifestResponse{
+		ResponseType: m.ResponseType,
+		Path:         m.Path,
+		Diff:         m.Diff,
+		Skipped:      m.Skipped,
+	}
+	if rhs := m.Object; rhs != nil {
+		tmpBytes := make([]byte, len(rhs))
+		copy(tmpBytes, rhs)
+		r.Object = tmpBytes
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *KubernetesSyncManifestResponse) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
 func (this *KubeconfigResponse) EqualVT(that *KubeconfigResponse) bool {
 	if this == that {
 		return true
