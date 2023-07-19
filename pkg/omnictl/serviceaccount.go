@@ -143,7 +143,7 @@ var (
 
 				writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
 
-				fmt.Fprintf(writer, "NAME\tSCOPES\tPUBLIC KEY ID\tEXPIRATION\n")
+				fmt.Fprintf(writer, "NAME\tROLE\tPUBLIC KEY ID\tEXPIRATION\n")
 
 				for _, sa := range serviceAccounts {
 					for i, publicKey := range sa.PgpPublicKeys {
