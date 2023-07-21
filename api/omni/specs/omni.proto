@@ -198,10 +198,15 @@ message ClusterSpec {
 
 // ClusterMachineSpec describes a machine attached to a Cluster.
 message ClusterMachineSpec {
-  // List of patches combined from all sources, as a final list of patches to apply.
-  repeated string patches = 1;
+  reserved 1;
   // KubernetesVersion to use on the machine (copied from Cluster at the moment of creation).
   string kubernetes_version = 2;
+}
+
+// ClusterMachineConfigPatchesSpec keeps the list of config patches to be applied on the machine.
+message ClusterMachineConfigPatchesSpec {
+  // List of patches combined from all sources, as a final list of patches to apply.
+  repeated string patches = 1;
 }
 
 // ClsuterMachineTalosVersionSpec describes a machine Talos version.

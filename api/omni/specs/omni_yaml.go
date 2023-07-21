@@ -11,6 +11,18 @@ import (
 
 // MarshalYAML implements yaml.Marshaler interface.
 func (c *ClusterMachineSpec) MarshalYAML() (any, error) {
+	return &yaml.Node{
+		Kind: yaml.MappingNode,
+		Tag:  "!!map",
+		Content: []*yaml.Node{
+			{Kind: yaml.ScalarNode, Tag: "!!str", Value: "kubernetes_version"},
+			{Kind: yaml.ScalarNode, Tag: "!!str", Value: c.KubernetesVersion},
+		},
+	}, nil
+}
+
+// MarshalYAML implements yaml.Marshaler interface.
+func (c *ClusterMachineConfigPatchesSpec) MarshalYAML() (any, error) {
 	contents := slices.Map(c.Patches, func(patch string) *yaml.Node {
 		style := yaml.FlowStyle
 		if len(patch) > 0 && (patch[0] == '\n' || patch[0] == ' ') {
@@ -31,8 +43,6 @@ func (c *ClusterMachineSpec) MarshalYAML() (any, error) {
 		Content: []*yaml.Node{
 			{Kind: yaml.ScalarNode, Tag: "!!str", Value: "patches"},
 			{Kind: yaml.SequenceNode, Tag: "!!seq", Content: contents},
-			{Kind: yaml.ScalarNode, Tag: "!!str", Value: "kubernetes_version"},
-			{Kind: yaml.ScalarNode, Tag: "!!str", Value: c.KubernetesVersion},
 		},
 	}, nil
 }

@@ -19,6 +19,7 @@ func init() {
 	registry.MustRegisterResource(ClusterMachineIdentityType, &ClusterMachineIdentity{})
 	registry.MustRegisterResource(ClusterMachineStatusType, &ClusterMachineStatus{})
 	registry.MustRegisterResource(ClusterMachineConfigType, &ClusterMachineConfig{})
+	registry.MustRegisterResource(ClusterMachineConfigPatchesType, &ClusterMachineConfigPatches{})
 	registry.MustRegisterResource(ClusterMachineConfigStatusType, &ClusterMachineConfigStatus{})
 	registry.MustRegisterResource(ClusterMachineTalosVersionType, &ClusterMachineTalosVersion{})
 	registry.MustRegisterResource(ClusterMachineTemplateType, &ClusterMachineTemplate{})

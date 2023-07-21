@@ -26,8 +26,8 @@ const (
 text: "test"`
 )
 
-func TestClusterMachineSpecW_marshal(t *testing.T) {
-	original := omni.NewClusterMachine("default", "1")
+func TestClusterMachineConfigPatchesSpecW_marshal(t *testing.T) {
+	original := omni.NewClusterMachineConfigPatches("default", "1")
 	original.TypedSpec().Value.Patches = []string{newLineAndText, justText}
 
 	out := must(yaml.Marshal(must(resource.MarshalYAML(original))))
@@ -47,9 +47,8 @@ func TestClusterMachineSpecW_marshal(t *testing.T) {
 }
 
 func ExampleClusterMachineSpec_marshal() {
-	original := omni.NewClusterMachine("default", "1")
+	original := omni.NewClusterMachineConfigPatches("default", "1")
 	original.TypedSpec().Value.Patches = []string{newLineAndText, justText}
-	original.TypedSpec().Value.KubernetesVersion = "1.22.1"
 
 	current := time.Date(2022, 12, 9, 0, 0, 0, 0, time.UTC)
 	original.Metadata().SetCreated(current)
@@ -70,7 +69,7 @@ func ExampleClusterMachineSpec_marshal() {
 	// Output:
 	// metadata:
 	//     namespace: default
-	//     type: ClusterMachines.omni.sidero.dev
+	//     type: ClusterMachineConfigPatches.omni.sidero.dev
 	//     id: 1
 	//     version: undefined
 	//     owner:
@@ -83,7 +82,6 @@ func ExampleClusterMachineSpec_marshal() {
 	//         - |-
 	//           master: 1
 	//           text: "test"
-	//     kubernetes_version: 1.22.1
 }
 
 func must[T any](t T, err error) T {
