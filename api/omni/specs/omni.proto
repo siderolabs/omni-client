@@ -181,6 +181,8 @@ message ClusterSpec {
   message Features {
     // EnableWorkloadProxy enables workload proxy.
     bool enable_workload_proxy = 1;
+    // DiskEncryption enables disk encryption on all nodes.
+    bool disk_encryption = 2;
   }
 
   // InstallImage the installer image to use.
@@ -579,4 +581,10 @@ message OngoingTaskSpec {
     KubernetesUpgradeStatusSpec kubernetes_upgrade = 3;
     ClusterDestroyStatusSpec destroy = 4;
   }
+}
+
+// ClusterMachineEncryptionKeySpec keeps generated encryption key for the machine disk encryption.
+message ClusterMachineEncryptionKeySpec {
+  // Data stores generated encryption key for the machine.
+  bytes data = 1;
 }

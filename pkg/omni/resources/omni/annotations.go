@@ -8,4 +8,12 @@ const (
 	// MachineLocked locks any updates on a machine set node.
 	// tsgen:MachineLocked
 	MachineLocked = SystemLabelPrefix + "locked"
+
+	// ConfigPatchName human readable patch name.
+	// tsgen:ConfigPatchName
+	ConfigPatchName = "name"
+
+	// ConfigPatchDescription human readable patch description.
+	// tsgen:ConfigPatchDescription
+	ConfigPatchDescription = "description"
 )

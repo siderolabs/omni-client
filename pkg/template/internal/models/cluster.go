@@ -46,8 +46,10 @@ type Cluster struct { //nolint:govet
 	Patches PatchList `yaml:"patches"`
 }
 
-// Features is a cluster features setting.
+// Features defines cluster-wide features.
 type Features struct {
+	// DiskEncryption enables KMS encryption.
+	DiskEncryption bool `yaml:"diskEncryption"`
 	// EnableWorkloadProxy enables workload proxy.
 	EnableWorkloadProxy bool `yaml:"enableWorkloadProxy"`
 }
@@ -154,6 +156,12 @@ func (cluster *Cluster) Translate(TranslateContext) ([]resource.Resource, error)
 	if err != nil {
 		return nil, err
 	}
+
+	if clusterResource.TypedSpec().Value.Features == nil {
+		clusterResource.TypedSpec().Value.Features = &specs.ClusterSpec_Features{}
+	}
+
+	clusterResource.TypedSpec().Value.Features.DiskEncryption = cluster.Features.DiskEncryption
 
 	return append([]resource.Resource{clusterResource}, patches...), nil
 }

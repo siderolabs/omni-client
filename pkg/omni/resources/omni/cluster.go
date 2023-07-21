@@ -13,7 +13,6 @@ import (
 	"github.com/cosi-project/runtime/pkg/resource/typed"
 
 	"github.com/siderolabs/omni-client/api/omni/specs"
-	"github.com/siderolabs/omni-client/pkg/constants"
 	"github.com/siderolabs/omni-client/pkg/omni/resources"
 )
 
@@ -51,11 +50,16 @@ func (ClusterExtension) ResourceDefinition() meta.ResourceDefinitionSpec {
 }
 
 // GetInstallImage extracts Talos version from the cluster resource and adds the installer image url.
-func GetInstallImage(cluster *Cluster) string {
+func GetInstallImage(cluster *Cluster, registry string) string {
 	version := cluster.TypedSpec().Value.TalosVersion
 	if version != "latest" {
 		version = "v" + version
 	}
 
-	return fmt.Sprintf("%s:%s", constants.TalosRegistry, version)
+	return fmt.Sprintf("%s:%s", registry, version)
+}
+
+// GetEncryptionEnabled returns cluster disk encryption feature flag state.
+func GetEncryptionEnabled(cluster *Cluster) bool {
+	return cluster.TypedSpec().Value.Features != nil && cluster.TypedSpec().Value.Features.DiskEncryption
 }

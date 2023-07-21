@@ -36,3 +36,31 @@ const GRPCMaxMessageSize = 32 * 1024 * 1024
 
 // DisableValidation force disable resource validation on the Omni runtime for a particular resource (only for debug build).
 const DisableValidation = "disable-validation"
+
+const (
+	// DiskConfigPatchPrefix is the prefix of machine install disk config patch.
+	// tsgen:DiskConfigPatchPrefix
+	DiskConfigPatchPrefix = "000"
+
+	// EncryptionPatchPrefix is the prefix of the encryption config patch.
+	// tsgen:EncryptionPatchPrefix
+	EncryptionPatchPrefix = "950"
+)
+
+const (
+	// InstallDiskConfigName human readable install disk config patch name annotation.
+	// tsgen:InstallDiskConfigName
+	InstallDiskConfigName = "install disk"
+
+	// EncryptionConfigName human readable encryption config patch name annotation.
+	// tsgen:EncryptionConfigName
+	EncryptionConfigName = "disk encryption config"
+
+	// InstallDiskConfigDescription description of disk config patch.
+	// tsgen:InstallDiskConfigDescription
+	InstallDiskConfigDescription = "Automatically generated config patch that defines the install disk"
+
+	// EncryptionConfigDescription description of encryption config patch.
+	// tsgen:EncryptionConfigDescription
+	EncryptionConfigDescription = "Makes machine encrypt disks using Omni as a KMS server"
+)

@@ -13,6 +13,7 @@ spec:
     talosversion: 1.3.0
     features:
         enableworkloadproxy: false
+        diskencryption: true
 ---
 metadata:
     namespace: default

@@ -4,6 +4,8 @@ kubernetes:
   version: v1.18.2
 talos:
   version: v1.3.0
+features:
+  diskEncryption: true
 patches:
   - file: patches/my-cluster-patch.yaml
   - file: ../testdata/patches/my-registry-mirrors.yaml

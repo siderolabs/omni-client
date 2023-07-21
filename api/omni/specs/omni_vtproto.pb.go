@@ -282,6 +282,7 @@ func (m *ClusterSpec_Features) CloneVT() *ClusterSpec_Features {
 	}
 	r := &ClusterSpec_Features{
 		EnableWorkloadProxy: m.EnableWorkloadProxy,
+		DiskEncryption:      m.DiskEncryption,
 	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
@@ -1131,6 +1132,27 @@ func (m *OngoingTaskSpec_Destroy) CloneVT() isOngoingTaskSpec_Details {
 	return r
 }
 
+func (m *ClusterMachineEncryptionKeySpec) CloneVT() *ClusterMachineEncryptionKeySpec {
+	if m == nil {
+		return (*ClusterMachineEncryptionKeySpec)(nil)
+	}
+	r := &ClusterMachineEncryptionKeySpec{}
+	if rhs := m.Data; rhs != nil {
+		tmpBytes := make([]byte, len(rhs))
+		copy(tmpBytes, rhs)
+		r.Data = tmpBytes
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *ClusterMachineEncryptionKeySpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
 func (this *MachineSpec) EqualVT(that *MachineSpec) bool {
 	if this == that {
 		return true
@@ -1528,6 +1550,9 @@ func (this *ClusterSpec_Features) EqualVT(that *ClusterSpec_Features) bool {
 		return false
 	}
 	if this.EnableWorkloadProxy != that.EnableWorkloadProxy {
+		return false
+	}
+	if this.DiskEncryption != that.DiskEncryption {
 		return false
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
@@ -2627,6 +2652,25 @@ func (this *OngoingTaskSpec_Destroy) EqualVT(thatIface isOngoingTaskSpec_Details
 	return true
 }
 
+func (this *ClusterMachineEncryptionKeySpec) EqualVT(that *ClusterMachineEncryptionKeySpec) bool {
+	if this == that {
+		return true
+	} else if this == nil || that == nil {
+		return false
+	}
+	if string(this.Data) != string(that.Data) {
+		return false
+	}
+	return string(this.unknownFields) == string(that.unknownFields)
+}
+
+func (this *ClusterMachineEncryptionKeySpec) EqualMessageVT(thatMsg proto.Message) bool {
+	that, ok := thatMsg.(*ClusterMachineEncryptionKeySpec)
+	if !ok {
+		return false
+	}
+	return this.EqualVT(that)
+}
 func (m *MachineSpec) MarshalVT() (dAtA []byte, err error) {
 	if m == nil {
 		return nil, nil
@@ -3401,6 +3445,16 @@ func (m *ClusterSpec_Features) MarshalToSizedBufferVT(dAtA []byte) (int, error) 
 	if m.unknownFields != nil {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
+	}
+	if m.DiskEncryption {
+		i--
+		if m.DiskEncryption {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x10
 	}
 	if m.EnableWorkloadProxy {
 		i--
@@ -5473,6 +5527,46 @@ func (m *OngoingTaskSpec_Destroy) MarshalToSizedBufferVT(dAtA []byte) (int, erro
 	}
 	return len(dAtA) - i, nil
 }
+func (m *ClusterMachineEncryptionKeySpec) MarshalVT() (dAtA []byte, err error) {
+	if m == nil {
+		return nil, nil
+	}
+	size := m.SizeVT()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBufferVT(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClusterMachineEncryptionKeySpec) MarshalToVT(dAtA []byte) (int, error) {
+	size := m.SizeVT()
+	return m.MarshalToSizedBufferVT(dAtA[:size])
+}
+
+func (m *ClusterMachineEncryptionKeySpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+	if m == nil {
+		return 0, nil
+	}
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.unknownFields != nil {
+		i -= len(m.unknownFields)
+		copy(dAtA[i:], m.unknownFields)
+	}
+	if len(m.Data) > 0 {
+		i -= len(m.Data)
+		copy(dAtA[i:], m.Data)
+		i = encodeVarint(dAtA, i, uint64(len(m.Data)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *MachineSpec) SizeVT() (n int) {
 	if m == nil {
 		return 0
@@ -5795,6 +5889,9 @@ func (m *ClusterSpec_Features) SizeVT() (n int) {
 	var l int
 	_ = l
 	if m.EnableWorkloadProxy {
+		n += 2
+	}
+	if m.DiskEncryption {
 		n += 2
 	}
 	n += len(m.unknownFields)
@@ -6606,6 +6703,20 @@ func (m *OngoingTaskSpec_Destroy) SizeVT() (n int) {
 	}
 	return n
 }
+func (m *ClusterMachineEncryptionKeySpec) SizeVT() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Data)
+	if l > 0 {
+		n += 1 + l + sov(uint64(l))
+	}
+	n += len(m.unknownFields)
+	return n
+}
+
 func (m *MachineSpec) UnmarshalVT(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -8750,6 +8861,26 @@ func (m *ClusterSpec_Features) UnmarshalVT(dAtA []byte) error {
 				}
 			}
 			m.EnableWorkloadProxy = bool(v != 0)
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DiskEncryption", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.DiskEncryption = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skip(dAtA[iNdEx:])
@@ -13591,6 +13722,91 @@ func (m *OngoingTaskSpec) UnmarshalVT(dAtA []byte) error {
 					return err
 				}
 				m.Details = &OngoingTaskSpec_Destroy{Destroy: v}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skip(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLength
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.unknownFields = append(m.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ClusterMachineEncryptionKeySpec) UnmarshalVT(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflow
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ClusterMachineEncryptionKeySpec: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ClusterMachineEncryptionKeySpec: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Data = append(m.Data[:0], dAtA[iNdEx:postIndex]...)
+			if m.Data == nil {
+				m.Data = []byte{}
 			}
 			iNdEx = postIndex
 		default:
