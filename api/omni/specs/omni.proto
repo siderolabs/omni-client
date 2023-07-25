@@ -588,3 +588,20 @@ message ClusterMachineEncryptionKeySpec {
   // Data stores generated encryption key for the machine.
   bytes data = 1;
 }
+
+// ExposedServiceSpec describes a Kubernetes service exposed through Omni from a workload cluster.
+message ExposedServiceSpec {
+  // Name is the name Kubernetes resource name of the service.
+  string name = 1;
+
+  // Namespace is the Kubernetes namespace the service is in.
+  string namespace = 2;
+
+  // Port is the host port the service is exposed on.
+  uint32 port = 3;
+}
+
+message FeaturesConfigSpec {
+  // EnableWorkloadProxying enables workload proxying feature.
+  bool enable_workload_proxying = 1;
+}
