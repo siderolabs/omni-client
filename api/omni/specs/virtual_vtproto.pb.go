@@ -78,7 +78,6 @@ func (m *ClusterPermissionsSpec) CloneVT() *ClusterPermissionsSpec {
 		CanDownloadTalosconfig:     m.CanDownloadTalosconfig,
 		CanReadConfigPatches:       m.CanReadConfigPatches,
 		CanManageConfigPatches:     m.CanManageConfigPatches,
-		CanManageClusterFeatures:   m.CanManageClusterFeatures,
 	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
@@ -187,9 +186,6 @@ func (this *ClusterPermissionsSpec) EqualVT(that *ClusterPermissionsSpec) bool {
 		return false
 	}
 	if this.CanManageConfigPatches != that.CanManageConfigPatches {
-		return false
-	}
-	if this.CanManageClusterFeatures != that.CanManageClusterFeatures {
 		return false
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
@@ -392,16 +388,6 @@ func (m *ClusterPermissionsSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
-	if m.CanManageClusterFeatures {
-		i--
-		if m.CanManageClusterFeatures {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x58
-	}
 	if m.CanManageConfigPatches {
 		i--
 		if m.CanManageConfigPatches {
@@ -591,9 +577,6 @@ func (m *ClusterPermissionsSpec) SizeVT() (n int) {
 		n += 2
 	}
 	if m.CanManageConfigPatches {
-		n += 2
-	}
-	if m.CanManageClusterFeatures {
 		n += 2
 	}
 	n += len(m.unknownFields)
@@ -1155,26 +1138,6 @@ func (m *ClusterPermissionsSpec) UnmarshalVT(dAtA []byte) error {
 				}
 			}
 			m.CanManageConfigPatches = bool(v != 0)
-		case 11:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CanManageClusterFeatures", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.CanManageClusterFeatures = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skip(dAtA[iNdEx:])

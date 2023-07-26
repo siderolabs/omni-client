@@ -25,8 +25,6 @@ func init() {
 	registry.MustRegisterResource(ClusterMachineTalosVersionType, &ClusterMachineTalosVersion{})
 	registry.MustRegisterResource(ClusterMachineTemplateType, &ClusterMachineTemplate{})
 	registry.MustRegisterResource(ConfigPatchType, &ConfigPatch{})
-	registry.MustRegisterResource(ExposedServiceType, &ExposedService{})
-	registry.MustRegisterResource(FeaturesConfigType, &FeaturesConfig{})
 	registry.MustRegisterResource(InstallationMediaType, &InstallationMedia{})
 	registry.MustRegisterResource(ControlPlaneStatusType, &ControlPlaneStatus{})
 	registry.MustRegisterResource(KubernetesStatusType, &KubernetesStatus{})
