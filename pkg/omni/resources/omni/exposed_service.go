@@ -45,16 +45,12 @@ func (ExposedServiceExtension) ResourceDefinition() meta.ResourceDefinitionSpec 
 		DefaultNamespace: resources.DefaultNamespace,
 		PrintColumns: []meta.PrintColumn{
 			{
-				Name:     "Name",
-				JSONPath: "{.name}",
-			},
-			{
-				Name:     "Namespace",
-				JSONPath: "{.namespace}",
-			},
-			{
 				Name:     "Port",
 				JSONPath: "{.port}",
+			},
+			{
+				Name:     "Label",
+				JSONPath: "{.label}",
 			},
 		},
 	}

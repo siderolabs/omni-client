@@ -591,14 +591,14 @@ message ClusterMachineEncryptionKeySpec {
 
 // ExposedServiceSpec describes a Kubernetes service exposed through Omni from a workload cluster.
 message ExposedServiceSpec {
-  // Name is the name Kubernetes resource name of the service.
-  string name = 1;
-
-  // Namespace is the Kubernetes namespace the service is in.
-  string namespace = 2;
-
   // Port is the host port the service is exposed on.
-  uint32 port = 3;
+  uint32 port = 1;
+
+  // Label is the human-readable label of the service to be displayed on Omni Web.
+  string label = 2;
+
+  // IconBase64 is the icon of the service to be displayed on Omni Web.
+  string icon_base64 = 3;
 }
 
 message FeaturesConfigSpec {

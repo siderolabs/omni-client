@@ -48,6 +48,10 @@ const (
 	// LabelSystemPatch marks the patch as the system patch, so it shouldn't be editable by the user.
 	// tsgen:LabelSystemPatch
 	LabelSystemPatch = SystemLabelPrefix + "system-patch"
+
+	// LabelExposedServiceAlias is the alias of the exposed service.
+	// tsgen:LabelExposedServiceAlias
+	LabelExposedServiceAlias = SystemLabelPrefix + "exposed-service-alias"
 )
 
 const (
