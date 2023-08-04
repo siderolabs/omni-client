@@ -14,12 +14,11 @@ require (
 	github.com/ProtonMail/gopenpgp/v2 v2.7.2
 	github.com/adrg/xdg v0.4.0
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cosi-project/runtime v0.3.1-beta.1
+	github.com/cosi-project/runtime v0.3.1
 	github.com/fatih/color v1.15.0
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.2
 	github.com/hashicorp/go-multierror v1.1.1
-	github.com/hashicorp/go-version v1.6.0
 	github.com/hexops/gotextdiff v1.0.3
 	github.com/mattn/go-isatty v0.0.19
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
@@ -27,7 +26,7 @@ require (
 	github.com/siderolabs/gen v0.4.5
 	github.com/siderolabs/go-api-signature v0.2.6
 	github.com/siderolabs/go-kubeconfig v0.1.0
-	github.com/siderolabs/talos/pkg/machinery v1.5.0-alpha.3.0.20230728150010-a17272cdda12
+	github.com/siderolabs/talos/pkg/machinery v1.5.0-alpha.3.0.20230803212952-80238a05a6f8
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
 	github.com/xlab/treeprint v1.2.0

@@ -122,11 +122,11 @@ func TestValidate(t *testing.T) {
 	* error validating cluster "my first cluster": 5 errors occurred:
 	* name should only contain letters, digits, dashes and underscores
 	* error validating Kubernetes version: 1 error occurred:
-	* version should be in semver format: Malformed version: vN.2
+	* version should be in semver format: Invalid character(s) found in major number "N"
 
 
 	* error validating Talos version: 1 error occurred:
-	* version should be in semver format: Malformed version: v1.3.0gamma.0
+	* version should be in semver format: Invalid character(s) found in patch number "0gamma.0"
 
 
 	* patch "does-not-exist.yaml" is invalid: 1 error occurred:

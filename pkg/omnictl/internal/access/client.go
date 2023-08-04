@@ -136,12 +136,12 @@ If you want to disable this warning set github.com/siderolabs/omni-client/pkg/ve
 		return err
 	}
 
-	backendVersion, err := semver.Parse(strings.TrimLeft(sysversion.TypedSpec().Value.BackendVersion, "v"))
+	backendVersion, err := semver.ParseTolerant(strings.TrimLeft(sysversion.TypedSpec().Value.BackendVersion, "v"))
 	if err != nil {
 		return err
 	}
 
-	clientVersion, err := semver.Parse(strings.TrimLeft(version.Tag, "v"))
+	clientVersion, err := semver.ParseTolerant(strings.TrimLeft(version.Tag, "v"))
 	if err != nil {
 		return err
 	}

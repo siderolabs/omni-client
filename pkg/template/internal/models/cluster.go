@@ -9,9 +9,9 @@ import (
 	"strings"
 	"unicode"
 
+	"github.com/blang/semver"
 	"github.com/cosi-project/runtime/pkg/resource"
 	"github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/go-version"
 	"github.com/siderolabs/gen/pair"
 
 	"github.com/siderolabs/omni-client/api/omni/specs"
@@ -103,7 +103,7 @@ func (kubernetes *KubernetesCluster) Validate() error {
 
 	if kubernetes.Version == "" {
 		multiErr = multierror.Append(multiErr, fmt.Errorf("version is required"))
-	} else if _, err := version.NewSemver(kubernetes.Version); err != nil {
+	} else if _, err := semver.ParseTolerant(kubernetes.Version); err != nil {
 		multiErr = multierror.Append(multiErr, fmt.Errorf("version should be in semver format: %w", err))
 	}
 
@@ -121,7 +121,7 @@ func (talos *TalosCluster) Validate() error {
 	if talos.Version == "" {
 		multiErr = multierror.Append(multiErr, fmt.Errorf("version is required"))
 	} else {
-		if _, err := version.NewSemver(talos.Version); err != nil {
+		if _, err := semver.ParseTolerant(talos.Version); err != nil {
 			multiErr = multierror.Append(multiErr, fmt.Errorf("version should be in semver format: %w", err))
 		}
 
