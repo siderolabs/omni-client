@@ -37,6 +37,8 @@ func (l List) Validate() error {
 		workerMachines       MachineIDList
 	)
 
+	lockedMachines := make(map[MachineID]struct{})
+
 	for _, model := range l {
 		switch m := model.(type) {
 		case *Cluster:
@@ -49,6 +51,10 @@ func (l List) Validate() error {
 			workersCount++
 
 			workerMachines = append(workerMachines, m.Machines...)
+		case *Machine:
+			if m.Locked {
+				lockedMachines[m.Name] = struct{}{}
+			}
 		}
 	}
 
@@ -86,6 +92,12 @@ func (l List) Validate() error {
 		}
 	}
 
+	for _, cpMachine := range controlPlaneMachines {
+		if _, ok := lockedMachines[cpMachine]; ok {
+			multiErr = multierror.Append(multiErr, fmt.Errorf("machine %q is locked and used in controlplane", cpMachine))
+		}
+	}
+
 	return multiErr
 }
 
@@ -93,11 +105,18 @@ func (l List) Validate() error {
 //
 // Translate assumes that the template is valid.
 func (l List) Translate() ([]resource.Resource, error) {
-	var context TranslateContext
+	context := TranslateContext{
+		LockedMachines: make(map[MachineID]struct{}),
+	}
 
 	for _, model := range l {
-		if cluster, ok := model.(*Cluster); ok {
-			context.ClusterName = cluster.Name
+		switch m := model.(type) {
+		case *Cluster:
+			context.ClusterName = m.Name
+		case *Machine:
+			if m.Locked {
+				context.LockedMachines[m.Name] = struct{}{}
+			}
 		}
 	}
 

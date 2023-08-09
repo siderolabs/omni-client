@@ -30,3 +30,7 @@ machines:
 ---
 kind: Machine
 name: 630d882a-51a8-48b3-ae00-90c5b0b5b0b0 # machine is not part of controlplane/workers
+---
+kind: Machine
+name: 430d882a-51a8-48b3-ae00-90c5b0b5b0b0
+locked: true

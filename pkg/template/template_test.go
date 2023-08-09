@@ -118,7 +118,7 @@ func TestValidate(t *testing.T) {
 		{
 			name: "clusterInvalid1",
 			data: clusterInvalid1,
-			expectedError: `4 errors occurred:
+			expectedError: `5 errors occurred:
 	* error validating cluster "my first cluster": 5 errors occurred:
 	* name should only contain letters, digits, dashes and underscores
 	* error validating Kubernetes version: 1 error occurred:
@@ -157,6 +157,7 @@ machine:
 
 	* machines [4aed1106-6f44-4be9-9796-d4b5b0b5b0b0] are used in both controlplane and workers
 	* machine "630d882a-51a8-48b3-ae00-90c5b0b5b0b0" is not used in controlplane or workers
+	* machine "430d882a-51a8-48b3-ae00-90c5b0b5b0b0" is locked and used in controlplane
 
 `,
 		},
@@ -311,6 +312,7 @@ func TestSync(t *testing.T) {
 	assert.Equal(t, []string{
 		"Clusters.omni.sidero.dev(default/my-first-cluster)",
 		"ConfigPatches.omni.sidero.dev(default/000-cm-430d882a-51a8-48b3-ae00-90c5b0b5b0b0-install-disk)",
+		"MachineSetNodes.omni.sidero.dev(default/430d882a-51a8-48b3-ab00-d4b5b0b5b0b0)",
 	}, slices.Map(sync2.Update, func(u template.UpdateChange) string { return resource.String(u.New) }))
 
 	assert.Equal(t, []string{

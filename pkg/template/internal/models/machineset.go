@@ -41,6 +41,12 @@ func (machineset *MachineSet) translate(ctx TranslateContext, nameSuffix, roleLa
 
 	for _, machineID := range machineset.Machines {
 		machineSetNode := omni.NewMachineSetNode(resources.DefaultNamespace, string(machineID), machineSet)
+
+		_, locked := ctx.LockedMachines[machineID]
+		if locked {
+			machineSetNode.Metadata().Annotations().Set(omni.MachineLocked, "")
+		}
+
 		resourceList = append(resourceList, machineSetNode)
 	}
 

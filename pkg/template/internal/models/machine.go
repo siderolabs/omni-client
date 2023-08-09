@@ -26,11 +26,14 @@ type MachineID string
 const KindMachine = "Machine"
 
 // Machine provides customization for a specific machine.
-type Machine struct {
+type Machine struct { //nolint:govet
 	Meta `yaml:",inline"`
 
 	// Machine name (ID).
 	Name MachineID `yaml:"name"`
+
+	// Locked locks the machine, so no config updates, upgrades and downgrades will be performed on the machine.
+	Locked bool `yaml:"locked"`
 
 	// Install specification.
 	Install MachineInstall `yaml:"install"`

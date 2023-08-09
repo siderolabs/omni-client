@@ -18,6 +18,8 @@ type Meta struct {
 
 // TranslateContext is a context for translation.
 type TranslateContext struct {
+	LockedMachines map[MachineID]struct{}
+
 	// ClusterName is the name of the cluster.
 	ClusterName string
 }

@@ -41,3 +41,7 @@ patches: # ClusterMachine ConfigPatch
              addresses: [192.168.0.2/24]
              routes:
                - gateway: "192.168.0.1"
+---
+kind: Machine
+name: 430d882a-51a8-48b3-ab00-d4b5b0b5b0b0
+locked: true
