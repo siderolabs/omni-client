@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/go-multierror"
 	"github.com/siderolabs/gen/pair"
 	"github.com/siderolabs/talos/pkg/machinery/config/configloader"
+	talosrole "github.com/siderolabs/talos/pkg/machinery/role"
 	"gopkg.in/yaml.v3"
 
 	"github.com/siderolabs/omni-client/api/omni/specs"
@@ -33,6 +34,12 @@ var forbiddenFields = []string{
 	"machine.token",
 	"machine.ca",
 	"machine.type",
+}
+
+var forbiddenSliceElements = map[string]map[any]struct{}{
+	"machine.features.kubernetesTalosAPIAccess.allowedRoles": {
+		string(talosrole.Admin): {},
+	},
 }
 
 // NewConfigPatch creates new ConfigPatch resource.
@@ -92,27 +99,50 @@ func ValidateConfigPatch(data string) error {
 
 	var multiErr error
 
-outer:
 	for _, field := range forbiddenFields {
-		parts := strings.Split(field, ".")
+		if _, ok := getField(config, field); ok {
+			multiErr = multierror.Append(multiErr, fmt.Errorf("overriding %q is not allowed in the config patch", field))
+		}
+	}
 
-		var obj any
-
-		obj = config
-		for _, part := range parts {
-			current, ok := obj.(map[string]any)
-			if !ok {
-				continue outer
-			}
-
-			obj, ok = current[part]
-			if !ok {
-				continue outer
-			}
+	for field, forbiddenElementSet := range forbiddenSliceElements {
+		val, ok := getField(config, field)
+		if !ok {
+			continue
 		}
 
-		multiErr = multierror.Append(multiErr, fmt.Errorf("overriding %q is not allowed in the config patch", field))
+		slice, ok := val.([]any)
+		if !ok {
+			continue
+		}
+
+		for _, element := range slice {
+			if _, ok = forbiddenElementSet[element]; ok {
+				multiErr = multierror.Append(multiErr, fmt.Errorf("element %q is not allowed in field %q", element, field))
+			}
+		}
 	}
 
 	return multiErr
+}
+
+func getField(config map[string]any, field string) (any, bool) {
+	parts := strings.Split(field, ".")
+
+	var obj any
+
+	obj = config
+	for _, part := range parts {
+		current, ok := obj.(map[string]any)
+		if !ok {
+			return nil, false
+		}
+
+		obj, ok = current[part]
+		if !ok {
+			return nil, false
+		}
+	}
+
+	return obj, true
 }

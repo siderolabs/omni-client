@@ -56,6 +56,19 @@ cluster:
 `),
 			expectedError: "unknown keys found during decoding:\ncluster:\n    name: default\n",
 		},
+		{
+			name: "os admin talos API access",
+			config: strings.TrimSpace(`
+machine:
+  features:
+    kubernetesTalosAPIAccess:
+      allowedRoles:
+        - os:reader
+        - os:admin
+        - os:operator
+`),
+			expectedError: "1 error occurred:\n\t* element \"os:admin\" is not allowed in field \"machine.features.kubernetesTalosAPIAccess.allowedRoles\"\n\n",
+		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			err := omni.ValidateConfigPatch(tt.config)
