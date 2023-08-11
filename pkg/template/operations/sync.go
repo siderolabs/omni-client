@@ -152,7 +152,7 @@ func syncDeleteResources(ctx context.Context, toDelete []resource.Resource, out 
 			continue
 		}
 
-		if _, err := st.Teardown(ctx, r.Metadata()); err != nil {
+		if _, err := st.Teardown(ctx, r.Metadata()); err != nil && !state.IsNotFoundError(err) {
 			return err
 		}
 
