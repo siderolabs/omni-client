@@ -8,7 +8,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
-	"sort"
+	"slices"
 	"strings"
 	"text/tabwriter"
 	"text/template"
@@ -174,7 +174,7 @@ var configGetContextsCmd = &cobra.Command{
 		}
 
 		keys := maps.Keys(conf.Contexts)
-		sort.Strings(keys)
+		slices.Sort(keys)
 
 		w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
 		defer w.Flush() //nolint:errcheck
@@ -318,7 +318,7 @@ func CompleteConfigContext(_ *cobra.Command, _ []string, _ string) ([]string, co
 	}
 
 	contextNames := maps.Keys(conf.Contexts)
-	sort.Strings(contextNames)
+	slices.Sort(contextNames)
 
 	return contextNames, cobra.ShellCompDirectiveNoFileComp
 }

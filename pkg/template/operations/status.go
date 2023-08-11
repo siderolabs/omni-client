@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"sort"
+	"slices"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -186,8 +186,15 @@ func expandTree(tree treeprint.Tree, item statustree.NodeWrapper, resources map[
 		}
 	}
 
-	sort.Slice(nextLevel, func(i, j int) bool {
-		return nextLevel[i].Less(nextLevel[j])
+	slices.SortFunc(nextLevel, func(a, b statustree.NodeWrapper) int {
+		switch {
+		case a.Less(b):
+			return -1
+		case b.Less(a):
+			return +1
+		default:
+			return 0
+		}
 	})
 
 	for _, item := range nextLevel {

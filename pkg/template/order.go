@@ -5,8 +5,9 @@
 package template
 
 import (
+	"cmp"
 	"fmt"
-	"sort"
+	"slices"
 
 	"github.com/cosi-project/runtime/pkg/resource"
 
@@ -22,18 +23,18 @@ var canonicalResourceOrder = map[resource.Type]int{
 }
 
 func sortResources[T any](s []T, mapper func(T) resource.Metadata) {
-	sort.SliceStable(s, func(i, j int) bool {
-		orderI := canonicalResourceOrder[mapper(s[i]).Type()]
-		orderJ := canonicalResourceOrder[mapper(s[j]).Type()]
+	slices.SortStableFunc(s, func(a, b T) int {
+		orderI := canonicalResourceOrder[mapper(a).Type()]
+		orderJ := canonicalResourceOrder[mapper(b).Type()]
 
 		if orderI == 0 {
-			panic(fmt.Sprintf("unknown resource type %q", mapper(s[i]).Type()))
+			panic(fmt.Sprintf("unknown resource type %q", mapper(a).Type()))
 		}
 
 		if orderJ == 0 {
-			panic(fmt.Sprintf("unknown resource type %q", mapper(s[j]).Type()))
+			panic(fmt.Sprintf("unknown resource type %q", mapper(b).Type()))
 		}
 
-		return orderI < orderJ
+		return cmp.Compare(orderI, orderJ)
 	})
 }
