@@ -65,6 +65,10 @@ const (
 	// tsgen:MachineStatusLabelDisconnected
 	MachineStatusLabelDisconnected = SystemLabelPrefix + "disconnected"
 
+	// MachineStatusLabelInvalidState is set if Omni can access Talos apid, but has no access.
+	// tsgen:MachineStatusLabelInvalidState
+	MachineStatusLabelInvalidState = SystemLabelPrefix + "invalid-state"
+
 	// MachineStatusLabelReportingEvents is set if the machine is reporting events.
 	// tsgen:MachineStatusLabelReportingEvents
 	MachineStatusLabelReportingEvents = SystemLabelPrefix + "reporting-events"
