@@ -85,15 +85,16 @@ func (m *MachineStatusSpec_HardwareStatus_BlockDevice) CloneVT() *MachineStatusS
 		return (*MachineStatusSpec_HardwareStatus_BlockDevice)(nil)
 	}
 	r := &MachineStatusSpec_HardwareStatus_BlockDevice{
-		Size:      m.Size,
-		Model:     m.Model,
-		LinuxName: m.LinuxName,
-		Name:      m.Name,
-		Serial:    m.Serial,
-		Uuid:      m.Uuid,
-		Wwid:      m.Wwid,
-		Type:      m.Type,
-		BusPath:   m.BusPath,
+		Size:       m.Size,
+		Model:      m.Model,
+		LinuxName:  m.LinuxName,
+		Name:       m.Name,
+		Serial:     m.Serial,
+		Uuid:       m.Uuid,
+		Wwid:       m.Wwid,
+		Type:       m.Type,
+		BusPath:    m.BusPath,
+		SystemDisk: m.SystemDisk,
 	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
@@ -1297,6 +1298,9 @@ func (this *MachineStatusSpec_HardwareStatus_BlockDevice) EqualVT(that *MachineS
 		return false
 	}
 	if this.BusPath != that.BusPath {
+		return false
+	}
+	if this.SystemDisk != that.SystemDisk {
 		return false
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
@@ -2939,6 +2943,16 @@ func (m *MachineStatusSpec_HardwareStatus_BlockDevice) MarshalToSizedBufferVT(dA
 	if m.unknownFields != nil {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
+	}
+	if m.SystemDisk {
+		i--
+		if m.SystemDisk {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x58
 	}
 	if len(m.BusPath) > 0 {
 		i -= len(m.BusPath)
@@ -5846,6 +5860,9 @@ func (m *MachineStatusSpec_HardwareStatus_BlockDevice) SizeVT() (n int) {
 	if l > 0 {
 		n += 1 + l + sov(uint64(l))
 	}
+	if m.SystemDisk {
+		n += 2
+	}
 	n += len(m.unknownFields)
 	return n
 }
@@ -7609,6 +7626,26 @@ func (m *MachineStatusSpec_HardwareStatus_BlockDevice) UnmarshalVT(dAtA []byte) 
 			}
 			m.BusPath = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 11:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SystemDisk", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.SystemDisk = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skip(dAtA[iNdEx:])
