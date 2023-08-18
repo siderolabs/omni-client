@@ -276,6 +276,7 @@ message ClusterMachineStatusSpec {
     RUNNING = 4;
     REBOOTING = 7;
     SHUTTING_DOWN = 8;
+    BEFORE_DESTROY = 9;
     DESTROYING = 5;
   }
 

@@ -122,7 +122,8 @@ func clusterMachineStageString(phase specs.ClusterMachineStatusSpec_Stage) strin
 		specs.ClusterMachineStatusSpec_REBOOTING,
 		specs.ClusterMachineStatusSpec_BOOTING:
 		c = color.HiYellowString
-	case specs.ClusterMachineStatusSpec_DESTROYING,
+	case specs.ClusterMachineStatusSpec_BEFORE_DESTROY,
+		specs.ClusterMachineStatusSpec_DESTROYING,
 		specs.ClusterMachineStatusSpec_SHUTTING_DOWN:
 		c = color.HiRedString
 	case specs.ClusterMachineStatusSpec_RUNNING:
