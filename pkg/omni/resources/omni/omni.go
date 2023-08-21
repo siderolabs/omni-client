@@ -13,6 +13,7 @@ func init() {
 	registry.MustRegisterResource(ClusterEndpointType, &ClusterEndpoint{})
 	registry.MustRegisterResource(ClusterDestroyStatusType, &ClusterDestroyStatus{})
 	registry.MustRegisterResource(ClusterType, &Cluster{})
+	registry.MustRegisterResource(ClusterUUIDType, &ClusterUUID{})
 	registry.MustRegisterResource(ClusterSecretsType, &ClusterSecrets{})
 	registry.MustRegisterResource(ClusterStatusType, &ClusterStatus{})
 	registry.MustRegisterResource(ClusterMachineType, &ClusterMachine{})

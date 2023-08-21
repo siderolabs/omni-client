@@ -324,6 +324,11 @@ message ClusterStatusSpec {
   bool controlplaneReady = 6;
 }
 
+// ClusterUUID keeps the UUID of the cluster.
+message ClusterUUID {
+  string uuid = 1;
+}
+
 // ClusterConfigVersion keeps the version of Talos which was used for initial config generation.
 message ClusterConfigVersionSpec {
   string version = 1;
