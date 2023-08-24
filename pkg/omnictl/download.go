@@ -16,7 +16,7 @@ import (
 	"strings"
 
 	"github.com/cosi-project/runtime/pkg/safe"
-	"github.com/siderolabs/gen/slices"
+	"github.com/siderolabs/gen/xslices"
 	"github.com/siderolabs/go-api-signature/pkg/message"
 	keyClient "github.com/siderolabs/go-api-signature/pkg/pgp/client"
 	"github.com/spf13/cobra"
@@ -127,7 +127,7 @@ func findImage(ctx context.Context, client *client.Client, name, arch string) (*
 	}
 
 	if len(result) > 1 {
-		result = slices.FilterInPlace(result, func(val *omni.InstallationMedia) bool {
+		result = xslices.FilterInPlace(result, func(val *omni.InstallationMedia) bool {
 			return val.TypedSpec().Value.Architecture == arch
 		})
 	}
@@ -135,7 +135,7 @@ func findImage(ctx context.Context, client *client.Client, name, arch string) (*
 	if len(result) == 0 {
 		return nil, fmt.Errorf("no image found for %q", name)
 	} else if len(result) > 1 {
-		names := slices.Map(result, func(val *omni.InstallationMedia) string {
+		names := xslices.Map(result, func(val *omni.InstallationMedia) string {
 			return val.TypedSpec().Value.Filename
 		})
 

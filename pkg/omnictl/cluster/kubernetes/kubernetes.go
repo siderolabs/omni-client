@@ -22,9 +22,3 @@ var kubernetesCmd = &cobra.Command{
 func RootCmd() *cobra.Command {
 	return kubernetesCmd
 }
-
-func must(err error) {
-	if err != nil {
-		panic(err)
-	}
-}

@@ -7,6 +7,7 @@ package kubernetes
 import (
 	"context"
 
+	"github.com/siderolabs/gen/ensure"
 	"github.com/spf13/cobra"
 
 	"github.com/siderolabs/omni-client/pkg/client"
@@ -37,6 +38,6 @@ func upgradePreChecks(clusterName string) func(ctx context.Context, client *clie
 
 func init() {
 	upgradePreChecksCmd.Flags().StringVar(&upgradePreChecksCmdFlags.toVersion, "to", "", "target Kubernetes version for the planned upgrade")
-	must(upgradePreChecksCmd.MarkFlagRequired("to"))
+	ensure.NoError(upgradePreChecksCmd.MarkFlagRequired("to"))
 	kubernetesCmd.AddCommand(upgradePreChecksCmd)
 }

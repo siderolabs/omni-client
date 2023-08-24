@@ -14,7 +14,7 @@ import (
 
 	"github.com/cosi-project/runtime/pkg/resource"
 	"github.com/cosi-project/runtime/pkg/state"
-	"github.com/siderolabs/gen/slices"
+	"github.com/siderolabs/gen/xslices"
 	"gopkg.in/yaml.v3"
 
 	"github.com/siderolabs/omni-client/pkg/omni/resources"
@@ -171,7 +171,7 @@ func (t *Template) actualResources(ctx context.Context, st state.State) ([]resou
 		}
 
 		actualResources = append(actualResources,
-			slices.Filter(items.Items,
+			xslices.Filter(items.Items,
 				func(r resource.Resource) bool {
 					return r.Metadata().Owner() == ""
 				},
@@ -235,7 +235,7 @@ func (t *Template) Sync(ctx context.Context, st state.State) (*SyncResult, error
 		return nil, err
 	}
 
-	expectedResourceMap := slices.ToMap(expectedResources, func(r resource.Resource) (string, resource.Resource) {
+	expectedResourceMap := xslices.ToMap(expectedResources, func(r resource.Resource) (string, resource.Resource) {
 		return metadataKey(*r.Metadata()), r
 	})
 
@@ -290,11 +290,11 @@ func (t *Template) Sync(ctx context.Context, st state.State) (*SyncResult, error
 }
 
 func deduplicateDeletion(toDelete []resource.Resource) []resource.Resource {
-	toDeleteMap := slices.ToMap(toDelete, func(r resource.Resource) (string, resource.Resource) {
+	toDeleteMap := xslices.ToMap(toDelete, func(r resource.Resource) (string, resource.Resource) {
 		return metadataKey(*r.Metadata()), r
 	})
 
-	r := slices.Filter(toDelete, func(r resource.Resource) bool {
+	r := xslices.Filter(toDelete, func(r resource.Resource) bool {
 		switch r.Metadata().Type() {
 		case omni.ClusterType:
 			return true

@@ -6,10 +6,11 @@ package models
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/cosi-project/runtime/pkg/resource"
 	"github.com/hashicorp/go-multierror"
-	"github.com/siderolabs/gen/slices"
+	"github.com/siderolabs/gen/xslices"
 
 	"github.com/siderolabs/omni-client/pkg/omni/resources/omni"
 )
@@ -70,8 +71,8 @@ func (l List) Validate() error {
 		multiErr = multierror.Append(multiErr, fmt.Errorf("template should contain 1 workers, got %d", workersCount))
 	}
 
-	cpMachinesSet := slices.ToSet(controlPlaneMachines)
-	intersection := slices.Filter(workerMachines, func(id MachineID) bool {
+	cpMachinesSet := xslices.ToSet(controlPlaneMachines)
+	intersection := xslices.Filter(workerMachines, func(id MachineID) bool {
 		_, ok := cpMachinesSet[id]
 
 		return ok
@@ -82,7 +83,7 @@ func (l List) Validate() error {
 	}
 
 	allMachines := append(slices.Clone(controlPlaneMachines), workerMachines...)
-	allMachinesSet := slices.ToSet(allMachines)
+	allMachinesSet := xslices.ToSet(allMachines)
 
 	for _, model := range l {
 		if machine, ok := model.(*Machine); ok {

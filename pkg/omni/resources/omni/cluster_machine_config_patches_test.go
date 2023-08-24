@@ -11,6 +11,7 @@ import (
 
 	"github.com/cosi-project/runtime/pkg/resource"
 	"github.com/cosi-project/runtime/pkg/resource/protobuf"
+	"github.com/siderolabs/gen/xtesting/must"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v3"
 
@@ -30,7 +31,7 @@ func TestClusterMachineConfigPatchesSpecW_marshal(t *testing.T) {
 	original := omni.NewClusterMachineConfigPatches("default", "1")
 	original.TypedSpec().Value.Patches = []string{newLineAndText, justText}
 
-	out := must(yaml.Marshal(must(resource.MarshalYAML(original))))
+	out := must.Value(yaml.Marshal(must.Value(resource.MarshalYAML(original))(t)))(t)
 
 	var dest protobuf.YAMLResource
 
@@ -40,8 +41,8 @@ func TestClusterMachineConfigPatchesSpecW_marshal(t *testing.T) {
 	fmt.Println(string(out))
 
 	if !resource.Equal(original, dest.Resource()) {
-		t.Log("original -->", string(must(yaml.Marshal(original.Spec()))))
-		t.Log("result  -->", string(must(yaml.Marshal(dest.Resource().Spec()))))
+		t.Log("original -->", string(must.Value(yaml.Marshal(original.Spec()))(t)))
+		t.Log("result  -->", string(must.Value(yaml.Marshal(dest.Resource().Spec()))(t)))
 		t.FailNow()
 	}
 }
@@ -82,12 +83,4 @@ func ExampleClusterMachineSpec_marshal() {
 	//         - |-
 	//           master: 1
 	//           text: "test"
-}
-
-func must[T any](t T, err error) T {
-	if err != nil {
-		panic(err)
-	}
-
-	return t
 }

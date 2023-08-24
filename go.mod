@@ -1,6 +1,6 @@
 module github.com/siderolabs/omni-client
 
-go 1.20
+go 1.21.0
 
 replace (
 	// forked go-yaml that introduces RawYAML interface, which can be used to populate YAML fields using bytes
@@ -14,7 +14,7 @@ require (
 	github.com/ProtonMail/gopenpgp/v2 v2.7.2
 	github.com/adrg/xdg v0.4.0
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cosi-project/runtime v0.3.1
+	github.com/cosi-project/runtime v0.3.2
 	github.com/fatih/color v1.15.0
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.2
@@ -23,7 +23,7 @@ require (
 	github.com/mattn/go-isatty v0.0.19
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/sergi/go-diff v1.3.1
-	github.com/siderolabs/gen v0.4.5
+	github.com/siderolabs/gen v0.4.6
 	github.com/siderolabs/go-api-signature v0.2.6
 	github.com/siderolabs/go-kubeconfig v0.1.0
 	github.com/siderolabs/talos/pkg/machinery v1.5.0-beta.1

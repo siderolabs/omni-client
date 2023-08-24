@@ -17,7 +17,7 @@ import (
 	"github.com/cosi-project/runtime/pkg/state"
 	"github.com/cosi-project/runtime/pkg/state/impl/inmem"
 	"github.com/cosi-project/runtime/pkg/state/impl/namespaced"
-	"github.com/siderolabs/gen/slices"
+	"github.com/siderolabs/gen/xslices"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v3"
@@ -307,17 +307,17 @@ func TestSync(t *testing.T) {
 			"ConfigPatches.omni.sidero.dev(default/400-my-first-cluster-control-planes-patches/my-cp-patch.yaml)",
 			"ConfigPatches.omni.sidero.dev(default/401-my-first-cluster-control-planes-kubespan-enabled)",
 		},
-	}, slices.Map(sync2.Destroy, func(x []resource.Resource) []string { return slices.Map(x, resource.String) }))
+	}, xslices.Map(sync2.Destroy, func(x []resource.Resource) []string { return xslices.Map(x, resource.String) }))
 
 	assert.Equal(t, []string{
 		"Clusters.omni.sidero.dev(default/my-first-cluster)",
 		"ConfigPatches.omni.sidero.dev(default/000-cm-430d882a-51a8-48b3-ae00-90c5b0b5b0b0-install-disk)",
 		"MachineSetNodes.omni.sidero.dev(default/430d882a-51a8-48b3-ab00-d4b5b0b5b0b0)",
-	}, slices.Map(sync2.Update, func(u template.UpdateChange) string { return resource.String(u.New) }))
+	}, xslices.Map(sync2.Update, func(u template.UpdateChange) string { return resource.String(u.New) }))
 
 	assert.Equal(t, []string{
 		"ConfigPatches.omni.sidero.dev(default/400-my-first-cluster-control-planes-kubespan-enabled)",
-	}, slices.Map(sync2.Create, resource.String))
+	}, xslices.Map(sync2.Create, resource.String))
 }
 
 func TestDelete(t *testing.T) {
