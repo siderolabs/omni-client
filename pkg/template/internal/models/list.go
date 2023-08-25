@@ -10,6 +10,7 @@ import (
 
 	"github.com/cosi-project/runtime/pkg/resource"
 	"github.com/hashicorp/go-multierror"
+	"github.com/siderolabs/gen/maps"
 	"github.com/siderolabs/gen/xslices"
 
 	"github.com/siderolabs/omni-client/pkg/omni/resources/omni"
@@ -21,6 +22,8 @@ type List []Model
 // Validate the set of models as a complete template.
 //
 // Each model should be valid, but also the set of models should be complete.
+//
+//nolint:gocyclo,cyclop
 func (l List) Validate() error {
 	var multiErr error
 
@@ -28,14 +31,15 @@ func (l List) Validate() error {
 		multiErr = joinErrors(multiErr, model.Validate())
 	}
 
-	// complete template should contain 1 cluster, 1 controlplane, 1 worker
+	// complete template should contain 1 cluster, 1 controlplane, 0-N workers
 	// and machines mentioned in the controlplane or worker models
 	var (
 		clusterCount         int
 		controlplaneCount    int
-		workersCount         int
 		controlPlaneMachines MachineIDList
-		workerMachines       MachineIDList
+
+		workerMachineSetNameToCount        = make(map[string]int)
+		workerMachineIDToWorkerMachineSets = make(map[MachineID][]string)
 	)
 
 	lockedMachines := make(map[MachineID]struct{})
@@ -49,9 +53,11 @@ func (l List) Validate() error {
 
 			controlPlaneMachines = append(controlPlaneMachines, m.Machines...)
 		case *Workers:
-			workersCount++
+			workerMachineSetNameToCount[m.Name]++
 
-			workerMachines = append(workerMachines, m.Machines...)
+			for _, machineID := range m.Machines {
+				workerMachineIDToWorkerMachineSets[machineID] = append(workerMachineIDToWorkerMachineSets[machineID], m.Name)
+			}
 		case *Machine:
 			if m.Locked {
 				lockedMachines[m.Name] = struct{}{}
@@ -67,11 +73,21 @@ func (l List) Validate() error {
 		multiErr = multierror.Append(multiErr, fmt.Errorf("template should contain 1 controlplane, got %d", controlplaneCount))
 	}
 
-	if workersCount != 1 {
-		multiErr = multierror.Append(multiErr, fmt.Errorf("template should contain 1 workers, got %d", workersCount))
+	for name, count := range workerMachineSetNameToCount {
+		if count > 1 {
+			multiErr = multierror.Append(multiErr, fmt.Errorf("duplicate workers with name %q", name))
+		}
+	}
+
+	for machineID, machineSets := range workerMachineIDToWorkerMachineSets {
+		if len(machineSets) > 1 {
+			multiErr = multierror.Append(multiErr, fmt.Errorf("machine %q is used in multiple workers: %q", machineID, machineSets))
+		}
 	}
 
 	cpMachinesSet := xslices.ToSet(controlPlaneMachines)
+	workerMachines := maps.Keys(workerMachineIDToWorkerMachineSets)
+
 	intersection := xslices.Filter(workerMachines, func(id MachineID) bool {
 		_, ok := cpMachinesSet[id]
 
@@ -165,7 +181,7 @@ func (l List) Translate() ([]resource.Resource, error) {
 	return resourcesList, multiErr
 }
 
-// ClusterName retruns the name of the cluster in the template.
+// ClusterName returns the name of the cluster in the template.
 func (l List) ClusterName() (string, error) {
 	for _, model := range l {
 		if cluster, ok := model.(*Cluster); ok {

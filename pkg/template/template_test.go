@@ -31,6 +31,9 @@ var cluster1 []byte
 //go:embed testdata/cluster2.yaml
 var cluster2 []byte
 
+//go:embed testdata/cluster3.yaml
+var cluster3 []byte
+
 //go:embed testdata/cluster-bad-yaml1.yaml
 var clusterBadYAML1 []byte
 
@@ -46,11 +49,17 @@ var clusterInvalid1 []byte
 //go:embed testdata/cluster-invalid2.yaml
 var clusterInvalid2 []byte
 
+//go:embed testdata/cluster-invalid3.yaml
+var clusterInvalid3 []byte
+
 //go:embed testdata/cluster1-resources.yaml
 var cluster1Resources []byte
 
 //go:embed testdata/cluster2-resources.yaml
 var cluster2Resources []byte
+
+//go:embed testdata/cluster3-resources.yaml
+var cluster3Resources []byte
 
 func TestLoad(t *testing.T) {
 	for _, tt := range []struct { //nolint:govet
@@ -116,6 +125,10 @@ func TestValidate(t *testing.T) {
 			data: cluster2,
 		},
 		{
+			name: "cluster3",
+			data: cluster3,
+		},
+		{
 			name: "clusterInvalid1",
 			data: clusterInvalid1,
 			expectedError: `5 errors occurred:
@@ -164,7 +177,7 @@ machine:
 		{
 			name: "clusterInvalid2",
 			data: clusterInvalid2,
-			expectedError: `4 errors occurred:
+			expectedError: `3 errors occurred:
 	* error validating cluster "": 4 errors occurred:
 	* name is required
 	* error validating Kubernetes version: 1 error occurred:
@@ -192,7 +205,19 @@ machine:
 
 
 	* template should contain 1 controlplane, got 2
-	* template should contain 1 workers, got 0
+
+`,
+		},
+		{
+			name: "clusterInvalid3",
+			data: clusterInvalid3,
+			expectedError: `3 errors occurred:
+	* controlplane is invalid: 1 error occurred:
+	* custom name is not allowed in the controlplane
+
+
+	* duplicate workers with name "additional-1"
+	* machine "b1ed45d8-4e79-4a07-a29a-b1b075843d41" is used in multiple workers: ["additional-1" "additional-2"]
 
 `,
 		},
@@ -235,6 +260,11 @@ func TestTranslate(t *testing.T) {
 			name:     "cluster2",
 			template: cluster2,
 			expected: cluster2Resources,
+		},
+		{
+			name:     "cluster3",
+			template: cluster3,
+			expected: cluster3Resources,
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {

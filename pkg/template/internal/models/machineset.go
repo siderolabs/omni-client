@@ -5,8 +5,6 @@
 package models
 
 import (
-	"fmt"
-
 	"github.com/cosi-project/runtime/pkg/resource"
 	"github.com/siderolabs/gen/pair"
 
@@ -20,6 +18,9 @@ import (
 type MachineSet struct {
 	Meta `yaml:",inline"`
 
+	// Name is the name of the machine set. When empty, the default name will be used.
+	Name string `yaml:"name"`
+
 	// ControlPlane machines.
 	Machines MachineIDList `yaml:"machines"`
 
@@ -29,7 +30,7 @@ type MachineSet struct {
 
 // Translate the model.
 func (machineset *MachineSet) translate(ctx TranslateContext, nameSuffix, roleLabel string) ([]resource.Resource, error) {
-	id := fmt.Sprintf("%s-%s", ctx.ClusterName, nameSuffix)
+	id := omni.AdditionalWorkersResourceID(ctx.ClusterName, nameSuffix)
 
 	machineSet := omni.NewMachineSet(resources.DefaultNamespace, id)
 	machineSet.Metadata().Labels().Set(omni.LabelCluster, ctx.ClusterName)
