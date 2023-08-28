@@ -193,7 +193,7 @@ func filterMedia[T any](ctx context.Context, client *client.Client, check func(v
 
 	var result []T
 
-	for it := safe.IteratorFromList(media); it.Next(); {
+	for it := media.Iterator(); it.Next(); {
 		if val, ok := check(it.Value()); ok {
 			result = append(result, val)
 		}
