@@ -8,13 +8,13 @@ import (
 	"context"
 	"fmt"
 	"regexp"
-	"strings"
 
 	"github.com/cosi-project/runtime/pkg/resource"
 	"github.com/cosi-project/runtime/pkg/state"
 	"github.com/spf13/cobra"
 
 	"github.com/siderolabs/omni-client/pkg/client"
+	"github.com/siderolabs/omni-client/pkg/cosi/labels"
 	"github.com/siderolabs/omni-client/pkg/omni/resources"
 	"github.com/siderolabs/omni-client/pkg/omnictl/internal/access"
 	"github.com/siderolabs/omni-client/pkg/omnictl/output"
@@ -42,36 +42,7 @@ To get a list of all available resource definitions, issue 'omnictl get rd'`,
 	},
 }
 
-// parseSelector parses the selector string into a LabelQuery.
-//
-// This is simplified implementation supporting only basic operations.
-func parseSelector(selector string) ([]resource.LabelQueryOption, error) {
-	var result []resource.LabelQueryOption
-
-	for _, term := range strings.Split(selector, ",") {
-		parsed := false
-
-		for _, op := range []string{"==", "="} {
-			key, value, ok := strings.Cut(term, op)
-			if !ok {
-				continue
-			}
-
-			result = append(result, resource.LabelEqual(key, value))
-			parsed = true
-
-			break
-		}
-
-		if !parsed {
-			return nil, fmt.Errorf("invalid selector term %q", term)
-		}
-	}
-
-	return result, nil
-}
-
-//nolint:gocognit,gocyclo,cyclop
+//nolint:gocognit,gocyclo,cyclop,maintidx
 func getResources(cmd *cobra.Command, args []string) func(ctx context.Context, client *client.Client) error {
 	return func(ctx context.Context, client *client.Client) error {
 		st := client.Omni().State()
@@ -101,10 +72,14 @@ func getResources(cmd *cobra.Command, args []string) func(ctx context.Context, c
 				return fmt.Errorf("cannot specify both resource ID and selector")
 			}
 
-			labelQuery, err = parseSelector(getCmdFlags.selector)
+			var query *resource.LabelQuery
+
+			query, err = labels.ParseQuery(getCmdFlags.selector)
 			if err != nil {
 				return err
 			}
+
+			labelQuery = append(labelQuery, resource.RawLabelQuery(*query))
 		}
 
 		var idQuery []resource.IDQueryOption
