@@ -46,7 +46,7 @@ func (ClusterUUIDExtension) ResourceDefinition() meta.ResourceDefinitionSpec {
 		PrintColumns: []meta.PrintColumn{
 			{
 				Name:     "UUID",
-				JSONPath: ".uuid",
+				JSONPath: "{.uuid}",
 			},
 		},
 	}
