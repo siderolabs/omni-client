@@ -5,6 +5,7 @@ option go_package = "github.com/siderolabs/omni-client/api/omni/specs";
 
 import "talos/machine/machine.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
 
 // MachineSpec describes a Machine.
 message MachineSpec {
@@ -198,6 +199,10 @@ message ClusterSpec {
 
   // Features are the cluster features.
   Features features = 4;
+}
+
+message EtcdBackupEncryptionSpec {
+  bytes encryption_key = 1;
 }
 
 // EtcdBackupHeader describes the backup header.
