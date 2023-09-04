@@ -754,9 +754,7 @@ func (m *InstallationMediaSpec) CloneVT() *InstallationMediaSpec {
 	r := &InstallationMediaSpec{
 		Name:         m.Name,
 		Architecture: m.Architecture,
-		Platform:     m.Platform,
-		Type:         m.Type,
-		Board:        m.Board,
+		Profile:      m.Profile,
 		ContentType:  m.ContentType,
 		Filename:     m.Filename,
 	}
@@ -2208,13 +2206,7 @@ func (this *InstallationMediaSpec) EqualVT(that *InstallationMediaSpec) bool {
 	if this.Architecture != that.Architecture {
 		return false
 	}
-	if this.Platform != that.Platform {
-		return false
-	}
-	if this.Type != that.Type {
-		return false
-	}
-	if this.Board != that.Board {
+	if this.Profile != that.Profile {
 		return false
 	}
 	if this.ContentType != that.ContentType {
@@ -4840,24 +4832,10 @@ func (m *InstallationMediaSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error)
 		i--
 		dAtA[i] = 0x32
 	}
-	if len(m.Board) > 0 {
-		i -= len(m.Board)
-		copy(dAtA[i:], m.Board)
-		i = encodeVarint(dAtA, i, uint64(len(m.Board)))
-		i--
-		dAtA[i] = 0x2a
-	}
-	if len(m.Type) > 0 {
-		i -= len(m.Type)
-		copy(dAtA[i:], m.Type)
-		i = encodeVarint(dAtA, i, uint64(len(m.Type)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.Platform) > 0 {
-		i -= len(m.Platform)
-		copy(dAtA[i:], m.Platform)
-		i = encodeVarint(dAtA, i, uint64(len(m.Platform)))
+	if len(m.Profile) > 0 {
+		i -= len(m.Profile)
+		copy(dAtA[i:], m.Profile)
+		i = encodeVarint(dAtA, i, uint64(len(m.Profile)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -6758,15 +6736,7 @@ func (m *InstallationMediaSpec) SizeVT() (n int) {
 	if l > 0 {
 		n += 1 + l + sov(uint64(l))
 	}
-	l = len(m.Platform)
-	if l > 0 {
-		n += 1 + l + sov(uint64(l))
-	}
-	l = len(m.Type)
-	if l > 0 {
-		n += 1 + l + sov(uint64(l))
-	}
-	l = len(m.Board)
+	l = len(m.Profile)
 	if l > 0 {
 		n += 1 + l + sov(uint64(l))
 	}
@@ -12120,7 +12090,7 @@ func (m *InstallationMediaSpec) UnmarshalVT(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Platform", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Profile", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -12148,71 +12118,7 @@ func (m *InstallationMediaSpec) UnmarshalVT(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Platform = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLength
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLength
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Type = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Board", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLength
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLength
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Board = string(dAtA[iNdEx:postIndex])
+			m.Profile = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 6:
 			if wireType != 2 {

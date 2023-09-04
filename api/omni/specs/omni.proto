@@ -400,9 +400,7 @@ message TalosVersionSpec {
 message InstallationMediaSpec {
   string name = 1;
   string architecture = 2;
-  string platform = 3;
-  string type = 4;
-  string board = 5;
+  string profile = 3;
   string contentType = 6;
   string filename = 7;
 }

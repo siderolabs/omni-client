@@ -65,8 +65,7 @@ To get the full list of available images, look at the output of the following co
 The download command tries to match the passed string in this order:
 
     * name
-    * platform
-    * board
+    * profile
 
 By default it will download amd64 image if there are multiple images available for the same name.
 
@@ -115,12 +114,11 @@ func findImage(ctx context.Context, client *client.Client, name, arch string) (*
 		spec := val.TypedSpec().Value
 
 		if strings.EqualFold(name, "iso") {
-			return val, spec.Type == "iso"
+			return val, spec.Profile == "iso"
 		}
 
 		return val, strings.EqualFold(spec.Name, name) ||
-			strings.EqualFold(spec.Platform, name) ||
-			strings.EqualFold(spec.Board, name)
+			strings.EqualFold(spec.Profile, name)
 	})
 	if err != nil {
 		return nil, err
