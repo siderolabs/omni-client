@@ -194,11 +194,5 @@ func machineSetName(machineSet *omni.MachineSetStatus) string {
 		return "Control Plane"
 	}
 
-	cluster, _ := machineSet.Metadata().Labels().Get(omni.LabelCluster)
-
-	if machineSet.Metadata().ID() == omni.WorkersResourceID(cluster) {
-		return "Workers"
-	}
-
-	return "Additional Workers"
+	return "Workers"
 }

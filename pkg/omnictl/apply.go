@@ -16,7 +16,6 @@ import (
 	"github.com/cosi-project/runtime/pkg/resource/protobuf"
 	"github.com/cosi-project/runtime/pkg/state"
 	"github.com/sergi/go-diff/diffmatchpatch"
-	"github.com/siderolabs/gen/ensure"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
 
@@ -170,7 +169,13 @@ func init() {
 	applyCmd.PersistentFlags().StringVarP(&applyCmdFlags.resFile, "file", "f", "", "Resource file to load and apply")
 	applyCmd.PersistentFlags().BoolVarP(&applyCmdFlags.options.verbose, "verbose", "v", false, "Verbose output")
 	applyCmd.PersistentFlags().BoolVarP(&applyCmdFlags.options.dryRun, "dry-run", "d", false, "Dry run, implies verbose")
-	ensure.NoError(applyCmd.MarkPersistentFlagRequired("file"))
+	must(applyCmd.MarkPersistentFlagRequired("file"))
 
 	RootCmd.AddCommand(applyCmd)
+}
+
+func must(err error) {
+	if err != nil {
+		panic(err)
+	}
 }

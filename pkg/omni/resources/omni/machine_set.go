@@ -16,29 +16,14 @@ import (
 	"github.com/siderolabs/omni-client/pkg/omni/resources"
 )
 
-// ControlPlanesIDSuffix is the suffix for the MachineSet control planes of a cluster.
-//
-// tsgen:ControlPlanesIDSuffix
-const ControlPlanesIDSuffix = "control-planes"
-
-// DefaultWorkersIDSuffix is the suffix for the MachineSet workers of a cluster.
-//
-// tsgen:DefaultWorkersIDSuffix
-const DefaultWorkersIDSuffix = "workers"
-
 // ControlPlanesResourceID returns the name for the MachineSet control planes of a cluster.
 func ControlPlanesResourceID(clusterName string) string {
-	return fmt.Sprintf("%s-%s", clusterName, ControlPlanesIDSuffix)
+	return fmt.Sprintf("%s-control-planes", clusterName)
 }
 
-// WorkersResourceID returns the name for the default MachineSet workers of a cluster.
+// WorkersResourceID returns the name for the MachineSet workers of a cluster.
 func WorkersResourceID(clusterName string) string {
-	return fmt.Sprintf("%s-%s", clusterName, DefaultWorkersIDSuffix)
-}
-
-// AdditionalWorkersResourceID returns the name for the additional MachineSet workers of a cluster.
-func AdditionalWorkersResourceID(clusterName, name string) string {
-	return fmt.Sprintf("%s-%s", clusterName, name)
+	return fmt.Sprintf("%s-workers", clusterName)
 }
 
 // NewMachineSet creates new MachineSet resource.

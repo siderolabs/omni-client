@@ -8,7 +8,6 @@ import (
 	"fmt"
 
 	"github.com/cosi-project/runtime/pkg/resource"
-	"github.com/hashicorp/go-multierror"
 
 	"github.com/siderolabs/omni-client/pkg/omni/resources/omni"
 )
@@ -25,10 +24,6 @@ type ControlPlane struct {
 func (controlplane *ControlPlane) Validate() error {
 	var multiErr error
 
-	if controlplane.Name != "" {
-		multiErr = multierror.Append(multiErr, fmt.Errorf("custom name is not allowed in the controlplane"))
-	}
-
 	multiErr = joinErrors(multiErr, controlplane.Machines.Validate(), controlplane.Patches.Validate())
 
 	if multiErr != nil {
@@ -40,7 +35,7 @@ func (controlplane *ControlPlane) Validate() error {
 
 // Translate the model.
 func (controlplane *ControlPlane) Translate(ctx TranslateContext) ([]resource.Resource, error) {
-	return controlplane.translate(ctx, omni.ControlPlanesIDSuffix, omni.LabelControlPlaneRole)
+	return controlplane.translate(ctx, "control-planes", omni.LabelControlPlaneRole)
 }
 
 func init() {

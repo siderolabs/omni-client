@@ -1,6 +1,6 @@
 module github.com/siderolabs/omni-client
 
-go 1.21.0
+go 1.20
 
 replace (
 	// forked go-yaml that introduces RawYAML interface, which can be used to populate YAML fields using bytes
@@ -11,19 +11,19 @@ replace (
 )
 
 require (
-	github.com/ProtonMail/gopenpgp/v2 v2.7.3
+	github.com/ProtonMail/gopenpgp/v2 v2.7.2
 	github.com/adrg/xdg v0.4.0
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cosi-project/runtime v0.3.4
+	github.com/cosi-project/runtime v0.3.1
 	github.com/fatih/color v1.15.0
 	github.com/google/uuid v1.3.0
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.17.1
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.2
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/hexops/gotextdiff v1.0.3
 	github.com/mattn/go-isatty v0.0.19
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/sergi/go-diff v1.3.1
-	github.com/siderolabs/gen v0.4.6
+	github.com/siderolabs/gen v0.4.5
 	github.com/siderolabs/go-api-signature v0.2.6
 	github.com/siderolabs/go-kubeconfig v0.1.0
 	github.com/siderolabs/talos/pkg/machinery v1.5.0-beta.1
@@ -78,16 +78,16 @@ require (
 	github.com/siderolabs/protoenc v0.2.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
-	golang.org/x/crypto v0.12.0 // indirect
-	golang.org/x/net v0.14.0 // indirect
-	golang.org/x/oauth2 v0.11.0 // indirect
+	golang.org/x/crypto v0.11.0 // indirect
+	golang.org/x/net v0.12.0 // indirect
+	golang.org/x/oauth2 v0.10.0 // indirect
 	golang.org/x/sync v0.3.0 // indirect
 	golang.org/x/sys v0.11.0 // indirect
-	golang.org/x/text v0.12.0 // indirect
+	golang.org/x/text v0.11.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20230822172742-b8732ec3820d // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20230822172742-b8732ec3820d // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20230726155614-23370e0ffb3e // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230726155614-23370e0ffb3e // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	k8s.io/apimachinery v0.27.1 // indirect

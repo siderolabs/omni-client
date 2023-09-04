@@ -5,7 +5,7 @@
 package specs
 
 import (
-	"github.com/siderolabs/gen/xslices"
+	"github.com/siderolabs/gen/slices"
 	"gopkg.in/yaml.v3"
 )
 
@@ -23,7 +23,7 @@ func (c *ClusterMachineSpec) MarshalYAML() (any, error) {
 
 // MarshalYAML implements yaml.Marshaler interface.
 func (c *ClusterMachineConfigPatchesSpec) MarshalYAML() (any, error) {
-	contents := xslices.Map(c.Patches, func(patch string) *yaml.Node {
+	contents := slices.Map(c.Patches, func(patch string) *yaml.Node {
 		style := yaml.FlowStyle
 		if len(patch) > 0 && (patch[0] == '\n' || patch[0] == ' ') {
 			style = yaml.SingleQuotedStyle

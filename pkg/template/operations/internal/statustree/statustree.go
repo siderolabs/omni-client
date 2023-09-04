@@ -102,7 +102,7 @@ func (t NodeWrapper) IsParentOf(r resource.Resource) bool {
 			resource.LabelTerm{
 				Key:   omni.LabelMachineSet,
 				Op:    resource.LabelOpEqual,
-				Value: []string{node.Metadata().ID()},
+				Value: node.Metadata().ID(),
 			})
 	default:
 		return false

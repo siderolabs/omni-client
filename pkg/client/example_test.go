@@ -66,7 +66,7 @@ func Example() {
 		machine *omni.MachineStatus
 	)
 
-	for iter := machines.Iterator(); iter.Next(); {
+	for iter := safe.IteratorFromList(machines); iter.Next(); {
 		item := iter.Value()
 
 		log.Printf("machine %s, connected: %t", item.Metadata(), item.TypedSpec().Value.GetConnected())

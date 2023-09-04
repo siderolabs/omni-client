@@ -17,7 +17,7 @@ import (
 	"github.com/cosi-project/runtime/pkg/state"
 	"github.com/cosi-project/runtime/pkg/state/impl/inmem"
 	"github.com/cosi-project/runtime/pkg/state/impl/namespaced"
-	"github.com/siderolabs/gen/xslices"
+	"github.com/siderolabs/gen/slices"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v3"
@@ -30,9 +30,6 @@ var cluster1 []byte
 
 //go:embed testdata/cluster2.yaml
 var cluster2 []byte
-
-//go:embed testdata/cluster3.yaml
-var cluster3 []byte
 
 //go:embed testdata/cluster-bad-yaml1.yaml
 var clusterBadYAML1 []byte
@@ -49,17 +46,11 @@ var clusterInvalid1 []byte
 //go:embed testdata/cluster-invalid2.yaml
 var clusterInvalid2 []byte
 
-//go:embed testdata/cluster-invalid3.yaml
-var clusterInvalid3 []byte
-
 //go:embed testdata/cluster1-resources.yaml
 var cluster1Resources []byte
 
 //go:embed testdata/cluster2-resources.yaml
 var cluster2Resources []byte
-
-//go:embed testdata/cluster3-resources.yaml
-var cluster3Resources []byte
 
 func TestLoad(t *testing.T) {
 	for _, tt := range []struct { //nolint:govet
@@ -125,10 +116,6 @@ func TestValidate(t *testing.T) {
 			data: cluster2,
 		},
 		{
-			name: "cluster3",
-			data: cluster3,
-		},
-		{
 			name: "clusterInvalid1",
 			data: clusterInvalid1,
 			expectedError: `5 errors occurred:
@@ -177,7 +164,7 @@ machine:
 		{
 			name: "clusterInvalid2",
 			data: clusterInvalid2,
-			expectedError: `3 errors occurred:
+			expectedError: `4 errors occurred:
 	* error validating cluster "": 4 errors occurred:
 	* name is required
 	* error validating Kubernetes version: 1 error occurred:
@@ -205,19 +192,7 @@ machine:
 
 
 	* template should contain 1 controlplane, got 2
-
-`,
-		},
-		{
-			name: "clusterInvalid3",
-			data: clusterInvalid3,
-			expectedError: `3 errors occurred:
-	* controlplane is invalid: 1 error occurred:
-	* custom name is not allowed in the controlplane
-
-
-	* duplicate workers with name "additional-1"
-	* machine "b1ed45d8-4e79-4a07-a29a-b1b075843d41" is used in multiple workers: ["additional-1" "additional-2"]
+	* template should contain 1 workers, got 0
 
 `,
 		},
@@ -260,11 +235,6 @@ func TestTranslate(t *testing.T) {
 			name:     "cluster2",
 			template: cluster2,
 			expected: cluster2Resources,
-		},
-		{
-			name:     "cluster3",
-			template: cluster3,
-			expected: cluster3Resources,
 		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
@@ -337,17 +307,17 @@ func TestSync(t *testing.T) {
 			"ConfigPatches.omni.sidero.dev(default/400-my-first-cluster-control-planes-patches/my-cp-patch.yaml)",
 			"ConfigPatches.omni.sidero.dev(default/401-my-first-cluster-control-planes-kubespan-enabled)",
 		},
-	}, xslices.Map(sync2.Destroy, func(x []resource.Resource) []string { return xslices.Map(x, resource.String) }))
+	}, slices.Map(sync2.Destroy, func(x []resource.Resource) []string { return slices.Map(x, resource.String) }))
 
 	assert.Equal(t, []string{
 		"Clusters.omni.sidero.dev(default/my-first-cluster)",
 		"ConfigPatches.omni.sidero.dev(default/000-cm-430d882a-51a8-48b3-ae00-90c5b0b5b0b0-install-disk)",
 		"MachineSetNodes.omni.sidero.dev(default/430d882a-51a8-48b3-ab00-d4b5b0b5b0b0)",
-	}, xslices.Map(sync2.Update, func(u template.UpdateChange) string { return resource.String(u.New) }))
+	}, slices.Map(sync2.Update, func(u template.UpdateChange) string { return resource.String(u.New) }))
 
 	assert.Equal(t, []string{
 		"ConfigPatches.omni.sidero.dev(default/400-my-first-cluster-control-planes-kubespan-enabled)",
-	}, xslices.Map(sync2.Create, resource.String))
+	}, slices.Map(sync2.Create, resource.String))
 }
 
 func TestDelete(t *testing.T) {

@@ -23,7 +23,9 @@ func resolveResourceType(ctx context.Context, st state.State, resourceType strin
 
 	var matched []*meta.ResourceDefinition
 
-	for it := rds.Iterator(); it.Next(); {
+	it := safe.IteratorFromList(rds)
+
+	for it.Next() {
 		if strings.EqualFold(it.Value().Metadata().ID(), resourceType) {
 			matched = append(matched, it.Value())
 

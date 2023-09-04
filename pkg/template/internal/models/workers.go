@@ -8,7 +8,6 @@ import (
 	"fmt"
 
 	"github.com/cosi-project/runtime/pkg/resource"
-	"github.com/hashicorp/go-multierror"
 
 	"github.com/siderolabs/omni-client/pkg/omni/resources/omni"
 )
@@ -25,10 +24,6 @@ type Workers struct {
 func (workers *Workers) Validate() error {
 	var multiErr error
 
-	if workers.Name == omni.ControlPlanesIDSuffix {
-		multiErr = multierror.Append(multiErr, fmt.Errorf("name %q cannot be used in workers", omni.ControlPlanesIDSuffix))
-	}
-
 	multiErr = joinErrors(multiErr, workers.Machines.Validate(), workers.Patches.Validate())
 
 	if multiErr != nil {
@@ -40,15 +35,7 @@ func (workers *Workers) Validate() error {
 
 // Translate the model.
 func (workers *Workers) Translate(ctx TranslateContext) ([]resource.Resource, error) {
-	var nameSuffix string
-
-	if workers.Name == "" {
-		nameSuffix = omni.DefaultWorkersIDSuffix
-	} else {
-		nameSuffix = workers.Name
-	}
-
-	return workers.translate(ctx, nameSuffix, omni.LabelWorkerRole)
+	return workers.translate(ctx, "workers", omni.LabelWorkerRole)
 }
 
 func init() {

@@ -5,7 +5,6 @@ option go_package = "github.com/siderolabs/omni-client/api/omni/specs";
 
 import "talos/machine/machine.proto";
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/duration.proto";
 
 // MachineSpec describes a Machine.
 message MachineSpec {
@@ -201,16 +200,6 @@ message ClusterSpec {
   Features features = 4;
 }
 
-message EtcdBackupEncryptionSpec {
-  bytes encryption_key = 1;
-}
-
-// EtcdBackupHeader describes the backup header.
-message EtcdBackupHeader {
-  // Version is the version of the backup creator.
-  int64 version = 1;
-}
-
 // ClusterMachineSpec describes a machine attached to a Cluster.
 message ClusterMachineSpec {
   reserved 1;
@@ -333,11 +322,6 @@ message ClusterStatusSpec {
   bool ready = 4;
   bool kubernetesAPIReady = 5;
   bool controlplaneReady = 6;
-}
-
-// ClusterUUID keeps the UUID of the cluster.
-message ClusterUUID {
-  string uuid = 1;
 }
 
 // ClusterConfigVersion keeps the version of Talos which was used for initial config generation.
