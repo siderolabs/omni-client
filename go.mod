@@ -14,7 +14,7 @@ require (
 	github.com/ProtonMail/gopenpgp/v2 v2.7.3
 	github.com/adrg/xdg v0.4.0
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cosi-project/runtime v0.3.4
+	github.com/cosi-project/runtime v0.3.6
 	github.com/fatih/color v1.15.0
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.17.1

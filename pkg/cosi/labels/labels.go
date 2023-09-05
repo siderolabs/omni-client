@@ -7,6 +7,8 @@ package labels
 
 import (
 	"github.com/cosi-project/runtime/pkg/resource"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // ParseQuery creates resource.LabelQuery from the string formatted selector.
@@ -25,7 +27,7 @@ func ParseSelectors(selectors []string) (resource.LabelQueries, error) {
 	for _, selector := range selectors {
 		query, err := ParseQuery(selector)
 		if err != nil {
-			return nil, err
+			return nil, status.Error(codes.InvalidArgument, err.Error())
 		}
 
 		res = append(res, *query)

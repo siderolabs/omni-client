@@ -622,3 +622,9 @@ message FeaturesConfigSpec {
   // EnableWorkloadProxying enables workload proxying feature.
   bool enable_workload_proxying = 1;
 }
+
+// MachineClassSpec describes an Omni MachineClass resource spec.
+message MachineClassSpec {
+  // MatchLabels is the list of labels to match the machine to make it part of the machine class.
+  repeated string match_labels = 1;
+}

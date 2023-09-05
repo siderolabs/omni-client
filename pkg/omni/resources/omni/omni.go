@@ -37,6 +37,7 @@ func init() {
 	registry.MustRegisterResource(KubernetesVersionType, &KubernetesVersion{})
 	registry.MustRegisterResource(MachineLabelsType, &MachineLabels{})
 	registry.MustRegisterResource(MachineType, &Machine{})
+	registry.MustRegisterResource(MachineClassType, &MachineClass{})
 	registry.MustRegisterResource(MachineSetType, &MachineSet{})
 	registry.MustRegisterResource(MachineSetNodeType, &MachineSetNode{})
 	registry.MustRegisterResource(MachineSetStatusType, &MachineSetStatus{})
