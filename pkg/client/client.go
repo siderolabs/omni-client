@@ -75,6 +75,7 @@ func New(ctx context.Context, endpoint string, opts ...Option) (*Client, error) 
 			grpc.MaxCallRecvMsgSize(constants.GRPCMaxMessageSize),
 			grpc.UseCompressor(gzip.Name),
 		),
+		grpc.WithSharedWriteBuffer(true),
 	)
 
 	c := &Client{
