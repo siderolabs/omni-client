@@ -209,3 +209,14 @@ func MachineStatusReconcileLabels(machineStatus *MachineStatus) {
 		return machineStatus.TypedSpec().Value.PlatformMetadata.GetInstanceType()
 	})
 }
+
+// GetMachineStatusSystemDisk looks up a system disk for the Talos machine.
+func GetMachineStatusSystemDisk(res *MachineStatus) string {
+	for _, disk := range res.TypedSpec().Value.Hardware.Blockdevices {
+		if disk.SystemDisk {
+			return disk.LinuxName
+		}
+	}
+
+	return ""
+}
