@@ -199,8 +199,18 @@ message ClusterSpec {
 
   // Features are the cluster features.
   Features features = 4;
+
+  // Backup describes the backup configuration. If it set to null that means that backups are disabled for this cluster.
+  EtcdBackupConf backup_configuration = 5;
 }
 
+// EtcdBackupConf describes the backup configuration.
+message EtcdBackupConf {
+  // Interval is the interval between backups. If not set, backups are disabled.
+  google.protobuf.Duration interval = 1;
+}
+
+// EtcdBackupEncryptionSpec describes the backup encryption.
 message EtcdBackupEncryptionSpec {
   bytes encryption_key = 1;
 }
@@ -209,6 +219,15 @@ message EtcdBackupEncryptionSpec {
 message EtcdBackupHeader {
   // Version is the version of the backup creator.
   int64 version = 1;
+}
+
+// BackupDataSpec describes the data needed for etcd backup.
+message BackupDataSpec {
+  google.protobuf.Duration interval = 1;
+  string cluster_uuid = 2;
+  bytes encryption_key = 3;
+  string aes_cbc_encryption_secret = 4;
+  string secretbox_encryption_secret = 5;
 }
 
 // ClusterMachineSpec describes a machine attached to a Cluster.
@@ -621,6 +640,23 @@ message ExposedServiceSpec {
 message FeaturesConfigSpec {
   // EnableWorkloadProxying enables workload proxying feature.
   bool enable_workload_proxying = 1;
+
+  // EtcdBackupSettings represents omni etcd backup settings.
+  EtcdBackupSettings etcd_backup_settings = 2;
+}
+
+message EtcdBackupSettings {
+  // TickInterval is the interval between checking for backups in controller.
+  google.protobuf.Duration tick_interval = 1;
+
+  // MinInterval is the minimum interval between backups.
+  google.protobuf.Duration min_interval = 2;
+
+  // MaxInterval is the maximum interval between backups.
+  google.protobuf.Duration max_interval = 3;
+
+  // LocalPath is the path to the local directory where backups are stored. It is used only if it's configured.
+  string local_path = 4;
 }
 
 // MachineClassSpec describes an Omni MachineClass resource spec.

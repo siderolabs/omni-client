@@ -7,12 +7,14 @@ package models
 import (
 	"fmt"
 	"strings"
+	"time"
 	"unicode"
 
 	"github.com/blang/semver"
 	"github.com/cosi-project/runtime/pkg/resource"
 	"github.com/hashicorp/go-multierror"
 	"github.com/siderolabs/gen/pair"
+	"google.golang.org/protobuf/types/known/durationpb"
 
 	"github.com/siderolabs/omni-client/api/omni/specs"
 	"github.com/siderolabs/omni-client/pkg/constants"
@@ -52,6 +54,14 @@ type Features struct {
 	DiskEncryption bool `yaml:"diskEncryption"`
 	// EnableWorkloadProxy enables workload proxy.
 	EnableWorkloadProxy bool `yaml:"enableWorkloadProxy"`
+	// BackupConfiguration contains backup configuration settings.
+	BackupConfiguration BackupConfiguration `yaml:"backupConfiguration"`
+}
+
+// BackupConfiguration contains backup configuration settings.
+type BackupConfiguration struct {
+	// Interval configures intervals between backups. If set to 0, etcd backups for this cluser are disabled.
+	Interval time.Duration `yaml:"interval"`
 }
 
 // KubernetesCluster is a Kubernetes cluster settings.
@@ -162,6 +172,10 @@ func (cluster *Cluster) Translate(TranslateContext) ([]resource.Resource, error)
 	}
 
 	clusterResource.TypedSpec().Value.Features.DiskEncryption = cluster.Features.DiskEncryption
+
+	if interval := cluster.Features.BackupConfiguration.Interval; interval > 0 {
+		clusterResource.TypedSpec().Value.BackupConfiguration = &specs.EtcdBackupConf{Interval: durationpb.New(interval)}
+	}
 
 	return append([]resource.Resource{clusterResource}, patches...), nil
 }

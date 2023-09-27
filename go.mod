@@ -14,7 +14,7 @@ require (
 	github.com/ProtonMail/gopenpgp/v2 v2.7.3
 	github.com/adrg/xdg v0.4.0
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cosi-project/runtime v0.3.8
+	github.com/cosi-project/runtime v0.3.9
 	github.com/fatih/color v1.15.0
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.0
@@ -26,7 +26,7 @@ require (
 	github.com/siderolabs/gen v0.4.7
 	github.com/siderolabs/go-api-signature v0.2.6
 	github.com/siderolabs/go-kubeconfig v0.1.0
-	github.com/siderolabs/talos/pkg/machinery v1.5.0-beta.1
+	github.com/siderolabs/talos/pkg/machinery v1.6.0-alpha.0.0.20230825171210-af0cc70e3775
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
 	github.com/xlab/treeprint v1.2.0
@@ -57,7 +57,7 @@ require (
 	github.com/imdario/mergo v0.3.6 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/josharian/native v1.1.0 // indirect
-	github.com/jsimonetti/rtnetlink v1.3.4 // indirect
+	github.com/jsimonetti/rtnetlink v1.3.5 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mdlayher/ethtool v0.1.0 // indirect

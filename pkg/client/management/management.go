@@ -82,8 +82,11 @@ func (client *Client) Talosconfig(ctx context.Context, opts ...TalosconfigOption
 // Omniconfig retrieves Omni configuration for the clients.
 func (client *Client) Omniconfig(ctx context.Context) ([]byte, error) {
 	omniconfig, err := client.conn.Omniconfig(ctx, &emptypb.Empty{})
+	if err != nil {
+		return nil, fmt.Errorf("failed to get omniconfig: %w", err)
+	}
 
-	return omniconfig.Omniconfig, err
+	return omniconfig.Omniconfig, nil
 }
 
 // LogsReader returns the io.Reader for the logs with each message separated by '\n'.

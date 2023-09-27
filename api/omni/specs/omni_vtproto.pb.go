@@ -11,6 +11,7 @@ import (
 	machine "github.com/siderolabs/talos/pkg/machinery/api/machine"
 	proto "google.golang.org/protobuf/proto"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	durationpb "google.golang.org/protobuf/types/known/durationpb"
 )
 
 const (
@@ -301,10 +302,11 @@ func (m *ClusterSpec) CloneVT() *ClusterSpec {
 		return (*ClusterSpec)(nil)
 	}
 	r := &ClusterSpec{
-		InstallImage:      m.InstallImage,
-		KubernetesVersion: m.KubernetesVersion,
-		TalosVersion:      m.TalosVersion,
-		Features:          m.Features.CloneVT(),
+		InstallImage:        m.InstallImage,
+		KubernetesVersion:   m.KubernetesVersion,
+		TalosVersion:        m.TalosVersion,
+		Features:            m.Features.CloneVT(),
+		BackupConfiguration: m.BackupConfiguration.CloneVT(),
 	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
@@ -314,6 +316,29 @@ func (m *ClusterSpec) CloneVT() *ClusterSpec {
 }
 
 func (m *ClusterSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *EtcdBackupConf) CloneVT() *EtcdBackupConf {
+	if m == nil {
+		return (*EtcdBackupConf)(nil)
+	}
+	r := &EtcdBackupConf{}
+	if rhs := m.Interval; rhs != nil {
+		if vtpb, ok := interface{}(rhs).(interface{ CloneVT() *durationpb.Duration }); ok {
+			r.Interval = vtpb.CloneVT()
+		} else {
+			r.Interval = proto.Clone(rhs).(*durationpb.Duration)
+		}
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *EtcdBackupConf) CloneMessageVT() proto.Message {
 	return m.CloneVT()
 }
 
@@ -353,6 +378,38 @@ func (m *EtcdBackupHeader) CloneVT() *EtcdBackupHeader {
 }
 
 func (m *EtcdBackupHeader) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *BackupDataSpec) CloneVT() *BackupDataSpec {
+	if m == nil {
+		return (*BackupDataSpec)(nil)
+	}
+	r := &BackupDataSpec{
+		ClusterUuid:               m.ClusterUuid,
+		AesCbcEncryptionSecret:    m.AesCbcEncryptionSecret,
+		SecretboxEncryptionSecret: m.SecretboxEncryptionSecret,
+	}
+	if rhs := m.Interval; rhs != nil {
+		if vtpb, ok := interface{}(rhs).(interface{ CloneVT() *durationpb.Duration }); ok {
+			r.Interval = vtpb.CloneVT()
+		} else {
+			r.Interval = proto.Clone(rhs).(*durationpb.Duration)
+		}
+	}
+	if rhs := m.EncryptionKey; rhs != nil {
+		tmpBytes := make([]byte, len(rhs))
+		copy(tmpBytes, rhs)
+		r.EncryptionKey = tmpBytes
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *BackupDataSpec) CloneMessageVT() proto.Message {
 	return m.CloneVT()
 }
 
@@ -1235,6 +1292,7 @@ func (m *FeaturesConfigSpec) CloneVT() *FeaturesConfigSpec {
 	}
 	r := &FeaturesConfigSpec{
 		EnableWorkloadProxying: m.EnableWorkloadProxying,
+		EtcdBackupSettings:     m.EtcdBackupSettings.CloneVT(),
 	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
@@ -1244,6 +1302,45 @@ func (m *FeaturesConfigSpec) CloneVT() *FeaturesConfigSpec {
 }
 
 func (m *FeaturesConfigSpec) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *EtcdBackupSettings) CloneVT() *EtcdBackupSettings {
+	if m == nil {
+		return (*EtcdBackupSettings)(nil)
+	}
+	r := &EtcdBackupSettings{
+		LocalPath: m.LocalPath,
+	}
+	if rhs := m.TickInterval; rhs != nil {
+		if vtpb, ok := interface{}(rhs).(interface{ CloneVT() *durationpb.Duration }); ok {
+			r.TickInterval = vtpb.CloneVT()
+		} else {
+			r.TickInterval = proto.Clone(rhs).(*durationpb.Duration)
+		}
+	}
+	if rhs := m.MinInterval; rhs != nil {
+		if vtpb, ok := interface{}(rhs).(interface{ CloneVT() *durationpb.Duration }); ok {
+			r.MinInterval = vtpb.CloneVT()
+		} else {
+			r.MinInterval = proto.Clone(rhs).(*durationpb.Duration)
+		}
+	}
+	if rhs := m.MaxInterval; rhs != nil {
+		if vtpb, ok := interface{}(rhs).(interface{ CloneVT() *durationpb.Duration }); ok {
+			r.MaxInterval = vtpb.CloneVT()
+		} else {
+			r.MaxInterval = proto.Clone(rhs).(*durationpb.Duration)
+		}
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *EtcdBackupSettings) CloneMessageVT() proto.Message {
 	return m.CloneVT()
 }
 
@@ -1719,11 +1816,39 @@ func (this *ClusterSpec) EqualVT(that *ClusterSpec) bool {
 	if !this.Features.EqualVT(that.Features) {
 		return false
 	}
+	if !this.BackupConfiguration.EqualVT(that.BackupConfiguration) {
+		return false
+	}
 	return string(this.unknownFields) == string(that.unknownFields)
 }
 
 func (this *ClusterSpec) EqualMessageVT(thatMsg proto.Message) bool {
 	that, ok := thatMsg.(*ClusterSpec)
+	if !ok {
+		return false
+	}
+	return this.EqualVT(that)
+}
+func (this *EtcdBackupConf) EqualVT(that *EtcdBackupConf) bool {
+	if this == that {
+		return true
+	} else if this == nil || that == nil {
+		return false
+	}
+	if equal, ok := interface{}(this.Interval).(interface {
+		EqualVT(*durationpb.Duration) bool
+	}); ok {
+		if !equal.EqualVT(that.Interval) {
+			return false
+		}
+	} else if !proto.Equal(this.Interval, that.Interval) {
+		return false
+	}
+	return string(this.unknownFields) == string(that.unknownFields)
+}
+
+func (this *EtcdBackupConf) EqualMessageVT(thatMsg proto.Message) bool {
+	that, ok := thatMsg.(*EtcdBackupConf)
 	if !ok {
 		return false
 	}
@@ -1762,6 +1887,43 @@ func (this *EtcdBackupHeader) EqualVT(that *EtcdBackupHeader) bool {
 
 func (this *EtcdBackupHeader) EqualMessageVT(thatMsg proto.Message) bool {
 	that, ok := thatMsg.(*EtcdBackupHeader)
+	if !ok {
+		return false
+	}
+	return this.EqualVT(that)
+}
+func (this *BackupDataSpec) EqualVT(that *BackupDataSpec) bool {
+	if this == that {
+		return true
+	} else if this == nil || that == nil {
+		return false
+	}
+	if equal, ok := interface{}(this.Interval).(interface {
+		EqualVT(*durationpb.Duration) bool
+	}); ok {
+		if !equal.EqualVT(that.Interval) {
+			return false
+		}
+	} else if !proto.Equal(this.Interval, that.Interval) {
+		return false
+	}
+	if this.ClusterUuid != that.ClusterUuid {
+		return false
+	}
+	if string(this.EncryptionKey) != string(that.EncryptionKey) {
+		return false
+	}
+	if this.AesCbcEncryptionSecret != that.AesCbcEncryptionSecret {
+		return false
+	}
+	if this.SecretboxEncryptionSecret != that.SecretboxEncryptionSecret {
+		return false
+	}
+	return string(this.unknownFields) == string(that.unknownFields)
+}
+
+func (this *BackupDataSpec) EqualMessageVT(thatMsg proto.Message) bool {
+	that, ok := thatMsg.(*BackupDataSpec)
 	if !ok {
 		return false
 	}
@@ -2892,11 +3054,60 @@ func (this *FeaturesConfigSpec) EqualVT(that *FeaturesConfigSpec) bool {
 	if this.EnableWorkloadProxying != that.EnableWorkloadProxying {
 		return false
 	}
+	if !this.EtcdBackupSettings.EqualVT(that.EtcdBackupSettings) {
+		return false
+	}
 	return string(this.unknownFields) == string(that.unknownFields)
 }
 
 func (this *FeaturesConfigSpec) EqualMessageVT(thatMsg proto.Message) bool {
 	that, ok := thatMsg.(*FeaturesConfigSpec)
+	if !ok {
+		return false
+	}
+	return this.EqualVT(that)
+}
+func (this *EtcdBackupSettings) EqualVT(that *EtcdBackupSettings) bool {
+	if this == that {
+		return true
+	} else if this == nil || that == nil {
+		return false
+	}
+	if equal, ok := interface{}(this.TickInterval).(interface {
+		EqualVT(*durationpb.Duration) bool
+	}); ok {
+		if !equal.EqualVT(that.TickInterval) {
+			return false
+		}
+	} else if !proto.Equal(this.TickInterval, that.TickInterval) {
+		return false
+	}
+	if equal, ok := interface{}(this.MinInterval).(interface {
+		EqualVT(*durationpb.Duration) bool
+	}); ok {
+		if !equal.EqualVT(that.MinInterval) {
+			return false
+		}
+	} else if !proto.Equal(this.MinInterval, that.MinInterval) {
+		return false
+	}
+	if equal, ok := interface{}(this.MaxInterval).(interface {
+		EqualVT(*durationpb.Duration) bool
+	}); ok {
+		if !equal.EqualVT(that.MaxInterval) {
+			return false
+		}
+	} else if !proto.Equal(this.MaxInterval, that.MaxInterval) {
+		return false
+	}
+	if this.LocalPath != that.LocalPath {
+		return false
+	}
+	return string(this.unknownFields) == string(that.unknownFields)
+}
+
+func (this *EtcdBackupSettings) EqualMessageVT(thatMsg proto.Message) bool {
+	that, ok := thatMsg.(*EtcdBackupSettings)
 	if !ok {
 		return false
 	}
@@ -3784,6 +3995,16 @@ func (m *ClusterSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
+	if m.BackupConfiguration != nil {
+		size, err := m.BackupConfiguration.MarshalToSizedBufferVT(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarint(dAtA, i, uint64(size))
+		i--
+		dAtA[i] = 0x2a
+	}
 	if m.Features != nil {
 		size, err := m.Features.MarshalToSizedBufferVT(dAtA[:i])
 		if err != nil {
@@ -3812,6 +4033,61 @@ func (m *ClusterSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 		i -= len(m.InstallImage)
 		copy(dAtA[i:], m.InstallImage)
 		i = encodeVarint(dAtA, i, uint64(len(m.InstallImage)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *EtcdBackupConf) MarshalVT() (dAtA []byte, err error) {
+	if m == nil {
+		return nil, nil
+	}
+	size := m.SizeVT()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBufferVT(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EtcdBackupConf) MarshalToVT(dAtA []byte) (int, error) {
+	size := m.SizeVT()
+	return m.MarshalToSizedBufferVT(dAtA[:size])
+}
+
+func (m *EtcdBackupConf) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+	if m == nil {
+		return 0, nil
+	}
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.unknownFields != nil {
+		i -= len(m.unknownFields)
+		copy(dAtA[i:], m.unknownFields)
+	}
+	if m.Interval != nil {
+		if vtmsg, ok := interface{}(m.Interval).(interface {
+			MarshalToSizedBufferVT([]byte) (int, error)
+		}); ok {
+			size, err := vtmsg.MarshalToSizedBufferVT(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarint(dAtA, i, uint64(size))
+		} else {
+			encoded, err := proto.Marshal(m.Interval)
+			if err != nil {
+				return 0, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = encodeVarint(dAtA, i, uint64(len(encoded)))
+		}
 		i--
 		dAtA[i] = 0xa
 	}
@@ -3892,6 +4168,89 @@ func (m *EtcdBackupHeader) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 		i = encodeVarint(dAtA, i, uint64(m.Version))
 		i--
 		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *BackupDataSpec) MarshalVT() (dAtA []byte, err error) {
+	if m == nil {
+		return nil, nil
+	}
+	size := m.SizeVT()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBufferVT(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *BackupDataSpec) MarshalToVT(dAtA []byte) (int, error) {
+	size := m.SizeVT()
+	return m.MarshalToSizedBufferVT(dAtA[:size])
+}
+
+func (m *BackupDataSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+	if m == nil {
+		return 0, nil
+	}
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.unknownFields != nil {
+		i -= len(m.unknownFields)
+		copy(dAtA[i:], m.unknownFields)
+	}
+	if len(m.SecretboxEncryptionSecret) > 0 {
+		i -= len(m.SecretboxEncryptionSecret)
+		copy(dAtA[i:], m.SecretboxEncryptionSecret)
+		i = encodeVarint(dAtA, i, uint64(len(m.SecretboxEncryptionSecret)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.AesCbcEncryptionSecret) > 0 {
+		i -= len(m.AesCbcEncryptionSecret)
+		copy(dAtA[i:], m.AesCbcEncryptionSecret)
+		i = encodeVarint(dAtA, i, uint64(len(m.AesCbcEncryptionSecret)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.EncryptionKey) > 0 {
+		i -= len(m.EncryptionKey)
+		copy(dAtA[i:], m.EncryptionKey)
+		i = encodeVarint(dAtA, i, uint64(len(m.EncryptionKey)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.ClusterUuid) > 0 {
+		i -= len(m.ClusterUuid)
+		copy(dAtA[i:], m.ClusterUuid)
+		i = encodeVarint(dAtA, i, uint64(len(m.ClusterUuid)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Interval != nil {
+		if vtmsg, ok := interface{}(m.Interval).(interface {
+			MarshalToSizedBufferVT([]byte) (int, error)
+		}); ok {
+			size, err := vtmsg.MarshalToSizedBufferVT(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarint(dAtA, i, uint64(size))
+		} else {
+			encoded, err := proto.Marshal(m.Interval)
+			if err != nil {
+				return 0, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = encodeVarint(dAtA, i, uint64(len(encoded)))
+		}
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -6038,6 +6397,16 @@ func (m *FeaturesConfigSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
+	if m.EtcdBackupSettings != nil {
+		size, err := m.EtcdBackupSettings.MarshalToSizedBufferVT(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarint(dAtA, i, uint64(size))
+		i--
+		dAtA[i] = 0x12
+	}
 	if m.EnableWorkloadProxying {
 		i--
 		if m.EnableWorkloadProxying {
@@ -6047,6 +6416,112 @@ func (m *FeaturesConfigSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 		}
 		i--
 		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *EtcdBackupSettings) MarshalVT() (dAtA []byte, err error) {
+	if m == nil {
+		return nil, nil
+	}
+	size := m.SizeVT()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBufferVT(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EtcdBackupSettings) MarshalToVT(dAtA []byte) (int, error) {
+	size := m.SizeVT()
+	return m.MarshalToSizedBufferVT(dAtA[:size])
+}
+
+func (m *EtcdBackupSettings) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+	if m == nil {
+		return 0, nil
+	}
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.unknownFields != nil {
+		i -= len(m.unknownFields)
+		copy(dAtA[i:], m.unknownFields)
+	}
+	if len(m.LocalPath) > 0 {
+		i -= len(m.LocalPath)
+		copy(dAtA[i:], m.LocalPath)
+		i = encodeVarint(dAtA, i, uint64(len(m.LocalPath)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.MaxInterval != nil {
+		if vtmsg, ok := interface{}(m.MaxInterval).(interface {
+			MarshalToSizedBufferVT([]byte) (int, error)
+		}); ok {
+			size, err := vtmsg.MarshalToSizedBufferVT(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarint(dAtA, i, uint64(size))
+		} else {
+			encoded, err := proto.Marshal(m.MaxInterval)
+			if err != nil {
+				return 0, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = encodeVarint(dAtA, i, uint64(len(encoded)))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.MinInterval != nil {
+		if vtmsg, ok := interface{}(m.MinInterval).(interface {
+			MarshalToSizedBufferVT([]byte) (int, error)
+		}); ok {
+			size, err := vtmsg.MarshalToSizedBufferVT(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarint(dAtA, i, uint64(size))
+		} else {
+			encoded, err := proto.Marshal(m.MinInterval)
+			if err != nil {
+				return 0, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = encodeVarint(dAtA, i, uint64(len(encoded)))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.TickInterval != nil {
+		if vtmsg, ok := interface{}(m.TickInterval).(interface {
+			MarshalToSizedBufferVT([]byte) (int, error)
+		}); ok {
+			size, err := vtmsg.MarshalToSizedBufferVT(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarint(dAtA, i, uint64(size))
+		} else {
+			encoded, err := proto.Marshal(m.TickInterval)
+			if err != nil {
+				return 0, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = encodeVarint(dAtA, i, uint64(len(encoded)))
+		}
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -6489,6 +6964,30 @@ func (m *ClusterSpec) SizeVT() (n int) {
 		l = m.Features.SizeVT()
 		n += 1 + l + sov(uint64(l))
 	}
+	if m.BackupConfiguration != nil {
+		l = m.BackupConfiguration.SizeVT()
+		n += 1 + l + sov(uint64(l))
+	}
+	n += len(m.unknownFields)
+	return n
+}
+
+func (m *EtcdBackupConf) SizeVT() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Interval != nil {
+		if size, ok := interface{}(m.Interval).(interface {
+			SizeVT() int
+		}); ok {
+			l = size.SizeVT()
+		} else {
+			l = proto.Size(m.Interval)
+		}
+		n += 1 + l + sov(uint64(l))
+	}
 	n += len(m.unknownFields)
 	return n
 }
@@ -6515,6 +7014,42 @@ func (m *EtcdBackupHeader) SizeVT() (n int) {
 	_ = l
 	if m.Version != 0 {
 		n += 1 + sov(uint64(m.Version))
+	}
+	n += len(m.unknownFields)
+	return n
+}
+
+func (m *BackupDataSpec) SizeVT() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Interval != nil {
+		if size, ok := interface{}(m.Interval).(interface {
+			SizeVT() int
+		}); ok {
+			l = size.SizeVT()
+		} else {
+			l = proto.Size(m.Interval)
+		}
+		n += 1 + l + sov(uint64(l))
+	}
+	l = len(m.ClusterUuid)
+	if l > 0 {
+		n += 1 + l + sov(uint64(l))
+	}
+	l = len(m.EncryptionKey)
+	if l > 0 {
+		n += 1 + l + sov(uint64(l))
+	}
+	l = len(m.AesCbcEncryptionSecret)
+	if l > 0 {
+		n += 1 + l + sov(uint64(l))
+	}
+	l = len(m.SecretboxEncryptionSecret)
+	if l > 0 {
+		n += 1 + l + sov(uint64(l))
 	}
 	n += len(m.unknownFields)
 	return n
@@ -7348,6 +7883,54 @@ func (m *FeaturesConfigSpec) SizeVT() (n int) {
 	_ = l
 	if m.EnableWorkloadProxying {
 		n += 2
+	}
+	if m.EtcdBackupSettings != nil {
+		l = m.EtcdBackupSettings.SizeVT()
+		n += 1 + l + sov(uint64(l))
+	}
+	n += len(m.unknownFields)
+	return n
+}
+
+func (m *EtcdBackupSettings) SizeVT() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.TickInterval != nil {
+		if size, ok := interface{}(m.TickInterval).(interface {
+			SizeVT() int
+		}); ok {
+			l = size.SizeVT()
+		} else {
+			l = proto.Size(m.TickInterval)
+		}
+		n += 1 + l + sov(uint64(l))
+	}
+	if m.MinInterval != nil {
+		if size, ok := interface{}(m.MinInterval).(interface {
+			SizeVT() int
+		}); ok {
+			l = size.SizeVT()
+		} else {
+			l = proto.Size(m.MinInterval)
+		}
+		n += 1 + l + sov(uint64(l))
+	}
+	if m.MaxInterval != nil {
+		if size, ok := interface{}(m.MaxInterval).(interface {
+			SizeVT() int
+		}); ok {
+			l = size.SizeVT()
+		} else {
+			l = proto.Size(m.MaxInterval)
+		}
+		n += 1 + l + sov(uint64(l))
+	}
+	l = len(m.LocalPath)
+	if l > 0 {
+		n += 1 + l + sov(uint64(l))
 	}
 	n += len(m.unknownFields)
 	return n
@@ -9750,6 +10333,137 @@ func (m *ClusterSpec) UnmarshalVT(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BackupConfiguration", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.BackupConfiguration == nil {
+				m.BackupConfiguration = &EtcdBackupConf{}
+			}
+			if err := m.BackupConfiguration.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skip(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLength
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.unknownFields = append(m.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EtcdBackupConf) UnmarshalVT(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflow
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EtcdBackupConf: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EtcdBackupConf: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Interval", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Interval == nil {
+				m.Interval = &durationpb.Duration{}
+			}
+			if unmarshal, ok := interface{}(m.Interval).(interface {
+				UnmarshalVT([]byte) error
+			}); ok {
+				if err := unmarshal.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
+					return err
+				}
+			} else {
+				if err := proto.Unmarshal(dAtA[iNdEx:postIndex], m.Interval); err != nil {
+					return err
+				}
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skip(dAtA[iNdEx:])
@@ -9905,6 +10619,231 @@ func (m *EtcdBackupHeader) UnmarshalVT(dAtA []byte) error {
 					break
 				}
 			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skip(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLength
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.unknownFields = append(m.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *BackupDataSpec) UnmarshalVT(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflow
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: BackupDataSpec: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: BackupDataSpec: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Interval", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Interval == nil {
+				m.Interval = &durationpb.Duration{}
+			}
+			if unmarshal, ok := interface{}(m.Interval).(interface {
+				UnmarshalVT([]byte) error
+			}); ok {
+				if err := unmarshal.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
+					return err
+				}
+			} else {
+				if err := proto.Unmarshal(dAtA[iNdEx:postIndex], m.Interval); err != nil {
+					return err
+				}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClusterUuid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ClusterUuid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EncryptionKey", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.EncryptionKey = append(m.EncryptionKey[:0], dAtA[iNdEx:postIndex]...)
+			if m.EncryptionKey == nil {
+				m.EncryptionKey = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AesCbcEncryptionSecret", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AesCbcEncryptionSecret = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SecretboxEncryptionSecret", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SecretboxEncryptionSecret = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skip(dAtA[iNdEx:])
@@ -14874,6 +15813,257 @@ func (m *FeaturesConfigSpec) UnmarshalVT(dAtA []byte) error {
 				}
 			}
 			m.EnableWorkloadProxying = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EtcdBackupSettings", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.EtcdBackupSettings == nil {
+				m.EtcdBackupSettings = &EtcdBackupSettings{}
+			}
+			if err := m.EtcdBackupSettings.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skip(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLength
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.unknownFields = append(m.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EtcdBackupSettings) UnmarshalVT(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflow
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EtcdBackupSettings: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EtcdBackupSettings: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TickInterval", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.TickInterval == nil {
+				m.TickInterval = &durationpb.Duration{}
+			}
+			if unmarshal, ok := interface{}(m.TickInterval).(interface {
+				UnmarshalVT([]byte) error
+			}); ok {
+				if err := unmarshal.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
+					return err
+				}
+			} else {
+				if err := proto.Unmarshal(dAtA[iNdEx:postIndex], m.TickInterval); err != nil {
+					return err
+				}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinInterval", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.MinInterval == nil {
+				m.MinInterval = &durationpb.Duration{}
+			}
+			if unmarshal, ok := interface{}(m.MinInterval).(interface {
+				UnmarshalVT([]byte) error
+			}); ok {
+				if err := unmarshal.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
+					return err
+				}
+			} else {
+				if err := proto.Unmarshal(dAtA[iNdEx:postIndex], m.MinInterval); err != nil {
+					return err
+				}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaxInterval", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.MaxInterval == nil {
+				m.MaxInterval = &durationpb.Duration{}
+			}
+			if unmarshal, ok := interface{}(m.MaxInterval).(interface {
+				UnmarshalVT([]byte) error
+			}); ok {
+				if err := unmarshal.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
+					return err
+				}
+			} else {
+				if err := proto.Unmarshal(dAtA[iNdEx:postIndex], m.MaxInterval); err != nil {
+					return err
+				}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LocalPath", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.LocalPath = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skip(dAtA[iNdEx:])
