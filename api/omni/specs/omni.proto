@@ -251,6 +251,12 @@ message EtcdBackupStatusSpec {
   google.protobuf.Timestamp last_backup_attempt = 4;
 }
 
+// EtcdManualBackupSpec describes the manual backup request.
+message EtcdManualBackupSpec {
+  // BackupAt is the time when the backup should be created.
+  google.protobuf.Timestamp backup_at = 1;
+}
+
 // ClusterMachineSpec describes a machine attached to a Cluster.
 message ClusterMachineSpec {
   reserved 1;
