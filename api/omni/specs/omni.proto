@@ -230,6 +230,27 @@ message BackupDataSpec {
   string secretbox_encryption_secret = 5;
 }
 
+// EtcdBackupStatus describes cluster last backup status.
+message EtcdBackupStatusSpec {
+  enum Status {
+    Unknown = 0;
+    Ok = 1;
+    Error = 2;
+  }
+
+  // Status is the status of the last backup.
+  Status status = 1;
+
+  // Error is the error message if the backup failed.
+  string error = 2;
+
+  // LastBackupTime is the time of the last backup.
+  google.protobuf.Timestamp last_backup_time = 3;
+
+  // LastBackupAttempt is the time of the last backup attempt.
+  google.protobuf.Timestamp last_backup_attempt = 4;
+}
+
 // ClusterMachineSpec describes a machine attached to a Cluster.
 message ClusterMachineSpec {
   reserved 1;

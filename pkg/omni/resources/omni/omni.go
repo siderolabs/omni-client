@@ -27,6 +27,7 @@ func init() {
 	registry.MustRegisterResource(ClusterMachineTemplateType, &ClusterMachineTemplate{})
 	registry.MustRegisterResource(ConfigPatchType, &ConfigPatch{})
 	registry.MustRegisterResource(EtcdBackupEncryptionType, &EtcdBackupEncryption{})
+	registry.MustRegisterResource(EtcdBackupStatusType, &EtcdBackupStatus{})
 	registry.MustRegisterResource(BackupDataType, &BackupData{})
 	registry.MustRegisterResource(ExposedServiceType, &ExposedService{})
 	registry.MustRegisterResource(FeaturesConfigType, &FeaturesConfig{})
