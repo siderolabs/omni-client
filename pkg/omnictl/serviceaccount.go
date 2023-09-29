@@ -50,9 +50,7 @@ var (
 			name := args[0]
 
 			return access.WithClient(func(ctx context.Context, client *client.Client) error {
-				comment := fmt.Sprintf("%s/%s", runtime.GOOS, runtime.GOARCH)
-
-				key, err := pgp.GenerateKey(name, comment, name, serviceAccountCreateFlags.ttl)
+				key, err := generateServiceAccountPGPKey(name)
 				if err != nil {
 					return err
 				}
@@ -94,9 +92,7 @@ var (
 			name := args[0]
 
 			return access.WithClient(func(ctx context.Context, client *client.Client) error {
-				comment := fmt.Sprintf("%s/%s", runtime.GOOS, runtime.GOARCH)
-
-				key, err := pgp.GenerateKey(name, comment, name, serviceAccountRenewFlags.ttl)
+				key, err := generateServiceAccountPGPKey(name)
 				if err != nil {
 					return err
 				}
@@ -181,6 +177,13 @@ var (
 		},
 	}
 )
+
+func generateServiceAccountPGPKey(name string) (*pgp.Key, error) {
+	comment := fmt.Sprintf("%s/%s", runtime.GOOS, runtime.GOARCH)
+	serviceAccountEmail := name + pkgaccess.ServiceAccountNameSuffix
+
+	return pgp.GenerateKey(name, comment, serviceAccountEmail, serviceAccountCreateFlags.ttl)
+}
 
 // encodeServiceAccountKey encodes a service account key to a base64-encoded JSON.
 func encodeServiceAccountKey(name string, key *pgp.Key) (string, error) {

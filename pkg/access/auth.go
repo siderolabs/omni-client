@@ -27,6 +27,11 @@ import (
 	"github.com/siderolabs/omni-client/pkg/version"
 )
 
+const (
+	// ServiceAccountNameSuffix is appended to the name of all service accounts.
+	ServiceAccountNameSuffix = "@serviceaccount.omni.sidero.dev"
+)
+
 // ServiceAccountKey is the JSON representation of a service account key.
 type ServiceAccountKey struct {
 	// Name is the name (identity) of the service account key.
