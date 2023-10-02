@@ -26,6 +26,7 @@ func init() {
 	registry.MustRegisterResource(ClusterMachineTalosVersionType, &ClusterMachineTalosVersion{})
 	registry.MustRegisterResource(ClusterMachineTemplateType, &ClusterMachineTemplate{})
 	registry.MustRegisterResource(ConfigPatchType, &ConfigPatch{})
+	registry.MustRegisterResource(EtcdAuditResultType, &EtcdAuditResult{})
 	registry.MustRegisterResource(EtcdBackupEncryptionType, &EtcdBackupEncryption{})
 	registry.MustRegisterResource(EtcdBackupStatusType, &EtcdBackupStatus{})
 	registry.MustRegisterResource(BackupDataType, &BackupData{})

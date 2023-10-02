@@ -696,3 +696,11 @@ message MachineClassSpec {
 message MachineConfigGenOptionsSpec {
   string install_disk = 1;
 }
+
+// EtcdAuditResult is updated when the etcd audit removes a member.
+//
+// This resource is used to re-trigger the controlplane status checks when etcd audit removes a member.
+message EtcdAuditResultSpec {
+  // EtcdMemberId is the id of the member that was last removed.
+  uint64 etcd_member_id = 1;
+}
