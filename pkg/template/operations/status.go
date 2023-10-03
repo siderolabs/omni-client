@@ -186,16 +186,7 @@ func expandTree(tree treeprint.Tree, item statustree.NodeWrapper, resources map[
 		}
 	}
 
-	slices.SortFunc(nextLevel, func(a, b statustree.NodeWrapper) int {
-		switch {
-		case a.Less(b):
-			return -1
-		case b.Less(a):
-			return +1
-		default:
-			return 0
-		}
-	})
+	slices.SortFunc(nextLevel, statustree.NodeWrapper.Compare)
 
 	for _, item := range nextLevel {
 		subtree := tree.AddBranch(item)

@@ -6,6 +6,7 @@
 package statustree
 
 import (
+	"cmp"
 	"fmt"
 
 	"github.com/cosi-project/runtime/pkg/resource"
@@ -109,28 +110,66 @@ func (t NodeWrapper) IsParentOf(r resource.Resource) bool {
 	}
 }
 
-// Less allows to sort resources in a tree on the same level.
-func (t NodeWrapper) Less(other NodeWrapper) bool {
+// resourceTypeOrder maps resource types to their order (integer) in the tree.
+func resourceTypeOrder(resourceType resource.Type) int {
+	switch resourceType {
+	case omni.ClusterStatusType:
+		return 0
+	case omni.KubernetesUpgradeStatusType:
+		return 1
+	case omni.TalosUpgradeStatusType:
+		return 2
+	case omni.MachineSetStatusType:
+		return 3
+	case omni.LoadBalancerStatusType:
+		return 4
+	case omni.ControlPlaneStatusType:
+		return 5
+	case omni.ClusterMachineStatusType:
+		return 6
+	default:
+		panic("unknown resource type " + resourceType)
+	}
+}
+
+// Compare allows to sort resources in a tree on the same level.
+func (t NodeWrapper) Compare(other NodeWrapper) int {
 	l, r := t.Resource, other.Resource
 	lType, rType := l.Metadata().Type(), r.Metadata().Type()
+	lTypeOrder, rTypeOrder := resourceTypeOrder(lType), resourceTypeOrder(rType)
 
-	switch {
-	case lType == omni.KubernetesUpgradeStatusType:
-		return true
-	case lType == omni.TalosUpgradeStatusType:
-		return rType == omni.KubernetesStatusType
-	case lType == omni.MachineSetStatusType && rType == omni.MachineSetStatusType:
-		_, lIsControlPlane := l.Metadata().Labels().Get(omni.LabelControlPlaneRole)
-
-		return lIsControlPlane
-	case lType == omni.LoadBalancerStatusType:
-		return true
-	case lType == omni.ControlPlaneStatusType:
-		return rType != omni.LoadBalancerStatusType
-	case lType == omni.ClusterMachineStatusType && rType == omni.ClusterMachineStatusType:
-		return l.Metadata().ID() < r.Metadata().ID()
-	default:
-		// :shrug:
-		return false
+	if lTypeOrder != rTypeOrder {
+		return lTypeOrder - rTypeOrder
 	}
+
+	// at this point lType == rType
+	if lType == omni.MachineSetStatusType {
+		// controlplane machine set goes first
+		_, lIsControlPlane := l.Metadata().Labels().Get(omni.LabelControlPlaneRole)
+		_, rIsControlPlane := r.Metadata().Labels().Get(omni.LabelControlPlaneRole)
+
+		if lIsControlPlane {
+			return -1
+		}
+
+		if rIsControlPlane {
+			return 1
+		}
+
+		// now, default workers go first
+		clusterName, _ := l.Metadata().Labels().Get(omni.LabelCluster)
+		lIsDefaultWorkers := l.Metadata().ID() == omni.WorkersResourceID(clusterName)
+		rIsDefaultWorkers := r.Metadata().ID() == omni.WorkersResourceID(clusterName)
+
+		if lIsDefaultWorkers {
+			return -1
+		}
+
+		if rIsDefaultWorkers {
+			return 1
+		}
+	}
+
+	// compare by name
+	return cmp.Compare(l.Metadata().ID(), r.Metadata().ID())
 }
