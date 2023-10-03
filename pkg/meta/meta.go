@@ -5,6 +5,9 @@
 // Package meta keeps Talos meta partition utils.
 package meta
 
+// StateEncryptionConfig is github.com/siderolabs/talos/internal/pkg/meta.StateEncryptionConfig.
+const StateEncryptionConfig = 9
+
 // LabelsMeta is github.com/siderolabs/talos/internal/pkg/meta.UserReserved1.
 // Omni stores initial machine labels under that key.
 const LabelsMeta = 12
