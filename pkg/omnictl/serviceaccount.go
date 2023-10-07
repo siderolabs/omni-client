@@ -6,8 +6,6 @@ package omnictl
 
 import (
 	"context"
-	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"os"
 	"runtime"
@@ -15,6 +13,7 @@ import (
 	"time"
 
 	"github.com/siderolabs/go-api-signature/pkg/pgp"
+	"github.com/siderolabs/go-api-signature/pkg/serviceaccount"
 	"github.com/spf13/cobra"
 
 	pkgaccess "github.com/siderolabs/omni-client/pkg/access"
@@ -65,7 +64,7 @@ var (
 					return err
 				}
 
-				encodedKey, err := encodeServiceAccountKey(name, key)
+				encodedKey, err := serviceaccount.Encode(name, key)
 				if err != nil {
 					return err
 				}
@@ -74,7 +73,7 @@ var (
 				fmt.Printf("\n")
 				fmt.Printf("Set the following environment variables to use the service account:\n")
 				fmt.Printf("%s=%s\n", access.EndpointEnvVar, client.Endpoint())
-				fmt.Printf("%s=%s\n", access.ServiceAccountKeyEnvVar, encodedKey)
+				fmt.Printf("%s=%s\n", serviceaccount.OmniServiceAccountKeyEnvVar, encodedKey)
 				fmt.Printf("\n")
 				fmt.Printf("Note: Store the service account key securely, it will not be displayed again\n")
 
@@ -107,7 +106,7 @@ var (
 					return err
 				}
 
-				encodedKey, err := encodeServiceAccountKey(name, key)
+				encodedKey, err := serviceaccount.Encode(name, key)
 				if err != nil {
 					return err
 				}
@@ -116,7 +115,7 @@ var (
 				fmt.Printf("\n")
 				fmt.Printf("Set the following environment variables to use the service account:\n")
 				fmt.Printf("%s=%s\n", access.EndpointEnvVar, client.Endpoint())
-				fmt.Printf("%s=%s\n", access.ServiceAccountKeyEnvVar, encodedKey)
+				fmt.Printf("%s=%s\n", serviceaccount.OmniServiceAccountKeyEnvVar, encodedKey)
 				fmt.Printf("\n")
 				fmt.Printf("Note: Store the service account key securely, it will not be displayed again\n")
 
@@ -183,26 +182,6 @@ func generateServiceAccountPGPKey(name string) (*pgp.Key, error) {
 	serviceAccountEmail := name + pkgaccess.ServiceAccountNameSuffix
 
 	return pgp.GenerateKey(name, comment, serviceAccountEmail, serviceAccountCreateFlags.ttl)
-}
-
-// encodeServiceAccountKey encodes a service account key to a base64-encoded JSON.
-func encodeServiceAccountKey(name string, key *pgp.Key) (string, error) {
-	armoredPrivateKey, err := key.Armor()
-	if err != nil {
-		return "", fmt.Errorf("failed to armor private key: %w", err)
-	}
-
-	saKey := pkgaccess.ServiceAccountKey{
-		Name:   name,
-		PGPKey: armoredPrivateKey,
-	}
-
-	saKeyJSON, err := json.Marshal(saKey)
-	if err != nil {
-		return "", err
-	}
-
-	return base64.StdEncoding.EncodeToString(saKeyJSON), nil
 }
 
 func init() {

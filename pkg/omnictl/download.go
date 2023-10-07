@@ -18,10 +18,10 @@ import (
 	"github.com/cosi-project/runtime/pkg/safe"
 	"github.com/siderolabs/gen/xslices"
 	"github.com/siderolabs/go-api-signature/pkg/message"
-	keyClient "github.com/siderolabs/go-api-signature/pkg/pgp/client"
+	pgpclient "github.com/siderolabs/go-api-signature/pkg/pgp/client"
+	"github.com/siderolabs/go-api-signature/pkg/serviceaccount"
 	"github.com/spf13/cobra"
 
-	pkgaccess "github.com/siderolabs/omni-client/pkg/access"
 	"github.com/siderolabs/omni-client/pkg/client"
 	"github.com/siderolabs/omni-client/pkg/omni/resources/omni"
 	"github.com/siderolabs/omni-client/pkg/omnictl/config"
@@ -236,31 +236,9 @@ func createRequest(ctx context.Context, client *client.Client, image *omni.Insta
 }
 
 func signRequest(req *http.Request) error {
-	contextName, configCtx, err := currentConfigCtx()
+	identity, signer, err := getSigner()
 	if err != nil {
 		return err
-	}
-
-	var (
-		identity string
-		signer   message.Signer
-	)
-
-	serviceAccountKey := os.Getenv(access.ServiceAccountKeyEnvVar)
-	if serviceAccountKey != "" {
-		identity, signer, err = pkgaccess.ParseServiceAccountKey(serviceAccountKey)
-		if err != nil {
-			return fmt.Errorf("failed to parse service account key: %w", err)
-		}
-	} else {
-		identity = configCtx.Auth.SideroV1.Identity
-
-		provider := keyClient.NewKeyProvider("omni/keys")
-
-		signer, err = provider.ReadValidKey(contextName, identity)
-		if err != nil {
-			return fmt.Errorf("failed to read key: %w", err)
-		}
 	}
 
 	msg, err := message.NewHTTP(req)
@@ -269,6 +247,35 @@ func signRequest(req *http.Request) error {
 	}
 
 	return msg.Sign(identity, signer)
+}
+
+// getSigner returns the identity and the signer to use for signing the request.
+//
+// It can be a service account or a user key.
+func getSigner() (identity string, signer message.Signer, err error) {
+	envKey, valueBase64 := serviceaccount.GetFromEnv()
+	if envKey != "" {
+		sa, saErr := serviceaccount.Decode(valueBase64)
+		if saErr != nil {
+			return "", nil, saErr
+		}
+
+		return sa.Name, sa.Key, nil
+	}
+
+	contextName, configCtx, err := currentConfigCtx()
+	if err != nil {
+		return "", nil, err
+	}
+
+	provider := pgpclient.NewKeyProvider("omni/keys")
+
+	key, keyErr := provider.ReadValidKey(contextName, configCtx.Auth.SideroV1.Identity)
+	if keyErr != nil {
+		return "", nil, fmt.Errorf("failed to read key: %w", err)
+	}
+
+	return configCtx.Auth.SideroV1.Identity, key, nil
 }
 
 func getMachineLabels() ([]byte, error) {

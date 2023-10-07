@@ -43,8 +43,6 @@ func Example() {
 
 	// Creating a new client.
 	client, err := client.New(ctx, "https://<account>.omni.siderolabs.io:443", client.WithServiceAccount(
-		"automation", // This is context name, same as Talos or Kubernetes context, it can be named any way, but should be unique for each account
-		// as Omni client stores generated keys there.
 		"base64encodedkey", // From the generated service account.
 	))
 	if err != nil {

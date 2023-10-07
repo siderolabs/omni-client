@@ -6,60 +6,81 @@
 package client
 
 import (
-	"google.golang.org/grpc"
+	"context"
 
-	"github.com/siderolabs/omni-client/pkg/access"
+	"github.com/cosi-project/runtime/pkg/safe"
+	"github.com/siderolabs/go-api-signature/pkg/client/interceptor"
+	"github.com/siderolabs/go-api-signature/pkg/pgp/client"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
+
+	"github.com/siderolabs/omni-client/pkg/client/omni"
+	authres "github.com/siderolabs/omni-client/pkg/omni/resources/auth"
+	"github.com/siderolabs/omni-client/pkg/version"
 )
 
-// Option is the function that generates gRPC dial options.
-type Option func() ([]grpc.DialOption, error)
+// Options is the options for the client.
+type Options struct {
+	BasicAuth string
+
+	AuthInterceptor *interceptor.Interceptor
+
+	AdditionalGRPCDialOptions []grpc.DialOption
+}
+
+// Option is a functional option for the client.
+type Option func(*Options)
 
 // WithBasicAuth creates the client with basic auth.
 func WithBasicAuth(auth string) Option {
-	return func() ([]grpc.DialOption, error) {
-		return []grpc.DialOption{grpc.WithPerRPCCredentials(BasicAuth{
-			auth: auth,
-		})}, nil
+	return func(options *Options) {
+		options.BasicAuth = auth
 	}
 }
 
-// WithServiceAccount creates the client for a context with the given service account key.
-func WithServiceAccount(contextName, key string) Option {
-	return func() ([]grpc.DialOption, error) {
-		interceptorConfig, err := access.NewAuthInterceptorConfig(contextName, "", key)
-		if err != nil {
-			return nil, err
-		}
-
-		authInterceptor := interceptorConfig.Interceptor()
-
-		return []grpc.DialOption{
-			grpc.WithUnaryInterceptor(authInterceptor.Unary()),
-			grpc.WithStreamInterceptor(authInterceptor.Stream()),
-		}, nil
+// WithServiceAccount creates the client authenticating with the given service account.
+func WithServiceAccount(serviceAccountBase64 string) Option {
+	return func(options *Options) {
+		options.AuthInterceptor = signatureAuthInterceptor("", "", serviceAccountBase64)
 	}
 }
 
-// WithUserAccount used for accessing Omni by a human.
+// WithUserAccount is used for accessing Omni by a human.
 func WithUserAccount(contextName, identity string) Option {
-	return func() ([]grpc.DialOption, error) {
-		interceptorConfig, err := access.NewAuthInterceptorConfig(contextName, identity, "")
-		if err != nil {
-			return nil, err
-		}
-
-		authInterceptor := interceptorConfig.Interceptor()
-
-		return []grpc.DialOption{
-			grpc.WithUnaryInterceptor(authInterceptor.Unary()),
-			grpc.WithStreamInterceptor(authInterceptor.Stream()),
-		}, nil
+	return func(options *Options) {
+		options.AuthInterceptor = signatureAuthInterceptor(contextName, identity, "")
 	}
 }
 
-// WithGrpcOpts creates the client with basic auth.
+func signatureAuthInterceptor(contextName, identity, serviceAccountBase64 string) *interceptor.Interceptor {
+	return interceptor.New(interceptor.Options{
+		AuthEnabledFunc: func(ctx context.Context, cc *grpc.ClientConn) (bool, error) {
+			st := omni.NewClient(cc).State()
+			confPtr := authres.NewAuthConfig().Metadata()
+
+			// clear the outgoing metadata to prevent the request from being proxied to the Talos backend
+			ctx = metadata.NewOutgoingContext(ctx, metadata.Pairs())
+
+			authConfig, err := safe.StateGet[*authres.Config](ctx, st, confPtr)
+			if err != nil {
+				return false, err
+			}
+
+			enabled := authres.Enabled(authConfig)
+
+			return enabled, nil
+		},
+		UserKeyProvider:      client.NewKeyProvider("omni/keys"),
+		ContextName:          contextName,
+		Identity:             identity,
+		ClientName:           version.Name + " " + version.Tag,
+		ServiceAccountBase64: serviceAccountBase64,
+	})
+}
+
+// WithGrpcOpts adds additional gRPC dial options to the client.
 func WithGrpcOpts(opts ...grpc.DialOption) Option {
-	return func() ([]grpc.DialOption, error) {
-		return opts, nil
+	return func(options *Options) {
+		options.AdditionalGRPCDialOptions = append(options.AdditionalGRPCDialOptions, opts...)
 	}
 }

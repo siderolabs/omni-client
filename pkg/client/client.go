@@ -50,27 +50,37 @@ func New(ctx context.Context, endpoint string, opts ...Option) (*Client, error) 
 		u.Host = net.JoinHostPort(u.Host, "80")
 	}
 
-	grpcOpts := []grpc.DialOption{}
+	var (
+		options         Options
+		grpcDialOptions []grpc.DialOption
+	)
 
 	for _, opt := range opts {
-		var o []grpc.DialOption
-
-		o, err = opt()
-		if err != nil {
-			return nil, err
-		}
-
-		grpcOpts = append(grpcOpts, o...)
+		opt(&options)
 	}
+
+	if options.BasicAuth != "" {
+		grpcDialOptions = append(grpcDialOptions, grpc.WithPerRPCCredentials(BasicAuth{
+			auth: options.BasicAuth,
+		}))
+	}
+
+	if options.AuthInterceptor != nil {
+		grpcDialOptions = append(grpcDialOptions,
+			grpc.WithUnaryInterceptor(options.AuthInterceptor.Unary()),
+			grpc.WithStreamInterceptor(options.AuthInterceptor.Stream()))
+	}
+
+	grpcDialOptions = append(grpcDialOptions, options.AdditionalGRPCDialOptions...)
 
 	switch u.Scheme {
 	case "https":
-		grpcOpts = append(grpcOpts, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{})))
+		grpcDialOptions = append(grpcDialOptions, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{})))
 	default:
-		grpcOpts = append(grpcOpts, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		grpcDialOptions = append(grpcDialOptions, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	}
 
-	grpcOpts = append(grpcOpts,
+	grpcDialOptions = append(grpcDialOptions,
 		grpc.WithDefaultCallOptions(
 			grpc.MaxCallRecvMsgSize(constants.GRPCMaxMessageSize),
 			grpc.UseCompressor(gzip.Name),
@@ -82,7 +92,7 @@ func New(ctx context.Context, endpoint string, opts ...Option) (*Client, error) 
 		endpoint: u.String(),
 	}
 
-	c.conn, err = grpc.DialContext(ctx, u.Host, grpcOpts...)
+	c.conn, err = grpc.DialContext(ctx, u.Host, grpcDialOptions...)
 	if err != nil {
 		return nil, err
 	}

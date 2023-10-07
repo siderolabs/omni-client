@@ -25,8 +25,6 @@ import (
 const (
 	// EndpointEnvVar is the name of the environment variable that contains the Omni endpoint.
 	EndpointEnvVar = "OMNI_ENDPOINT"
-	// ServiceAccountKeyEnvVar is the name of the environment variable that contains the base64-encoded service account key JSON.
-	ServiceAccountKeyEnvVar = "OMNI_SERVICE_ACCOUNT_KEY"
 )
 
 type clientOptions struct {
@@ -83,12 +81,7 @@ func WithClient(f func(ctx context.Context, client *client.Client) error, client
 			opts = append(opts, client.WithBasicAuth(configCtx.Auth.Basic))
 		}
 
-		serviceAccountKey := os.Getenv(ServiceAccountKeyEnvVar)
-		if serviceAccountKey != "" {
-			opts = append(opts, client.WithServiceAccount(contextName, serviceAccountKey))
-		} else {
-			opts = append(opts, client.WithUserAccount(contextName, configCtx.Auth.SideroV1.Identity))
-		}
+		opts = append(opts, client.WithUserAccount(contextName, configCtx.Auth.SideroV1.Identity))
 
 		if configCtx.URL == config.PlaceholderURL {
 			return fmt.Errorf("context %q has not been configured, you will need to set it manually", contextName)

@@ -1,6 +1,6 @@
 module github.com/siderolabs/omni-client
 
-go 1.21.0
+go 1.21.1
 
 replace (
 	// forked go-yaml that introduces RawYAML interface, which can be used to populate YAML fields using bytes
@@ -11,7 +11,6 @@ replace (
 )
 
 require (
-	github.com/ProtonMail/gopenpgp/v2 v2.7.3
 	github.com/adrg/xdg v0.4.0
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cosi-project/runtime v0.3.9
@@ -21,18 +20,17 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/hexops/gotextdiff v1.0.3
 	github.com/mattn/go-isatty v0.0.19
-	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/sergi/go-diff v1.3.1
 	github.com/siderolabs/gen v0.4.7
-	github.com/siderolabs/go-api-signature v0.2.6
+	github.com/siderolabs/go-api-signature v0.3.0
 	github.com/siderolabs/go-kubeconfig v0.1.0
-	github.com/siderolabs/talos/pkg/machinery v1.6.0-alpha.0.0.20230825171210-af0cc70e3775
+	github.com/siderolabs/talos/pkg/machinery v1.6.0-alpha.0.0.20231006101524-c14a5d4f79a3
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
 	github.com/xlab/treeprint v1.2.0
 	go.uber.org/zap v1.26.0
 	golang.org/x/term v0.12.0
-	google.golang.org/grpc v1.58.1
+	google.golang.org/grpc v1.58.2
 	google.golang.org/protobuf v1.31.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/client-go v0.27.1
@@ -41,6 +39,7 @@ require (
 require (
 	github.com/ProtonMail/go-crypto v0.0.0-20230717121422-5aa5874ade95 // indirect
 	github.com/ProtonMail/go-mime v0.0.0-20230322103455-7d82a3887f2f // indirect
+	github.com/ProtonMail/gopenpgp/v2 v2.7.3 // indirect
 	github.com/cloudflare/circl v1.3.3 // indirect
 	github.com/containerd/go-cni v1.1.9 // indirect
 	github.com/containernetworking/cni v1.1.2 // indirect
@@ -66,7 +65,8 @@ require (
 	github.com/mdlayher/socket v0.4.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/opencontainers/runtime-spec v1.0.3-0.20210326190908-1c3f411f0417 // indirect
+	github.com/opencontainers/runtime-spec v1.1.0-rc.1 // indirect
+	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
@@ -87,7 +87,7 @@ require (
 	golang.org/x/time v0.3.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20230822172742-b8732ec3820d // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20230822172742-b8732ec3820d // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230920204549-e6e6cdab5c13 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	k8s.io/apimachinery v0.27.1 // indirect
