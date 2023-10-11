@@ -1,6 +1,6 @@
 module github.com/siderolabs/omni-client
 
-go 1.21.1
+go 1.21.3
 
 replace (
 	// forked go-yaml that introduces RawYAML interface, which can be used to populate YAML fields using bytes
@@ -30,7 +30,7 @@ require (
 	github.com/xlab/treeprint v1.2.0
 	go.uber.org/zap v1.26.0
 	golang.org/x/term v0.12.0
-	google.golang.org/grpc v1.58.2
+	google.golang.org/grpc v1.58.3
 	google.golang.org/protobuf v1.31.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/client-go v0.27.1
