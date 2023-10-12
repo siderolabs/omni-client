@@ -8,6 +8,7 @@ package system
 import "github.com/siderolabs/omni-client/pkg/omni/resources/registry"
 
 func init() {
+	registry.MustRegisterResource(CertRefreshTickType, &CertRefreshTick{})
 	registry.MustRegisterResource(DBVersionType, &DBVersion{})
 	registry.MustRegisterResource(SysVersionType, &SysVersion{})
 }

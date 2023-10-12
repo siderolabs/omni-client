@@ -13,3 +13,7 @@ message SysVersionSpec {
   string backend_version = 1;
   string instance_name = 2;
 }
+
+// CertRefreshTickSpec is a certificate refresh tick.
+message CertRefreshTickSpec {
+}

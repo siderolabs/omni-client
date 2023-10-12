@@ -5,6 +5,8 @@
 // Package constants contains global backend constants.
 package constants
 
+import "time"
+
 const (
 	// TalosRegistry is the default Talos repository URL.
 	TalosRegistry = "ghcr.io/siderolabs/installer"
@@ -64,3 +66,6 @@ const (
 	// tsgen:EncryptionConfigDescription
 	EncryptionConfigDescription = "Makes machine encrypt disks using Omni as a KMS server"
 )
+
+// CertificateValidityTime is the default validity time for certificates.
+const CertificateValidityTime = time.Hour * 24 * 365 // 1 year
