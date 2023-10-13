@@ -153,3 +153,13 @@ message AccessPolicySpec {
    repeated AccessPolicyRule rules = 3;
    repeated AccessPolicyTest tests = 4;
 }
+
+// SAMLLabelRuleSpec describes a rule on how to map Identity labels to Omni roles.
+//
+message SAMLLabelRuleSpec {
+  // MatchLabels is the list of labels to match the user's Identity against this rule.
+  repeated string match_labels = 1;
+
+  // AssignRoleOnRegistration is the role to be assigned to the user if this rule matches.
+  string assign_role_on_registration = 2;
+}
