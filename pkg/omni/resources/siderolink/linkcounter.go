@@ -13,34 +13,32 @@ import (
 	"github.com/siderolabs/omni-client/api/omni/specs"
 )
 
-// NewLinkCounter creates new LinkCounter state.
-func NewLinkCounter(ns, id string) *LinkCounter {
-	return typed.NewResource[LinkCounterSpec, LinkCounterExtension](
-		resource.NewMetadata(ns, LinkCounterType, id, resource.VersionUndefined),
+// NOTE: This resources is not used anymore, but still used in the migration code.
+
+// NewDeprecatedLinkCounter creates new LinkCounter state.
+func NewDeprecatedLinkCounter(ns, id string) *DeprecatedLinkCounter {
+	return typed.NewResource[DeprecatedLinkCounterSpec, DeprecatedLinkCounterExtension](
+		resource.NewMetadata(ns, DeprecatedLinkCounterType, id, resource.VersionUndefined),
 		protobuf.NewResourceSpec(&specs.SiderolinkCounterSpec{}),
 	)
 }
 
-// LinkCounterType is the type of LinkCounter resource.
-//
-// tsgen:SiderolinkCounterResourceType
-const LinkCounterType = resource.Type("LinkCounters.omni.sidero.dev")
+// DeprecatedLinkCounterType is the type of LinkCounter resource.
+const DeprecatedLinkCounterType = resource.Type("LinkCounters.omni.sidero.dev")
 
-// LinkCounter resource keeps connected nodes state.
-//
-// LinkCounter resource ID is a machine UUID.
-type LinkCounter = typed.Resource[LinkCounterSpec, LinkCounterExtension]
+// DeprecatedLinkCounter resource was removed, but still used only in the migration code.
+type DeprecatedLinkCounter = typed.Resource[DeprecatedLinkCounterSpec, DeprecatedLinkCounterExtension]
 
-// LinkCounterSpec wraps specs.SiderolinkSpec.
-type LinkCounterSpec = protobuf.ResourceSpec[specs.SiderolinkCounterSpec, *specs.SiderolinkCounterSpec]
+// DeprecatedLinkCounterSpec wraps specs.SiderolinkSpec.
+type DeprecatedLinkCounterSpec = protobuf.ResourceSpec[specs.SiderolinkCounterSpec, *specs.SiderolinkCounterSpec]
 
-// LinkCounterExtension providers auxiliary methods for LinkCounter resource.
-type LinkCounterExtension struct{}
+// DeprecatedLinkCounterExtension providers auxiliary methods for LinkCounter resource.
+type DeprecatedLinkCounterExtension struct{}
 
 // ResourceDefinition implements [typed.Extension] interface.
-func (LinkCounterExtension) ResourceDefinition() meta.ResourceDefinitionSpec {
+func (DeprecatedLinkCounterExtension) ResourceDefinition() meta.ResourceDefinitionSpec {
 	return meta.ResourceDefinitionSpec{
-		Type:             LinkCounterType,
+		Type:             DeprecatedLinkCounterType,
 		Aliases:          []resource.Type{},
 		DefaultNamespace: CounterNamespace,
 		PrintColumns: []meta.PrintColumn{

@@ -18,10 +18,10 @@ import (
 )
 
 // NewMachineStatusLink creates new MachineStatusLink resource.
-func NewMachineStatusLink(ns string, id resource.ID, spec *specs.MachineStatusLinkSpec) *MachineStatusLink {
+func NewMachineStatusLink(ns string, id resource.ID) *MachineStatusLink {
 	return typed.NewResource[MachineStatusLinkSpec, MachineStatusLinkExtension](
 		resource.NewMetadata(ns, MachineStatusLinkType, id, resource.VersionUndefined),
-		protobuf.NewResourceSpec(spec),
+		protobuf.NewResourceSpec(&specs.MachineStatusLinkSpec{}),
 	)
 }
 
@@ -44,7 +44,7 @@ func (MachineStatusLinkExtension) ResourceDefinition() meta.ResourceDefinitionSp
 	return meta.ResourceDefinitionSpec{
 		Type:             MachineStatusLinkType,
 		Aliases:          []resource.Type{},
-		DefaultNamespace: resources.EphemeralNamespace,
+		DefaultNamespace: resources.MetricsNamespace,
 		PrintColumns: []meta.PrintColumn{
 			{
 				Name:     "Bytes Received",
