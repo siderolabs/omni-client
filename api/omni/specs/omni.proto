@@ -704,3 +704,9 @@ message EtcdAuditResultSpec {
   // EtcdMemberId is the id of the member that was last removed.
   uint64 etcd_member_id = 1;
 }
+
+// KubeconfigSpec describes a Kubernetes client configuraiton for a cluster.
+message KubeconfigSpec {
+  // Marshalled kubeconfig.
+  bytes data = 1;
+}

@@ -69,3 +69,6 @@ const (
 
 // CertificateValidityTime is the default validity time for certificates.
 const CertificateValidityTime = time.Hour * 24 * 365 // 1 year
+
+// KubernetesAdminCertCommonName is the common name of the Kubernetes admin certificate.
+const KubernetesAdminCertCommonName = "omni:admin"

@@ -35,6 +35,7 @@ func init() {
 	registry.MustRegisterResource(FeaturesConfigType, &FeaturesConfig{})
 	registry.MustRegisterResource(InstallationMediaType, &InstallationMedia{})
 	registry.MustRegisterResource(ControlPlaneStatusType, &ControlPlaneStatus{})
+	registry.MustRegisterResource(KubeconfigType, &Kubeconfig{})
 	registry.MustRegisterResource(KubernetesStatusType, &KubernetesStatus{})
 	registry.MustRegisterResource(KubernetesUpgradeManifestStatusType, &KubernetesUpgradeManifestStatus{})
 	registry.MustRegisterResource(KubernetesUpgradeStatusType, &KubernetesUpgradeStatus{})
