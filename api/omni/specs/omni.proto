@@ -534,6 +534,7 @@ message MachineStatusSnapshotSpec {
 enum ConditionType {
   UnknownCondition = 0;
   Etcd = 1;
+  WireguardConnection = 2;
 }
 
 // ControlPlaneStatusSpec contains the status of the MachineSets which manage control plane nodes.
