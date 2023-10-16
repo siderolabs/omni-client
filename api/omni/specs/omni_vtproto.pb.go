@@ -644,8 +644,9 @@ func (m *Machines) CloneVT() *Machines {
 		return (*Machines)(nil)
 	}
 	r := &Machines{
-		Total:   m.Total,
-		Healthy: m.Healthy,
+		Total:     m.Total,
+		Healthy:   m.Healthy,
+		Connected: m.Connected,
 	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
@@ -663,12 +664,13 @@ func (m *ClusterStatusSpec) CloneVT() *ClusterStatusSpec {
 		return (*ClusterStatusSpec)(nil)
 	}
 	r := &ClusterStatusSpec{
-		Available:          m.Available,
-		Machines:           m.Machines.CloneVT(),
-		Phase:              m.Phase,
-		Ready:              m.Ready,
-		KubernetesAPIReady: m.KubernetesAPIReady,
-		ControlplaneReady:  m.ControlplaneReady,
+		Available:                 m.Available,
+		Machines:                  m.Machines.CloneVT(),
+		Phase:                     m.Phase,
+		Ready:                     m.Ready,
+		KubernetesAPIReady:        m.KubernetesAPIReady,
+		ControlplaneReady:         m.ControlplaneReady,
+		HasConnectedControlPlanes: m.HasConnectedControlPlanes,
 	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
@@ -808,6 +810,7 @@ func (m *LoadBalancerStatusSpec) CloneVT() *LoadBalancerStatusSpec {
 	}
 	r := &LoadBalancerStatusSpec{
 		Healthy: m.Healthy,
+		Stopped: m.Stopped,
 	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
@@ -2308,6 +2311,9 @@ func (this *Machines) EqualVT(that *Machines) bool {
 	if this.Healthy != that.Healthy {
 		return false
 	}
+	if this.Connected != that.Connected {
+		return false
+	}
 	return string(this.unknownFields) == string(that.unknownFields)
 }
 
@@ -2340,6 +2346,9 @@ func (this *ClusterStatusSpec) EqualVT(that *ClusterStatusSpec) bool {
 		return false
 	}
 	if this.ControlplaneReady != that.ControlplaneReady {
+		return false
+	}
+	if this.HasConnectedControlPlanes != that.HasConnectedControlPlanes {
 		return false
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
@@ -2497,6 +2506,9 @@ func (this *LoadBalancerStatusSpec) EqualVT(that *LoadBalancerStatusSpec) bool {
 		return false
 	}
 	if this.Healthy != that.Healthy {
+		return false
+	}
+	if this.Stopped != that.Stopped {
 		return false
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
@@ -5053,6 +5065,11 @@ func (m *Machines) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
+	if m.Connected != 0 {
+		i = encodeVarint(dAtA, i, uint64(m.Connected))
+		i--
+		dAtA[i] = 0x18
+	}
 	if m.Healthy != 0 {
 		i = encodeVarint(dAtA, i, uint64(m.Healthy))
 		i--
@@ -5095,6 +5112,16 @@ func (m *ClusterStatusSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 	if m.unknownFields != nil {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
+	}
+	if m.HasConnectedControlPlanes {
+		i--
+		if m.HasConnectedControlPlanes {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x38
 	}
 	if m.ControlplaneReady {
 		i--
@@ -5470,6 +5497,16 @@ func (m *LoadBalancerStatusSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error
 	if m.unknownFields != nil {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
+	}
+	if m.Stopped {
+		i--
+		if m.Stopped {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x20
 	}
 	if m.Healthy {
 		i--
@@ -7711,6 +7748,9 @@ func (m *Machines) SizeVT() (n int) {
 	if m.Healthy != 0 {
 		n += 1 + sov(uint64(m.Healthy))
 	}
+	if m.Connected != 0 {
+		n += 1 + sov(uint64(m.Connected))
+	}
 	n += len(m.unknownFields)
 	return n
 }
@@ -7738,6 +7778,9 @@ func (m *ClusterStatusSpec) SizeVT() (n int) {
 		n += 2
 	}
 	if m.ControlplaneReady {
+		n += 2
+	}
+	if m.HasConnectedControlPlanes {
 		n += 2
 	}
 	n += len(m.unknownFields)
@@ -7860,6 +7903,9 @@ func (m *LoadBalancerStatusSpec) SizeVT() (n int) {
 	var l int
 	_ = l
 	if m.Healthy {
+		n += 2
+	}
+	if m.Stopped {
 		n += 2
 	}
 	n += len(m.unknownFields)
@@ -12762,6 +12808,25 @@ func (m *Machines) UnmarshalVT(dAtA []byte) error {
 					break
 				}
 			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Connected", wireType)
+			}
+			m.Connected = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Connected |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skip(dAtA[iNdEx:])
@@ -12948,6 +13013,26 @@ func (m *ClusterStatusSpec) UnmarshalVT(dAtA []byte) error {
 				}
 			}
 			m.ControlplaneReady = bool(v != 0)
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field HasConnectedControlPlanes", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.HasConnectedControlPlanes = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skip(dAtA[iNdEx:])
@@ -13699,6 +13784,26 @@ func (m *LoadBalancerStatusSpec) UnmarshalVT(dAtA []byte) error {
 				}
 			}
 			m.Healthy = bool(v != 0)
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Stopped", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Stopped = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skip(dAtA[iNdEx:])

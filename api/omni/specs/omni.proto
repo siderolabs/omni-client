@@ -357,6 +357,7 @@ message ClusterMachineStatusSpec {
 message Machines {
   uint32 total = 1;
   uint32 healthy = 2;
+  uint32 connected = 3;
 }
 
 // ClusterStatusSpec aggregates general information about a cluster.
@@ -379,6 +380,7 @@ message ClusterStatusSpec {
   bool ready = 4;
   bool kubernetesAPIReady = 5;
   bool controlplaneReady = 6;
+  bool has_connected_control_planes = 7;
 }
 
 // ClusterUUID keeps the UUID of the cluster.
@@ -429,6 +431,7 @@ message LoadBalancerStatusSpec {
   reserved 1;
   reserved 2;
   bool healthy = 3;
+  bool stopped = 4;
 }
 
 // KubernetesVersionSpec represents an available Kubernetes version.
