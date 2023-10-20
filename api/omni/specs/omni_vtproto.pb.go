@@ -955,10 +955,11 @@ func (m *MachineSetStatusSpec) CloneVT() *MachineSetStatusSpec {
 		return (*MachineSetStatusSpec)(nil)
 	}
 	r := &MachineSetStatusSpec{
-		Phase:    m.Phase,
-		Ready:    m.Ready,
-		Error:    m.Error,
-		Machines: m.Machines.CloneVT(),
+		Phase:      m.Phase,
+		Ready:      m.Ready,
+		Error:      m.Error,
+		Machines:   m.Machines.CloneVT(),
+		ConfigHash: m.ConfigHash,
 	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
@@ -2696,6 +2697,9 @@ func (this *MachineSetStatusSpec) EqualVT(that *MachineSetStatusSpec) bool {
 		return false
 	}
 	if !this.Machines.EqualVT(that.Machines) {
+		return false
+	}
+	if this.ConfigHash != that.ConfigHash {
 		return false
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
@@ -5868,6 +5872,13 @@ func (m *MachineSetStatusSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) 
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
+	if len(m.ConfigHash) > 0 {
+		i -= len(m.ConfigHash)
+		copy(dAtA[i:], m.ConfigHash)
+		i = encodeVarint(dAtA, i, uint64(len(m.ConfigHash)))
+		i--
+		dAtA[i] = 0x2a
+	}
 	if m.Machines != nil {
 		size, err := m.Machines.MarshalToSizedBufferVT(dAtA[:i])
 		if err != nil {
@@ -8060,6 +8071,10 @@ func (m *MachineSetStatusSpec) SizeVT() (n int) {
 	}
 	if m.Machines != nil {
 		l = m.Machines.SizeVT()
+		n += 1 + l + sov(uint64(l))
+	}
+	l = len(m.ConfigHash)
+	if l > 0 {
 		n += 1 + l + sov(uint64(l))
 	}
 	n += len(m.unknownFields)
@@ -14785,6 +14800,38 @@ func (m *MachineSetStatusSpec) UnmarshalVT(dAtA []byte) error {
 			if err := m.Machines.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ConfigHash", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ConfigHash = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

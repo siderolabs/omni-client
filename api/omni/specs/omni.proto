@@ -518,6 +518,8 @@ message MachineSetStatusSpec {
   bool ready = 2;
   string error = 3;
   Machines machines = 4;
+  // config_hash is the combined hash of all cluster machines which are part of the machine set.
+  string config_hash = 5;
 }
 
 // MachineSetNodeSpec is a binding between ClusterMachine and MachineSet.
