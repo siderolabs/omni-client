@@ -355,9 +355,14 @@ message ClusterMachineStatusSpec {
 
 // Machines counts the number of machines in a set including health status.
 message Machines {
+  // Total machines currently allocated.
   uint32 total = 1;
+  // Healthy machines.
   uint32 healthy = 2;
+  // Connected represents the number of machines in a machine set connected to the wireguard network.
   uint32 connected = 3;
+  // Requested machines count, same as total for manual allocation, may differ for machine class mode.
+  uint32 requested = 4;
 }
 
 // ClusterStatusSpec aggregates general information about a cluster.
@@ -472,12 +477,30 @@ enum MachineSetPhase {
 
 // MachineSetSpec describes the cluster machine group.
 message MachineSetSpec {
+  message MachineClass {
+    enum AllocationType {
+      // Static uses the count defined in the count field.
+      Static = 0;
+      // Unlimited allocates all available machines from the machine class.
+      Unlimited = 1;
+    }
+
+    // Name defines the machine class id to select the machines from.
+    string name = 1;
+    // MachineCount defines fixed amount of the machines to allocated from the machine class.
+    uint32 machine_count = 2;
+    // AllocationType defines special constants for the amount of machines to be allocated.
+    AllocationType allocation_type = 3;
+  }
+
   enum UpdateStrategy {
     Unset = 0;
     Rolling = 1;
   }
 
   UpdateStrategy update_strategy = 1;
+
+  MachineClass machine_class = 2;
 }
 
 // TalosUpgradeStatusSpec contains the status of the Talos upgrade process.

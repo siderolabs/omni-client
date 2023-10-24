@@ -56,3 +56,15 @@ kind: Workers
 name: additional-2
 machines:
   - 919b1d5b-daf8-4b82-bc0d-48929f05a405
+---
+kind: Workers
+name: additional-3
+machineClass:
+  name: test
+  size: 1
+---
+kind: Workers
+name: additional-4
+machineClass:
+  name: test
+  size: unlimited

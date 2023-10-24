@@ -29,7 +29,7 @@ func (controlplane *ControlPlane) Validate() error {
 		multiErr = multierror.Append(multiErr, fmt.Errorf("custom name is not allowed in the controlplane"))
 	}
 
-	multiErr = joinErrors(multiErr, controlplane.Machines.Validate(), controlplane.Patches.Validate())
+	multiErr = joinErrors(multiErr, controlplane.MachineSet.Validate(), controlplane.Machines.Validate(), controlplane.Patches.Validate())
 
 	if multiErr != nil {
 		return fmt.Errorf("controlplane is invalid: %w", multiErr)

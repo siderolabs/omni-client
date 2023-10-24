@@ -29,7 +29,7 @@ func (workers *Workers) Validate() error {
 		multiErr = multierror.Append(multiErr, fmt.Errorf("name %q cannot be used in workers", omni.ControlPlanesIDSuffix))
 	}
 
-	multiErr = joinErrors(multiErr, workers.Machines.Validate(), workers.Patches.Validate())
+	multiErr = joinErrors(multiErr, workers.MachineSet.Validate(), workers.Machines.Validate(), workers.Patches.Validate())
 
 	if multiErr != nil {
 		return fmt.Errorf("workers is invalid: %w", multiErr)

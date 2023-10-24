@@ -8,8 +8,8 @@ import (
 	"bytes"
 	"context"
 	_ "embed"
-	"fmt"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -51,6 +51,9 @@ var clusterInvalid2 []byte
 
 //go:embed testdata/cluster-invalid3.yaml
 var clusterInvalid3 []byte
+
+//go:embed testdata/cluster-invalid4.yaml
+var clusterInvalid4 []byte
 
 //go:embed testdata/cluster1-resources.yaml
 var cluster1Resources []byte
@@ -221,6 +224,13 @@ machine:
 
 `,
 		},
+		{
+			name: "clusterInvalid4",
+			data: clusterInvalid4,
+			expectedError: `1 error occurred:
+	* workers is invalid: 1 error occurred:
+	* machine set can not have both machines and machine class defined`,
+		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			templ, err := template.Load(bytes.NewReader(tt.data))
@@ -230,8 +240,7 @@ machine:
 			if tt.expectedError == "" {
 				require.NoError(t, err)
 			} else {
-				fmt.Println(err.Error())
-				require.EqualError(t, err, tt.expectedError)
+				require.Equal(t, strings.TrimSpace(err.Error()), strings.TrimSpace(tt.expectedError), err.Error())
 			}
 		})
 	}

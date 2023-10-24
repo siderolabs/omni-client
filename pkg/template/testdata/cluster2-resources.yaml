@@ -73,6 +73,7 @@ metadata:
         omni.sidero.dev/role-controlplane:
 spec:
     updatestrategy: 1
+    machineclass: null
 ---
 metadata:
     namespace: default
@@ -124,6 +125,7 @@ metadata:
         omni.sidero.dev/role-worker:
 spec:
     updatestrategy: 1
+    machineclass: null
 ---
 metadata:
     namespace: default
