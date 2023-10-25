@@ -15,9 +15,9 @@ import (
 )
 
 // NewClusterUUID creates new cluster UUID resource.
-func NewClusterUUID(ns string, id resource.ID) *ClusterUUID {
+func NewClusterUUID(id resource.ID) *ClusterUUID {
 	return typed.NewResource[ClusterUUIDSpec, ClusterUUIDExtension](
-		resource.NewMetadata(ns, ClusterUUIDType, id, resource.VersionUndefined),
+		resource.NewMetadata(resources.DefaultNamespace, ClusterUUIDType, id, resource.VersionUndefined),
 		protobuf.NewResourceSpec(&specs.ClusterUUID{}),
 	)
 }

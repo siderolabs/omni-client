@@ -35,3 +35,10 @@ const MetricsNamespace resource.Namespace = "metrics"
 //
 // tsgen:VirtualNamespace
 const VirtualNamespace resource.Namespace = "virtual"
+
+// ExternalNamespace is the namespace where resources are external
+//
+// ExternalNamespace has no persistence.
+//
+// tsgen:ExternalNamespace
+const ExternalNamespace resource.Namespace = "external"

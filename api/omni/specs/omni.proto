@@ -221,6 +221,12 @@ message EtcdBackupHeader {
   int64 version = 1;
 }
 
+// EtcdBackupSpec describes the backup.
+message EtcdBackupSpec {
+  // CreatedAt is the time when the backup was created.
+  google.protobuf.Timestamp created_at = 1;
+}
+
 // BackupDataSpec describes the data needed for etcd backup.
 message BackupDataSpec {
   google.protobuf.Duration interval = 1;
@@ -711,8 +717,7 @@ message EtcdBackupSettings {
   // MaxInterval is the maximum interval between backups.
   google.protobuf.Duration max_interval = 3;
 
-  // LocalPath is the path to the local directory where backups are stored. It is used only if it's configured.
-  string local_path = 4;
+  reserved 4;
 }
 
 // MachineClassSpec describes an Omni MachineClass resource spec.

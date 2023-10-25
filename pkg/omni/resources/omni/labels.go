@@ -132,3 +132,15 @@ const (
 	// MachineAddressLabel is used for faster lookup of the machine by address.
 	MachineAddressLabel = SystemLabelPrefix + "address"
 )
+
+const (
+	// EtcdBackup labels.
+
+	// EtcdBackupLabelClusterID is the label for the cluster relation.
+	// tsgen:EtcdBackupLabelClusterID
+	EtcdBackupLabelClusterID = SystemLabelPrefix + "backup-cluster-id"
+
+	// EtcdBackupLabelClusterUUID is the label for the cluster relation.
+	// tsgen:EtcdBackupLabelClusterUUID
+	EtcdBackupLabelClusterUUID = SystemLabelPrefix + "backup-cluster-uuid"
+)
