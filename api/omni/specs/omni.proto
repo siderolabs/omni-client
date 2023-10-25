@@ -739,3 +739,22 @@ message KubeconfigSpec {
   // Marshalled kubeconfig.
   bytes data = 1;
 }
+
+// KubernetesUsageSpec represents kubernetes resource usage for a cluster.
+message KubernetesUsageSpec {
+  message Quantity {
+    double requests = 1;
+    double limits = 2;
+    double capacity = 3;
+  }
+
+  message Pod {
+    int32 count = 1;
+    int32 capacity = 3;
+  }
+
+  Quantity cpu = 1;
+  Quantity mem = 2;
+  Quantity storage = 3;
+  Pod pods = 4;
+}
