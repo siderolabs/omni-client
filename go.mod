@@ -22,7 +22,7 @@ require (
 	github.com/mattn/go-isatty v0.0.19
 	github.com/sergi/go-diff v1.3.1
 	github.com/siderolabs/gen v0.4.7
-	github.com/siderolabs/go-api-signature v0.3.0
+	github.com/siderolabs/go-api-signature v0.3.1
 	github.com/siderolabs/go-kubeconfig v0.1.0
 	github.com/siderolabs/talos/pkg/machinery v1.6.0-alpha.0.0.20231006101524-c14a5d4f79a3
 	github.com/spf13/cobra v1.7.0
