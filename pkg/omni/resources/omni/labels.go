@@ -24,11 +24,11 @@ const (
 
 	// LabelCluster defines the cluster relation label.
 	// tsgen:LabelCluster
-	LabelCluster = SystemLabelPrefix + "cluster"
+	LabelCluster = SystemLabelPrefix + LabelSuffixCluster
 
 	// LabelHostname defines machine hostname.
 	// tsgen:LabelHostname
-	LabelHostname = SystemLabelPrefix + "hostname"
+	LabelHostname = SystemLabelPrefix + LabelSuffixHostname
 
 	// LabelMachineSet defines the machine set relation label.
 	// tsgen:LabelMachineSet
@@ -52,6 +52,17 @@ const (
 	// LabelExposedServiceAlias is the alias of the exposed service.
 	// tsgen:LabelExposedServiceAlias
 	LabelExposedServiceAlias = SystemLabelPrefix + "exposed-service-alias"
+)
+
+const (
+	// LabelSuffixPlatform is the suffix of the platform label.
+	LabelSuffixPlatform = "platform"
+	// LabelSuffixArch is the suffix of the arch label.
+	LabelSuffixArch = "arch"
+	// LabelSuffixHostname is the suffix of the hostname label.
+	LabelSuffixHostname = "hostname"
+	// LabelSuffixCluster is the suffix of the cluster label.
+	LabelSuffixCluster = "cluster"
 )
 
 const (
@@ -79,7 +90,7 @@ const (
 
 	// MachineStatusLabelArch describes the machine architecture.
 	// tsgen:MachineStatusLabelArch
-	MachineStatusLabelArch = SystemLabelPrefix + "arch"
+	MachineStatusLabelArch = SystemLabelPrefix + LabelSuffixArch
 
 	// MachineStatusLabelCPU describes the machine CPU.
 	// tsgen:MachineStatusLabelCPU
@@ -103,7 +114,7 @@ const (
 
 	// MachineStatusLabelPlatform describes the machine platform.
 	// tsgen:MachineStatusLabelPlatform
-	MachineStatusLabelPlatform = SystemLabelPrefix + "platform"
+	MachineStatusLabelPlatform = SystemLabelPrefix + LabelSuffixPlatform
 
 	// MachineStatusLabelRegion describes the machine region (for machines running in the clouds).
 	// tsgen:MachineStatusLabelRegion

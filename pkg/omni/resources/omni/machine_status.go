@@ -82,13 +82,13 @@ func (m *machineStatusAux) Field(fieldName string) (string, bool) {
 	val := m.Value
 
 	switch fieldName {
-	case "cluster":
+	case LabelSuffixCluster:
 		return val.GetCluster(), true
-	case "hostname":
+	case LabelSuffixHostname:
 		return val.GetNetwork().GetHostname(), true
-	case "platform":
+	case LabelSuffixPlatform:
 		return val.GetPlatformMetadata().GetPlatform(), true
-	case "arch":
+	case LabelSuffixArch:
 		return val.GetHardware().GetArch(), true
 	default:
 		return "", false
