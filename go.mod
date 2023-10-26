@@ -13,7 +13,7 @@ replace (
 require (
 	github.com/adrg/xdg v0.4.0
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cosi-project/runtime v0.3.14
+	github.com/cosi-project/runtime v0.3.15
 	github.com/fatih/color v1.15.0
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.0
