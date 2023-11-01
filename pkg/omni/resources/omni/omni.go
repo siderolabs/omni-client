@@ -33,6 +33,8 @@ func init() {
 	registry.MustRegisterResource(EtcdManualBackupType, &EtcdManualBackup{})
 	registry.MustRegisterResource(ExposedServiceType, &ExposedService{})
 	registry.MustRegisterResource(FeaturesConfigType, &FeaturesConfig{})
+	registry.MustRegisterResource(ImagePullRequestType, &ImagePullRequest{})
+	registry.MustRegisterResource(ImagePullStatusType, &ImagePullStatus{})
 	registry.MustRegisterResource(InstallationMediaType, &InstallationMedia{})
 	registry.MustRegisterResource(ControlPlaneStatusType, &ControlPlaneStatus{})
 	registry.MustRegisterResource(KubeconfigType, &Kubeconfig{})

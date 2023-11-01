@@ -763,3 +763,26 @@ message KubernetesUsageSpec {
   Quantity storage = 3;
   Pod pods = 4;
 }
+
+// ImagePullRequestSpec describes an Omni ImagePullRequest resource spec.
+message ImagePullRequestSpec {
+  message NodeImageList {
+    string node = 1;
+    repeated string images = 2;
+  }
+
+  // NodeImageList are the images to be pulled into the node.
+  repeated NodeImageList node_image_list = 1;
+}
+
+// ImagePullStatusSpec describes an Omni ImagePullStatus resource spec.
+message ImagePullStatusSpec {
+  string last_processed_node = 1;
+  string last_processed_image = 2;
+  string last_processed_error = 3;
+  uint32 processed_count = 4;
+  uint32 total_count = 5;
+
+  // RequestVersion is the version of the ImagePullRequest that this status is for.
+  string request_version = 6;
+}
