@@ -46,15 +46,19 @@ func (EtcdBackupStatusExtension) ResourceDefinition() meta.ResourceDefinitionSpe
 		PrintColumns: []meta.PrintColumn{
 			{
 				Name:     "Status",
-				JSONPath: ".status",
+				JSONPath: "{.status}",
 			},
 			{
 				Name:     "Error",
-				JSONPath: ".error",
+				JSONPath: "{.error}",
 			},
 			{
 				Name:     "Last Backup",
-				JSONPath: ".lastbackuptime",
+				JSONPath: "{.lastbackuptime}",
+			},
+			{
+				Name:     "Last Backup Attempt",
+				JSONPath: "{.lastbackupattempt}",
 			},
 		},
 	}

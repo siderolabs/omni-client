@@ -236,6 +236,16 @@ message BackupDataSpec {
   string secretbox_encryption_secret = 5;
 }
 
+// EtcdBackupS3ConfSpec describes the S3 configuration for the backup process.
+message EtcdBackupS3ConfSpec {
+  string bucket = 1;
+  string region = 2;
+  string endpoint = 3;
+  string access_key_id = 4;
+  string secret_access_key = 5;
+  string session_token = 6;
+}
+
 // EtcdBackupStatus describes cluster last backup status.
 message EtcdBackupStatusSpec {
   enum Status {
@@ -261,6 +271,15 @@ message EtcdBackupStatusSpec {
 message EtcdManualBackupSpec {
   // BackupAt is the time when the backup should be created.
   google.protobuf.Timestamp backup_at = 1;
+}
+
+// EtcdBackupOverallStatusSpec describes the overall etcd backup system status.
+message EtcdBackupOverallStatusSpec {
+  // ConfigurationName is the name of the configuration (disabled|local|s3).
+  string configuration_name = 1;
+
+  // ConfigurationError is the error message if the configuration is invalid.
+  string configuration_error = 2;
 }
 
 // ClusterMachineSpec describes a machine attached to a Cluster.
