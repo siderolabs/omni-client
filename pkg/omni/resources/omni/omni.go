@@ -32,6 +32,7 @@ func init() {
 	registry.MustRegisterResource(EtcdBackupEncryptionType, &EtcdBackupEncryption{})
 	registry.MustRegisterResource(EtcdBackupStatusType, &EtcdBackupStatus{})
 	registry.MustRegisterResource(EtcdBackupOverallStatusType, &EtcdBackupOverallStatus{})
+	registry.MustRegisterResource(EtcdBackupStoreStatusType, &EtcdBackupStoreStatus{})
 	registry.MustRegisterResource(BackupDataType, &BackupData{})
 	registry.MustRegisterResource(EtcdManualBackupType, &EtcdManualBackup{})
 	registry.MustRegisterResource(ExposedServiceType, &ExposedService{})

@@ -56,6 +56,22 @@ func (EtcdBackupOverallStatusExtension) ResourceDefinition() meta.ResourceDefini
 				Name:     "Configuration Error",
 				JSONPath: "{.configurationerror}",
 			},
+			{
+				Name:     "Last Backup Status",
+				JSONPath: "{.lastbackupstatus.status}",
+			},
+			{
+				Name:     "Last Backup Error",
+				JSONPath: "{.lastbackupstatus.error}",
+			},
+			{
+				Name:     "Last Backup Time",
+				JSONPath: "{.lastbackupstatus.lastbackuptime}",
+			},
+			{
+				Name:     "Configuration Attempt",
+				JSONPath: "{.lastbackupstatus.lastbackupattempt}",
+			},
 		},
 	}
 }
