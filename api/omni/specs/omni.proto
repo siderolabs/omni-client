@@ -289,7 +289,7 @@ message EtcdBackupOverallStatusSpec {
 
   // ConfigurationError is the error message if the configuration is invalid.
   string configuration_error = 2;
-  
+
   // LastBackupStatus is the status of the last backup.
   EtcdBackupStatusSpec last_backup_status = 3;
 }
@@ -691,6 +691,8 @@ message KubernetesUpgradeStatusSpec {
 message KubernetesUpgradeManifestStatusSpec {
   // Number of manifests out of sync.
   int32 out_of_sync = 1;
+  // Last fatal error encountered (which prevented the sync).
+  string last_fatal_error = 2;
 }
 
 // ClusterDestroyStatusSpec describes the state of cluster destroy.
