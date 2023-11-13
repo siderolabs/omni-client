@@ -13,12 +13,14 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/siderolabs/omni-client/pkg/client"
+	"github.com/siderolabs/omni-client/pkg/cosi/labels"
 	"github.com/siderolabs/omni-client/pkg/omni/resources"
 	"github.com/siderolabs/omni-client/pkg/omnictl/internal/access"
 )
 
 var deleteCmdFlags struct {
 	namespace string
+	selector  string
 	all       bool
 }
 
@@ -56,13 +58,26 @@ func deleteResources(cmd *cobra.Command, args []string) func(ctx context.Context
 		if len(args) > 1 {
 			resourceIDs = []resource.ID{args[1]}
 		} else {
-			if !deleteCmdFlags.all {
-				return fmt.Errorf("either resource ID or --all flag must be specified")
+			var listOpts []state.ListOption
+
+			if !deleteCmdFlags.all && deleteCmdFlags.selector == "" {
+				return fmt.Errorf("either resource ID or one of --all or --selector flags must be specified")
+			}
+
+			if deleteCmdFlags.selector != "" {
+				var query *resource.LabelQuery
+
+				query, err = labels.ParseQuery(deleteCmdFlags.selector)
+				if err != nil {
+					return err
+				}
+
+				listOpts = append(listOpts, state.WithLabelQuery(resource.RawLabelQuery(*query)))
 			}
 
 			var list resource.List
 
-			list, err = st.List(ctx, resource.NewMetadata(deleteCmdFlags.namespace, rd.TypedSpec().Type, "", resource.VersionUndefined))
+			list, err = st.List(ctx, resource.NewMetadata(deleteCmdFlags.namespace, rd.TypedSpec().Type, "", resource.VersionUndefined), listOpts...)
 			if err != nil {
 				return err
 			}
@@ -139,6 +154,9 @@ func deleteResources(cmd *cobra.Command, args []string) func(ctx context.Context
 func init() {
 	deleteCmd.PersistentFlags().StringVarP(&deleteCmdFlags.namespace, "namespace", "n", resources.DefaultNamespace, "The resource namespace.")
 	deleteCmd.PersistentFlags().BoolVar(&deleteCmdFlags.all, "all", false, "Delete all resources of the type.")
+	deleteCmd.PersistentFlags().StringVarP(&deleteCmdFlags.selector, "selector", "l", "", "Selector (label query) to filter on, supports '=' and '==' (e.g. -l key1=value1,key2=value2)")
+
+	deleteCmd.MarkFlagsMutuallyExclusive("all", "selector")
 
 	RootCmd.AddCommand(deleteCmd)
 }
