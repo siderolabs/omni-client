@@ -238,17 +238,23 @@ func (m *MachineStatusSpec) CloneVT() *MachineStatusSpec {
 		return (*MachineStatusSpec)(nil)
 	}
 	r := &MachineStatusSpec{
-		TalosVersion:        m.TalosVersion,
-		Hardware:            m.Hardware.CloneVT(),
-		Network:             m.Network.CloneVT(),
-		LastError:           m.LastError,
-		ManagementAddress:   m.ManagementAddress,
-		Connected:           m.Connected,
-		Maintenance:         m.Maintenance,
-		Cluster:             m.Cluster,
-		Role:                m.Role,
-		PlatformMetadata:    m.PlatformMetadata.CloneVT(),
-		InitialLabelsLoaded: m.InitialLabelsLoaded,
+		TalosVersion:      m.TalosVersion,
+		Hardware:          m.Hardware.CloneVT(),
+		Network:           m.Network.CloneVT(),
+		LastError:         m.LastError,
+		ManagementAddress: m.ManagementAddress,
+		Connected:         m.Connected,
+		Maintenance:       m.Maintenance,
+		Cluster:           m.Cluster,
+		Role:              m.Role,
+		PlatformMetadata:  m.PlatformMetadata.CloneVT(),
+	}
+	if rhs := m.ImageLabels; rhs != nil {
+		tmpContainer := make(map[string]string, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v
+		}
+		r.ImageLabels = tmpContainer
 	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
@@ -2075,8 +2081,17 @@ func (this *MachineStatusSpec) EqualVT(that *MachineStatusSpec) bool {
 	if !this.PlatformMetadata.EqualVT(that.PlatformMetadata) {
 		return false
 	}
-	if this.InitialLabelsLoaded != that.InitialLabelsLoaded {
+	if len(this.ImageLabels) != len(that.ImageLabels) {
 		return false
+	}
+	for i, vx := range this.ImageLabels {
+		vy, ok := that.ImageLabels[i]
+		if !ok {
+			return false
+		}
+		if vx != vy {
+			return false
+		}
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
 }
@@ -4521,15 +4536,24 @@ func (m *MachineStatusSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
-	if m.InitialLabelsLoaded {
-		i--
-		if m.InitialLabelsLoaded {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
+	if len(m.ImageLabels) > 0 {
+		for k := range m.ImageLabels {
+			v := m.ImageLabels[k]
+			baseI := i
+			i -= len(v)
+			copy(dAtA[i:], v)
+			i = encodeVarint(dAtA, i, uint64(len(v)))
+			i--
+			dAtA[i] = 0x12
+			i -= len(k)
+			copy(dAtA[i:], k)
+			i = encodeVarint(dAtA, i, uint64(len(k)))
+			i--
+			dAtA[i] = 0xa
+			i = encodeVarint(dAtA, i, uint64(baseI-i))
+			i--
+			dAtA[i] = 0x6a
 		}
-		i--
-		dAtA[i] = 0x60
 	}
 	if m.PlatformMetadata != nil {
 		size, err := m.PlatformMetadata.MarshalToSizedBufferVT(dAtA[:i])
@@ -8541,8 +8565,13 @@ func (m *MachineStatusSpec) SizeVT() (n int) {
 		l = m.PlatformMetadata.SizeVT()
 		n += 1 + l + sov(uint64(l))
 	}
-	if m.InitialLabelsLoaded {
-		n += 2
+	if len(m.ImageLabels) > 0 {
+		for k, v := range m.ImageLabels {
+			_ = k
+			_ = v
+			mapEntrySize := 1 + len(k) + sov(uint64(len(k))) + 1 + len(v) + sov(uint64(len(v)))
+			n += mapEntrySize + 1 + sov(uint64(mapEntrySize))
+		}
 	}
 	n += len(m.unknownFields)
 	return n
@@ -11883,11 +11912,11 @@ func (m *MachineStatusSpec) UnmarshalVT(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 12:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InitialLabelsLoaded", wireType)
+		case 13:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ImageLabels", wireType)
 			}
-			var v int
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflow
@@ -11897,12 +11926,119 @@ func (m *MachineStatusSpec) UnmarshalVT(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				v |= int(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			m.InitialLabelsLoaded = bool(v != 0)
+			if msglen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.ImageLabels == nil {
+				m.ImageLabels = make(map[string]string)
+			}
+			var mapkey string
+			var mapvalue string
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLength
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey < 0 {
+						return ErrInvalidLength
+					}
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var stringLenmapvalue uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapvalue |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapvalue := int(stringLenmapvalue)
+					if intStringLenmapvalue < 0 {
+						return ErrInvalidLength
+					}
+					postStringIndexmapvalue := iNdEx + intStringLenmapvalue
+					if postStringIndexmapvalue < 0 {
+						return ErrInvalidLength
+					}
+					if postStringIndexmapvalue > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = string(dAtA[iNdEx:postStringIndexmapvalue])
+					iNdEx = postStringIndexmapvalue
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skip(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if (skippy < 0) || (iNdEx+skippy) < 0 {
+						return ErrInvalidLength
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.ImageLabels[mapkey] = mapvalue
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skip(dAtA[iNdEx:])

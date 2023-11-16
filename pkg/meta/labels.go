@@ -7,20 +7,21 @@ package meta
 
 import "gopkg.in/yaml.v3"
 
-// InitialLabels describes structure that is stored in the Talos metadata and keeps machine labels
+// ImageLabels describes structure that is stored in the Talos metadata and keeps machine labels
 // that are initially assigned to the machine when it connects to Omni.
-type InitialLabels struct {
-	Labels map[string]string `yaml:"machineInitialLabels"`
+type ImageLabels struct {
+	Labels       map[string]string `yaml:"machineLabels"`
+	LegacyLabels map[string]string `yaml:"machineInitialLabels,omitempty"`
 }
 
 // Encode converts labels to the serialized value to be stored in the meta partition.
-func (l InitialLabels) Encode() ([]byte, error) {
+func (l ImageLabels) Encode() ([]byte, error) {
 	return yaml.Marshal(l)
 }
 
 // ParseLabels reads label from the encoded metadata value.
-func ParseLabels(data []byte) (*InitialLabels, error) {
-	labels := &InitialLabels{}
+func ParseLabels(data []byte) (*ImageLabels, error) {
+	labels := &ImageLabels{}
 
 	if err := yaml.Unmarshal(data, &labels); err != nil {
 		return nil, err

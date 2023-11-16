@@ -7,6 +7,10 @@ package constants
 
 import "time"
 
+// ImageLabels defines query parameter for the initial labels to write to META partition when getting installation media.
+// tsgen:ImageLabels
+const ImageLabels = "imageLabels"
+
 const (
 	// TalosRegistry is the default Talos repository URL.
 	TalosRegistry = "ghcr.io/siderolabs/installer"

@@ -23,6 +23,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/siderolabs/omni-client/pkg/client"
+	"github.com/siderolabs/omni-client/pkg/constants"
 	"github.com/siderolabs/omni-client/pkg/omni/resources/omni"
 	"github.com/siderolabs/omni-client/pkg/omnictl/config"
 	"github.com/siderolabs/omni-client/pkg/omnictl/internal/access"
@@ -222,7 +223,7 @@ func createRequest(ctx context.Context, client *client.Client, image *omni.Insta
 		}
 
 		query := u.Query()
-		query.Add("initialLabels", string(labels))
+		query.Add(constants.ImageLabels, string(labels))
 
 		u.RawQuery = query.Encode()
 	}
