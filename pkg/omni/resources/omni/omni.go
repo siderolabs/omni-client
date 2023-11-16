@@ -51,6 +51,7 @@ func init() {
 	registry.MustRegisterResource(MachineClassType, &MachineClass{})
 	registry.MustRegisterResource(MachineConfigGenOptionsType, &MachineConfigGenOptions{})
 	registry.MustRegisterResource(MachineSetType, &MachineSet{})
+	registry.MustRegisterResource(MachineSetDestroyStatusType, &MachineSetDestroyStatus{})
 	registry.MustRegisterResource(MachineSetNodeType, &MachineSetNode{})
 	registry.MustRegisterResource(MachineSetStatusType, &MachineSetStatus{})
 	registry.MustRegisterResource(MachineStatusType, &MachineStatus{})

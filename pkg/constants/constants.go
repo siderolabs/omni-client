@@ -21,12 +21,16 @@ const (
 
 const (
 	// PatchWeightInstallDisk is the weight of the install disk config patch.
+	// tsgen:PatchWeightInstallDisk
 	PatchWeightInstallDisk = 0
 	// PatchBaseWeightCluster is the base weight for cluster patches.
+	// tsgen:PatchBaseWeightCluster
 	PatchBaseWeightCluster = 200
 	// PatchBaseWeightMachineSet is the base weight for machine set patches.
+	// tsgen:PatchBaseWeightMachineSet
 	PatchBaseWeightMachineSet = 400
 	// PatchBaseWeightClusterMachine is the base weight for cluster machine patches.
+	// tsgen:PatchBaseWeightClusterMachine
 	PatchBaseWeightClusterMachine = 400
 )
 

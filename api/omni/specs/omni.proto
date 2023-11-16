@@ -581,6 +581,8 @@ message MachineSetStatusSpec {
   Machines machines = 4;
   // config_hash is the combined hash of all cluster machines which are part of the machine set.
   string config_hash = 5;
+  // MachineClass is copied from the input MachineSet resource.
+  MachineSetSpec.MachineClass machine_class = 6;
 }
 
 // MachineSetNodeSpec is a binding between ClusterMachine and MachineSet.
@@ -696,8 +698,8 @@ message KubernetesUpgradeManifestStatusSpec {
   string last_fatal_error = 2;
 }
 
-// ClusterDestroyStatusSpec describes the state of cluster destroy.
-message ClusterDestroyStatusSpec {
+// DestroyStatusSpec describes the state of resource destroy.
+message DestroyStatusSpec {
   // Phase describes the current destroy phase.
   string phase = 1;
 }
@@ -711,7 +713,7 @@ message OngoingTaskSpec {
   oneof details {
     TalosUpgradeStatusSpec talos_upgrade = 2;
     KubernetesUpgradeStatusSpec kubernetes_upgrade = 3;
-    ClusterDestroyStatusSpec destroy = 4;
+    DestroyStatusSpec destroy = 4;
   }
 }
 

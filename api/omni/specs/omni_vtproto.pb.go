@@ -1070,11 +1070,12 @@ func (m *MachineSetStatusSpec) CloneVT() *MachineSetStatusSpec {
 		return (*MachineSetStatusSpec)(nil)
 	}
 	r := &MachineSetStatusSpec{
-		Phase:      m.Phase,
-		Ready:      m.Ready,
-		Error:      m.Error,
-		Machines:   m.Machines.CloneVT(),
-		ConfigHash: m.ConfigHash,
+		Phase:        m.Phase,
+		Ready:        m.Ready,
+		Error:        m.Error,
+		Machines:     m.Machines.CloneVT(),
+		ConfigHash:   m.ConfigHash,
+		MachineClass: m.MachineClass.CloneVT(),
 	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
@@ -1351,11 +1352,11 @@ func (m *KubernetesUpgradeManifestStatusSpec) CloneMessageVT() proto.Message {
 	return m.CloneVT()
 }
 
-func (m *ClusterDestroyStatusSpec) CloneVT() *ClusterDestroyStatusSpec {
+func (m *DestroyStatusSpec) CloneVT() *DestroyStatusSpec {
 	if m == nil {
-		return (*ClusterDestroyStatusSpec)(nil)
+		return (*DestroyStatusSpec)(nil)
 	}
-	r := &ClusterDestroyStatusSpec{
+	r := &DestroyStatusSpec{
 		Phase: m.Phase,
 	}
 	if len(m.unknownFields) > 0 {
@@ -1365,7 +1366,7 @@ func (m *ClusterDestroyStatusSpec) CloneVT() *ClusterDestroyStatusSpec {
 	return r
 }
 
-func (m *ClusterDestroyStatusSpec) CloneMessageVT() proto.Message {
+func (m *DestroyStatusSpec) CloneMessageVT() proto.Message {
 	return m.CloneVT()
 }
 
@@ -3091,6 +3092,9 @@ func (this *MachineSetStatusSpec) EqualVT(that *MachineSetStatusSpec) bool {
 	if this.ConfigHash != that.ConfigHash {
 		return false
 	}
+	if !this.MachineClass.EqualVT(that.MachineClass) {
+		return false
+	}
 	return string(this.unknownFields) == string(that.unknownFields)
 }
 
@@ -3445,7 +3449,7 @@ func (this *KubernetesUpgradeManifestStatusSpec) EqualMessageVT(thatMsg proto.Me
 	}
 	return this.EqualVT(that)
 }
-func (this *ClusterDestroyStatusSpec) EqualVT(that *ClusterDestroyStatusSpec) bool {
+func (this *DestroyStatusSpec) EqualVT(that *DestroyStatusSpec) bool {
 	if this == that {
 		return true
 	} else if this == nil || that == nil {
@@ -3457,8 +3461,8 @@ func (this *ClusterDestroyStatusSpec) EqualVT(that *ClusterDestroyStatusSpec) bo
 	return string(this.unknownFields) == string(that.unknownFields)
 }
 
-func (this *ClusterDestroyStatusSpec) EqualMessageVT(thatMsg proto.Message) bool {
-	that, ok := thatMsg.(*ClusterDestroyStatusSpec)
+func (this *DestroyStatusSpec) EqualMessageVT(thatMsg proto.Message) bool {
+	that, ok := thatMsg.(*DestroyStatusSpec)
 	if !ok {
 		return false
 	}
@@ -3558,10 +3562,10 @@ func (this *OngoingTaskSpec_Destroy) EqualVT(thatIface isOngoingTaskSpec_Details
 	}
 	if p, q := this.Destroy, that.Destroy; p != q {
 		if p == nil {
-			p = &ClusterDestroyStatusSpec{}
+			p = &DestroyStatusSpec{}
 		}
 		if q == nil {
-			q = &ClusterDestroyStatusSpec{}
+			q = &DestroyStatusSpec{}
 		}
 		if !p.EqualVT(q) {
 			return false
@@ -6739,6 +6743,16 @@ func (m *MachineSetStatusSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) 
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
+	if m.MachineClass != nil {
+		size, err := m.MachineClass.MarshalToSizedBufferVT(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarint(dAtA, i, uint64(size))
+		i--
+		dAtA[i] = 0x32
+	}
 	if len(m.ConfigHash) > 0 {
 		i -= len(m.ConfigHash)
 		copy(dAtA[i:], m.ConfigHash)
@@ -7394,7 +7408,7 @@ func (m *KubernetesUpgradeManifestStatusSpec) MarshalToSizedBufferVT(dAtA []byte
 	return len(dAtA) - i, nil
 }
 
-func (m *ClusterDestroyStatusSpec) MarshalVT() (dAtA []byte, err error) {
+func (m *DestroyStatusSpec) MarshalVT() (dAtA []byte, err error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -7407,12 +7421,12 @@ func (m *ClusterDestroyStatusSpec) MarshalVT() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *ClusterDestroyStatusSpec) MarshalToVT(dAtA []byte) (int, error) {
+func (m *DestroyStatusSpec) MarshalToVT(dAtA []byte) (int, error) {
 	size := m.SizeVT()
 	return m.MarshalToSizedBufferVT(dAtA[:size])
 }
 
-func (m *ClusterDestroyStatusSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+func (m *DestroyStatusSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 	if m == nil {
 		return 0, nil
 	}
@@ -9402,6 +9416,10 @@ func (m *MachineSetStatusSpec) SizeVT() (n int) {
 	if l > 0 {
 		n += 1 + l + sov(uint64(l))
 	}
+	if m.MachineClass != nil {
+		l = m.MachineClass.SizeVT()
+		n += 1 + l + sov(uint64(l))
+	}
 	n += len(m.unknownFields)
 	return n
 }
@@ -9641,7 +9659,7 @@ func (m *KubernetesUpgradeManifestStatusSpec) SizeVT() (n int) {
 	return n
 }
 
-func (m *ClusterDestroyStatusSpec) SizeVT() (n int) {
+func (m *DestroyStatusSpec) SizeVT() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -17174,6 +17192,42 @@ func (m *MachineSetStatusSpec) UnmarshalVT(dAtA []byte) error {
 			}
 			m.ConfigHash = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MachineClass", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.MachineClass == nil {
+				m.MachineClass = &MachineSetSpec_MachineClass{}
+			}
+			if err := m.MachineClass.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skip(dAtA[iNdEx:])
@@ -18571,7 +18625,7 @@ func (m *KubernetesUpgradeManifestStatusSpec) UnmarshalVT(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *ClusterDestroyStatusSpec) UnmarshalVT(dAtA []byte) error {
+func (m *DestroyStatusSpec) UnmarshalVT(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -18594,10 +18648,10 @@ func (m *ClusterDestroyStatusSpec) UnmarshalVT(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: ClusterDestroyStatusSpec: wiretype end group for non-group")
+			return fmt.Errorf("proto: DestroyStatusSpec: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ClusterDestroyStatusSpec: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: DestroyStatusSpec: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -18831,7 +18885,7 @@ func (m *OngoingTaskSpec) UnmarshalVT(dAtA []byte) error {
 					return err
 				}
 			} else {
-				v := &ClusterDestroyStatusSpec{}
+				v := &DestroyStatusSpec{}
 				if err := v.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
 					return err
 				}

@@ -18,7 +18,7 @@ import (
 func NewClusterDestroyStatus(ns string, id resource.ID) *ClusterDestroyStatus {
 	return typed.NewResource[ClusterDestroyStatusSpec, ClusterDestroyStatusExtension](
 		resource.NewMetadata(ns, ClusterDestroyStatusType, id, resource.VersionUndefined),
-		protobuf.NewResourceSpec(&specs.ClusterDestroyStatusSpec{}),
+		protobuf.NewResourceSpec(&specs.DestroyStatusSpec{}),
 	)
 }
 
@@ -32,7 +32,7 @@ const (
 type ClusterDestroyStatus = typed.Resource[ClusterDestroyStatusSpec, ClusterDestroyStatusExtension]
 
 // ClusterDestroyStatusSpec wraps specs.ClusterDestroyStatusSpec.
-type ClusterDestroyStatusSpec = protobuf.ResourceSpec[specs.ClusterDestroyStatusSpec, *specs.ClusterDestroyStatusSpec]
+type ClusterDestroyStatusSpec = protobuf.ResourceSpec[specs.DestroyStatusSpec, *specs.DestroyStatusSpec]
 
 // ClusterDestroyStatusExtension provides auxiliary methods for ClusterDestroyStatus resource.
 type ClusterDestroyStatusExtension struct{}
