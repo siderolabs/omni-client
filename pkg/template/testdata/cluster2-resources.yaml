@@ -74,6 +74,7 @@ metadata:
 spec:
     updatestrategy: 1
     machineclass: null
+    bootstrapspec: null
 ---
 metadata:
     namespace: default
@@ -126,6 +127,7 @@ metadata:
 spec:
     updatestrategy: 1
     machineclass: null
+    bootstrapspec: null
 ---
 metadata:
     namespace: default

@@ -51,6 +51,10 @@ func (EtcdBackupExtension) ResourceDefinition() meta.ResourceDefinitionSpec {
 				Name:     "Created At",
 				JSONPath: "{.createdat}",
 			},
+			{
+				Name:     "Snapshot",
+				JSONPath: "{.snapshot}",
+			},
 		},
 	}
 }

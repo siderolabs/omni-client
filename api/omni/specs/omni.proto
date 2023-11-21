@@ -226,6 +226,9 @@ message EtcdBackupHeader {
 message EtcdBackupSpec {
   // CreatedAt is the time when the backup was created.
   google.protobuf.Timestamp created_at = 1;
+
+  // Snapshot is the snapshot file name.
+  string snapshot = 2;
 }
 
 // BackupDataSpec describes the data needed for etcd backup.
@@ -531,6 +534,16 @@ message MachineSetSpec {
     AllocationType allocation_type = 3;
   }
 
+  // BootstrapSpec defines the bootstrap spec for the control plane machine set.
+  // It can contain a reference to an etcd backup, which can be used to bootstrap etcd.
+  message BootstrapSpec {
+    // ClusterUuid is the UUID of the cluster to bootstrap. It can be obtained via `omnictl get clusteruuid <cluster-name>`
+    string cluster_uuid = 1;
+
+    // Snapshot is the file name of the etcd snapshot to restore from. It follows the format similar to `FFFFFFFFFFFFFFFF.snapshot`.
+    string snapshot = 2;
+  }
+
   enum UpdateStrategy {
     Unset = 0;
     Rolling = 1;
@@ -539,6 +552,11 @@ message MachineSetSpec {
   UpdateStrategy update_strategy = 1;
 
   MachineClass machine_class = 2;
+
+  // BootstrapSpec defines the bootstrapping spec of the machine set.
+  // This field is immutable, only valid for the control plane machine set and used only once at the creation time.
+  // When set, the machine set won't be created from scratch, instead, it will be bootstrapped using the given spec.
+  BootstrapSpec bootstrap_spec = 3;
 }
 
 // TalosUpgradeStatusSpec contains the status of the Talos upgrade process.

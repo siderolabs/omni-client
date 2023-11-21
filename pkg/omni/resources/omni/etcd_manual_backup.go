@@ -46,7 +46,7 @@ func (EtcdManualBackupExtension) ResourceDefinition() meta.ResourceDefinitionSpe
 		PrintColumns: []meta.PrintColumn{
 			{
 				Name:     "Backup At",
-				JSONPath: ".backup_at",
+				JSONPath: "{.backupat}",
 			},
 		},
 	}
