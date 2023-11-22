@@ -21,12 +21,8 @@ func NewJWTPublicKey(ns, id string) *JWTPublicKey {
 	)
 }
 
-const (
-	// JWTPublicKeyType is the type of JWTPublicKey resource.
-	JWTPublicKeyType = resource.Type("JWTPublicKeys.system.sidero.dev")
-	// JWTPublicKeyID is the single resource id.
-	JWTPublicKeyID = resource.ID("current")
-)
+// JWTPublicKeyType is the type of JWTPublicKey resource.
+const JWTPublicKeyType = resource.Type("JWTPublicKeys.system.sidero.dev")
 
 // JWTPublicKey resource describes current DB version (migrations state).
 type JWTPublicKey = typed.Resource[JWTPublicKeySpec, JWTPublicKeyExtension]
