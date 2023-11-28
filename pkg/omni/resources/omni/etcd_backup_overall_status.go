@@ -17,7 +17,7 @@ import (
 // NewEtcdBackupOverallStatus creates new etcd backup status info.
 func NewEtcdBackupOverallStatus() *EtcdBackupOverallStatus {
 	return typed.NewResource[EtcdBackupOverallStatusSpec, EtcdBackupOverallStatusExtension](
-		resource.NewMetadata(resources.EphemeralNamespace, EtcdBackupOverallStatusType, EtcdBackupOverallStatusID, resource.VersionUndefined),
+		resource.NewMetadata(resources.DefaultNamespace, EtcdBackupOverallStatusType, EtcdBackupOverallStatusID, resource.VersionUndefined),
 		protobuf.NewResourceSpec(&specs.EtcdBackupOverallStatusSpec{}),
 	)
 }
@@ -46,7 +46,7 @@ func (EtcdBackupOverallStatusExtension) ResourceDefinition() meta.ResourceDefini
 	return meta.ResourceDefinitionSpec{
 		Type:             EtcdBackupOverallStatusType,
 		Aliases:          []resource.Type{},
-		DefaultNamespace: resources.EphemeralNamespace,
+		DefaultNamespace: resources.DefaultNamespace,
 		PrintColumns: []meta.PrintColumn{
 			{
 				Name:     "Configuration Name",

@@ -332,7 +332,9 @@ func (m *EtcdBackupConf) CloneVT() *EtcdBackupConf {
 	if m == nil {
 		return (*EtcdBackupConf)(nil)
 	}
-	r := &EtcdBackupConf{}
+	r := &EtcdBackupConf{
+		Enabled: m.Enabled,
+	}
 	if rhs := m.Interval; rhs != nil {
 		if vtpb, ok := interface{}(rhs).(interface{ CloneVT() *durationpb.Duration }); ok {
 			r.Interval = vtpb.CloneVT()
@@ -396,6 +398,7 @@ func (m *EtcdBackupSpec) CloneVT() *EtcdBackupSpec {
 	}
 	r := &EtcdBackupSpec{
 		Snapshot: m.Snapshot,
+		Size:     m.Size,
 	}
 	if rhs := m.CreatedAt; rhs != nil {
 		if vtpb, ok := interface{}(rhs).(interface{ CloneVT() *timestamppb.Timestamp }); ok {
@@ -2219,6 +2222,9 @@ func (this *EtcdBackupConf) EqualVT(that *EtcdBackupConf) bool {
 	} else if !proto.Equal(this.Interval, that.Interval) {
 		return false
 	}
+	if this.Enabled != that.Enabled {
+		return false
+	}
 	return string(this.unknownFields) == string(that.unknownFields)
 }
 
@@ -2283,6 +2289,9 @@ func (this *EtcdBackupSpec) EqualVT(that *EtcdBackupSpec) bool {
 		return false
 	}
 	if this.Snapshot != that.Snapshot {
+		return false
+	}
+	if this.Size != that.Size {
 		return false
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
@@ -4906,6 +4915,16 @@ func (m *EtcdBackupConf) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
+	if m.Enabled {
+		i--
+		if m.Enabled {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x10
+	}
 	if m.Interval != nil {
 		if vtmsg, ok := interface{}(m.Interval).(interface {
 			MarshalToSizedBufferVT([]byte) (int, error)
@@ -5038,6 +5057,11 @@ func (m *EtcdBackupSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 	if m.unknownFields != nil {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
+	}
+	if m.Size != 0 {
+		i = encodeVarint(dAtA, i, uint64(m.Size))
+		i--
+		dAtA[i] = 0x18
 	}
 	if len(m.Snapshot) > 0 {
 		i -= len(m.Snapshot)
@@ -8789,6 +8813,9 @@ func (m *EtcdBackupConf) SizeVT() (n int) {
 		}
 		n += 1 + l + sov(uint64(l))
 	}
+	if m.Enabled {
+		n += 2
+	}
 	n += len(m.unknownFields)
 	return n
 }
@@ -8839,6 +8866,9 @@ func (m *EtcdBackupSpec) SizeVT() (n int) {
 	l = len(m.Snapshot)
 	if l > 0 {
 		n += 1 + l + sov(uint64(l))
+	}
+	if m.Size != 0 {
+		n += 1 + sov(uint64(m.Size))
 	}
 	n += len(m.unknownFields)
 	return n
@@ -12749,6 +12779,26 @@ func (m *EtcdBackupConf) UnmarshalVT(dAtA []byte) error {
 				}
 			}
 			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Enabled", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Enabled = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skip(dAtA[iNdEx:])
@@ -13031,6 +13081,25 @@ func (m *EtcdBackupSpec) UnmarshalVT(dAtA []byte) error {
 			}
 			m.Snapshot = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Size", wireType)
+			}
+			m.Size = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Size |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skip(dAtA[iNdEx:])

@@ -174,7 +174,7 @@ func (cluster *Cluster) Translate(TranslateContext) ([]resource.Resource, error)
 	clusterResource.TypedSpec().Value.Features.DiskEncryption = cluster.Features.DiskEncryption
 
 	if interval := cluster.Features.BackupConfiguration.Interval; interval > 0 {
-		clusterResource.TypedSpec().Value.BackupConfiguration = &specs.EtcdBackupConf{Interval: durationpb.New(interval)}
+		clusterResource.TypedSpec().Value.BackupConfiguration = &specs.EtcdBackupConf{Interval: durationpb.New(interval), Enabled: true}
 	}
 
 	return append([]resource.Resource{clusterResource}, patches...), nil

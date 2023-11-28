@@ -209,6 +209,8 @@ message ClusterSpec {
 message EtcdBackupConf {
   // Interval is the interval between backups. If not set, backups are disabled.
   google.protobuf.Duration interval = 1;
+  // Enabled etcd backups.
+  bool enabled = 2;
 }
 
 // EtcdBackupEncryptionSpec describes the backup encryption.
@@ -229,6 +231,9 @@ message EtcdBackupSpec {
 
   // Snapshot is the snapshot file name.
   string snapshot = 2;
+
+  // Size specifies the etcd backup size.
+  uint64 size = 3;
 }
 
 // BackupDataSpec describes the data needed for etcd backup.
@@ -256,6 +261,7 @@ message EtcdBackupStatusSpec {
     Unknown = 0;
     Ok = 1;
     Error = 2;
+    Running = 3;
   }
 
   // Status is the status of the last backup.
