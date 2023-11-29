@@ -29,6 +29,16 @@ func (controlplane *ControlPlane) Validate() error {
 		multiErr = multierror.Append(multiErr, fmt.Errorf("custom name is not allowed in the controlplane"))
 	}
 
+	if controlplane.BootstrapSpec != nil {
+		if controlplane.BootstrapSpec.ClusterUUID == "" {
+			multiErr = multierror.Append(multiErr, fmt.Errorf("clusterUUID is required in bootstrapSpec"))
+		}
+
+		if controlplane.BootstrapSpec.Snapshot == "" {
+			multiErr = multierror.Append(multiErr, fmt.Errorf("snapshot is required in bootstrapSpec"))
+		}
+	}
+
 	multiErr = joinErrors(multiErr, controlplane.MachineSet.Validate(), controlplane.Machines.Validate(), controlplane.Patches.Validate())
 
 	if multiErr != nil {

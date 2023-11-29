@@ -24,6 +24,8 @@ type MachineSet struct {
 	// Name is the name of the machine set. When empty, the default name will be used.
 	Name string `yaml:"name"`
 
+	BootstrapSpec *BootstrapSpec `yaml:"bootstrapSpec,omitempty"`
+
 	// MachineSet machines.
 	Machines MachineIDList `yaml:"machines"`
 
@@ -40,6 +42,16 @@ type MachineClassConfig struct {
 
 	// Size sets the number of machines to be pulled from the machine class.
 	Size Size `yaml:"size"`
+}
+
+// BootstrapSpec defines the model for setting the bootstrap specification, i.e. restoring from a backup, in the machine set.
+// Only valid for the control plane machine set.
+type BootstrapSpec struct {
+	// ClusterUUID defines the UUID of the cluster to restore from.
+	ClusterUUID string `yaml:"clusterUUID"`
+
+	// Snapshot defines the snapshot file name to restore from.
+	Snapshot string `yaml:"snapshot"`
 }
 
 // Size extends protobuf generated allocation type enum to parse string constants.
@@ -108,6 +120,13 @@ func (machineset *MachineSet) translate(ctx TranslateContext, nameSuffix, roleLa
 	machineSet.TypedSpec().Value.UpdateStrategy = specs.MachineSetSpec_Rolling
 
 	resourceList := []resource.Resource{machineSet}
+
+	if machineset.BootstrapSpec != nil {
+		machineSet.TypedSpec().Value.BootstrapSpec = &specs.MachineSetSpec_BootstrapSpec{
+			ClusterUuid: machineset.BootstrapSpec.ClusterUUID,
+			Snapshot:    machineset.BootstrapSpec.Snapshot,
+		}
+	}
 
 	if machineset.MachineClass != nil {
 		machineSet.TypedSpec().Value.MachineClass = &specs.MachineSetSpec_MachineClass{

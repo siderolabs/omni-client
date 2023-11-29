@@ -29,6 +29,10 @@ func (workers *Workers) Validate() error {
 		multiErr = multierror.Append(multiErr, fmt.Errorf("name %q cannot be used in workers", omni.ControlPlanesIDSuffix))
 	}
 
+	if workers.BootstrapSpec != nil {
+		multiErr = multierror.Append(multiErr, fmt.Errorf("bootstrapSpec is not allowed in workers"))
+	}
+
 	multiErr = joinErrors(multiErr, workers.MachineSet.Validate(), workers.Machines.Validate(), workers.Patches.Validate())
 
 	if multiErr != nil {

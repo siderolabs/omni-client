@@ -26,6 +26,10 @@ const (
 	// tsgen:LabelCluster
 	LabelCluster = SystemLabelPrefix + LabelSuffixCluster
 
+	// LabelClusterUUID defines the cluster UUID relation label.
+	// tsgen:LabelClusterUUID
+	LabelClusterUUID = SystemLabelPrefix + "cluster-uuid"
+
 	// LabelHostname defines machine hostname.
 	// tsgen:LabelHostname
 	LabelHostname = SystemLabelPrefix + LabelSuffixHostname
@@ -142,12 +146,4 @@ const (
 
 	// MachineAddressLabel is used for faster lookup of the machine by address.
 	MachineAddressLabel = SystemLabelPrefix + "address"
-)
-
-const (
-	// EtcdBackup labels.
-
-	// EtcdBackupLabelClusterUUID is the label for the cluster relation.
-	// tsgen:EtcdBackupLabelClusterUUID
-	EtcdBackupLabelClusterUUID = SystemLabelPrefix + "backup-cluster-uuid"
 )

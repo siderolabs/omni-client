@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"context"
 	_ "embed"
+	"fmt"
 	"os"
 	"strings"
 	"testing"
@@ -34,6 +35,9 @@ var cluster2 []byte
 //go:embed testdata/cluster3.yaml
 var cluster3 []byte
 
+//go:embed testdata/cluster-valid-bootstrapspec.yaml
+var clusterValidBootstrapSpec []byte
+
 //go:embed testdata/cluster-bad-yaml1.yaml
 var clusterBadYAML1 []byte
 
@@ -55,6 +59,9 @@ var clusterInvalid3 []byte
 //go:embed testdata/cluster-invalid4.yaml
 var clusterInvalid4 []byte
 
+//go:embed testdata/cluster-invalid-bootstrapspec.yaml
+var clusterInvalidBootstrapSpec []byte
+
 //go:embed testdata/cluster1-resources.yaml
 var cluster1Resources []byte
 
@@ -63,6 +70,9 @@ var cluster2Resources []byte
 
 //go:embed testdata/cluster3-resources.yaml
 var cluster3Resources []byte
+
+//go:embed testdata/cluster-valid-bootstrapspec-resources.yaml
+var clusterValidBootstrapSpecResources []byte
 
 func TestLoad(t *testing.T) {
 	for _, tt := range []struct { //nolint:govet
@@ -231,6 +241,18 @@ machine:
 	* workers is invalid: 1 error occurred:
 	* machine set can not have both machines and machine class defined`,
 		},
+		{
+			name: "clusterInvalidBootstrapSpec",
+			data: clusterInvalidBootstrapSpec,
+			expectedError: `2 errors occurred:
+	* controlplane is invalid: 2 errors occurred:
+	* clusterUUID is required in bootstrapSpec
+	* snapshot is required in bootstrapSpec
+
+
+	* workers is invalid: 1 error occurred:
+	* bootstrapSpec is not allowed in workers`,
+		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			templ, err := template.Load(bytes.NewReader(tt.data))
@@ -239,9 +261,18 @@ machine:
 			err = templ.Validate()
 			if tt.expectedError == "" {
 				require.NoError(t, err)
-			} else {
-				require.Equal(t, strings.TrimSpace(err.Error()), strings.TrimSpace(tt.expectedError), err.Error())
+
+				return
 			}
+
+			printMode := false
+			if printMode {
+				fmt.Printf("ACTUAL ERROR:\n%s\n", err.Error())
+
+				return
+			}
+
+			require.Equal(t, strings.TrimSpace(tt.expectedError), strings.TrimSpace(err.Error()), err.Error())
 		})
 	}
 }
@@ -275,6 +306,11 @@ func TestTranslate(t *testing.T) {
 			template: cluster3,
 			expected: cluster3Resources,
 		},
+		{
+			name:     "clusterValidBootstrapSpec",
+			template: clusterValidBootstrapSpec,
+			expected: clusterValidBootstrapSpecResources,
+		},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			templ, err := template.Load(bytes.NewReader(tt.template))
@@ -298,6 +334,13 @@ func TestTranslate(t *testing.T) {
 				require.NoError(t, err)
 
 				require.NoError(t, enc.Encode(m))
+			}
+
+			printMode := false
+			if printMode {
+				fmt.Printf("ACTUAL:\n%s\n", actual.String())
+
+				return
 			}
 
 			require.Equal(t, string(tt.expected), actual.String())
