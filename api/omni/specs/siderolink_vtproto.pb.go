@@ -28,7 +28,6 @@ func (m *SiderolinkConfigSpec) CloneVT() *SiderolinkConfigSpec {
 		PrivateKey:         m.PrivateKey,
 		PublicKey:          m.PublicKey,
 		WireguardEndpoint:  m.WireguardEndpoint,
-		ApiEndpoint:        m.ApiEndpoint,
 		Subnet:             m.Subnet,
 		ServerAddress:      m.ServerAddress,
 		JoinToken:          m.JoinToken,
@@ -126,9 +125,6 @@ func (this *SiderolinkConfigSpec) EqualVT(that *SiderolinkConfigSpec) bool {
 		return false
 	}
 	if this.WireguardEndpoint != that.WireguardEndpoint {
-		return false
-	}
-	if this.ApiEndpoint != that.ApiEndpoint {
 		return false
 	}
 	if this.Subnet != that.Subnet {
@@ -297,13 +293,6 @@ func (m *SiderolinkConfigSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) 
 		i = encodeVarint(dAtA, i, uint64(len(m.Subnet)))
 		i--
 		dAtA[i] = 0x2a
-	}
-	if len(m.ApiEndpoint) > 0 {
-		i -= len(m.ApiEndpoint)
-		copy(dAtA[i:], m.ApiEndpoint)
-		i = encodeVarint(dAtA, i, uint64(len(m.ApiEndpoint)))
-		i--
-		dAtA[i] = 0x22
 	}
 	if len(m.WireguardEndpoint) > 0 {
 		i -= len(m.WireguardEndpoint)
@@ -537,10 +526,6 @@ func (m *SiderolinkConfigSpec) SizeVT() (n int) {
 	if l > 0 {
 		n += 1 + l + sov(uint64(l))
 	}
-	l = len(m.ApiEndpoint)
-	if l > 0 {
-		n += 1 + l + sov(uint64(l))
-	}
 	l = len(m.Subnet)
 	if l > 0 {
 		n += 1 + l + sov(uint64(l))
@@ -762,38 +747,6 @@ func (m *SiderolinkConfigSpec) UnmarshalVT(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.WireguardEndpoint = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ApiEndpoint", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLength
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLength
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ApiEndpoint = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 5:
 			if wireType != 2 {

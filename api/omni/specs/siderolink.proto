@@ -10,7 +10,6 @@ message SiderolinkConfigSpec {
   string private_key = 1;
   string public_key = 2;
   string wireguard_endpoint = 3;
-  string api_endpoint = 4;
   string subnet = 5;
   string server_address = 6;
   string join_token = 7;
