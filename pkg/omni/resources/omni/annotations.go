@@ -9,6 +9,10 @@ const (
 	// tsgen:MachineLocked
 	MachineLocked = SystemLabelPrefix + "locked"
 
+	// ResourceManagedByClusterTemplates is an annotation which indicates that a resource is managed by cluster templates.
+	// tsgen:ResourceManagedByClusterTemplates
+	ResourceManagedByClusterTemplates = SystemLabelPrefix + "managed-by-cluster-templates"
+
 	// ConfigPatchName human readable patch name.
 	// tsgen:ConfigPatchName
 	ConfigPatchName = "name"

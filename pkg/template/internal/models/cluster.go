@@ -151,6 +151,8 @@ func (talos *TalosCluster) Validate() error {
 func (cluster *Cluster) Translate(TranslateContext) ([]resource.Resource, error) {
 	clusterResource := omni.NewCluster(resources.DefaultNamespace, cluster.Name)
 
+	clusterResource.Metadata().Annotations().Set(omni.ResourceManagedByClusterTemplates, "")
+
 	for key, value := range cluster.Labels {
 		clusterResource.Metadata().Labels().Set(key, value)
 	}
