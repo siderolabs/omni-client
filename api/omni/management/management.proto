@@ -119,6 +119,15 @@ message KubernetesSyncManifestResponse {
   bool skipped = 5;
 }
 
+message CreateSchematicRequest {
+  repeated string extensions = 1;
+  repeated string extra_kernel_args = 2;
+  map<uint32, string> meta_values = 3;
+}
+
+message CreateSchematicResponse {
+  string schematic_id = 1;
+}
 
 service ManagementService {
   rpc Kubeconfig(KubeconfigRequest) returns (KubeconfigResponse);
@@ -132,4 +141,5 @@ service ManagementService {
   rpc DestroyServiceAccount(DestroyServiceAccountRequest) returns (google.protobuf.Empty);
   rpc KubernetesUpgradePreChecks(KubernetesUpgradePreChecksRequest) returns (KubernetesUpgradePreChecksResponse);
   rpc KubernetesSyncManifests(KubernetesSyncManifestRequest) returns (stream KubernetesSyncManifestResponse);
+  rpc CreateSchematic(CreateSchematicRequest) returns (CreateSchematicResponse);
 }

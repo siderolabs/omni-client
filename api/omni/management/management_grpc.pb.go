@@ -33,6 +33,7 @@ const (
 	ManagementService_DestroyServiceAccount_FullMethodName      = "/management.ManagementService/DestroyServiceAccount"
 	ManagementService_KubernetesUpgradePreChecks_FullMethodName = "/management.ManagementService/KubernetesUpgradePreChecks"
 	ManagementService_KubernetesSyncManifests_FullMethodName    = "/management.ManagementService/KubernetesSyncManifests"
+	ManagementService_CreateSchematic_FullMethodName            = "/management.ManagementService/CreateSchematic"
 )
 
 // ManagementServiceClient is the client API for ManagementService service.
@@ -50,6 +51,7 @@ type ManagementServiceClient interface {
 	DestroyServiceAccount(ctx context.Context, in *DestroyServiceAccountRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	KubernetesUpgradePreChecks(ctx context.Context, in *KubernetesUpgradePreChecksRequest, opts ...grpc.CallOption) (*KubernetesUpgradePreChecksResponse, error)
 	KubernetesSyncManifests(ctx context.Context, in *KubernetesSyncManifestRequest, opts ...grpc.CallOption) (ManagementService_KubernetesSyncManifestsClient, error)
+	CreateSchematic(ctx context.Context, in *CreateSchematicRequest, opts ...grpc.CallOption) (*CreateSchematicResponse, error)
 }
 
 type managementServiceClient struct {
@@ -205,6 +207,15 @@ func (x *managementServiceKubernetesSyncManifestsClient) Recv() (*KubernetesSync
 	return m, nil
 }
 
+func (c *managementServiceClient) CreateSchematic(ctx context.Context, in *CreateSchematicRequest, opts ...grpc.CallOption) (*CreateSchematicResponse, error) {
+	out := new(CreateSchematicResponse)
+	err := c.cc.Invoke(ctx, ManagementService_CreateSchematic_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ManagementServiceServer is the server API for ManagementService service.
 // All implementations must embed UnimplementedManagementServiceServer
 // for forward compatibility
@@ -220,6 +231,7 @@ type ManagementServiceServer interface {
 	DestroyServiceAccount(context.Context, *DestroyServiceAccountRequest) (*emptypb.Empty, error)
 	KubernetesUpgradePreChecks(context.Context, *KubernetesUpgradePreChecksRequest) (*KubernetesUpgradePreChecksResponse, error)
 	KubernetesSyncManifests(*KubernetesSyncManifestRequest, ManagementService_KubernetesSyncManifestsServer) error
+	CreateSchematic(context.Context, *CreateSchematicRequest) (*CreateSchematicResponse, error)
 	mustEmbedUnimplementedManagementServiceServer()
 }
 
@@ -259,6 +271,9 @@ func (UnimplementedManagementServiceServer) KubernetesUpgradePreChecks(context.C
 }
 func (UnimplementedManagementServiceServer) KubernetesSyncManifests(*KubernetesSyncManifestRequest, ManagementService_KubernetesSyncManifestsServer) error {
 	return status.Errorf(codes.Unimplemented, "method KubernetesSyncManifests not implemented")
+}
+func (UnimplementedManagementServiceServer) CreateSchematic(context.Context, *CreateSchematicRequest) (*CreateSchematicResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateSchematic not implemented")
 }
 func (UnimplementedManagementServiceServer) mustEmbedUnimplementedManagementServiceServer() {}
 
@@ -477,6 +492,24 @@ func (x *managementServiceKubernetesSyncManifestsServer) Send(m *KubernetesSyncM
 	return x.ServerStream.SendMsg(m)
 }
 
+func _ManagementService_CreateSchematic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateSchematicRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ManagementServiceServer).CreateSchematic(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ManagementService_CreateSchematic_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ManagementServiceServer).CreateSchematic(ctx, req.(*CreateSchematicRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ManagementService_ServiceDesc is the grpc.ServiceDesc for ManagementService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -519,6 +552,10 @@ var ManagementService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "KubernetesUpgradePreChecks",
 			Handler:    _ManagementService_KubernetesUpgradePreChecks_Handler,
+		},
+		{
+			MethodName: "CreateSchematic",
+			Handler:    _ManagementService_CreateSchematic_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

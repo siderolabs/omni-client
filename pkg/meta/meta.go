@@ -8,6 +8,11 @@ package meta
 // StateEncryptionConfig is github.com/siderolabs/talos/internal/pkg/meta.StateEncryptionConfig.
 const StateEncryptionConfig = 9
 
+// MetalNetworkPlatformConfig is github.com/siderolabs/talos/internal/pkg/meta.MetalNetworkPlatformConfig.
+// tsgen:MetalNetworkPlatformConfig
+const MetalNetworkPlatformConfig = 10
+
 // LabelsMeta is github.com/siderolabs/talos/internal/pkg/meta.UserReserved1.
 // Omni stores initial machine labels under that key.
+// tsgen:LabelsMeta
 const LabelsMeta = 12
