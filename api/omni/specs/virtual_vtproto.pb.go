@@ -51,6 +51,7 @@ func (m *PermissionsSpec) CloneVT() *PermissionsSpec {
 		CanReadMachineLogs:            m.CanReadMachineLogs,
 		CanReadMachineConfigPatches:   m.CanReadMachineConfigPatches,
 		CanManageMachineConfigPatches: m.CanManageMachineConfigPatches,
+		CanManageBackupStore:          m.CanManageBackupStore,
 	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
@@ -141,6 +142,9 @@ func (this *PermissionsSpec) EqualVT(that *PermissionsSpec) bool {
 		return false
 	}
 	if this.CanManageMachineConfigPatches != that.CanManageMachineConfigPatches {
+		return false
+	}
+	if this.CanManageBackupStore != that.CanManageBackupStore {
 		return false
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
@@ -278,6 +282,16 @@ func (m *PermissionsSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 	if m.unknownFields != nil {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
+	}
+	if m.CanManageBackupStore {
+		i--
+		if m.CanManageBackupStore {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x58
 	}
 	if m.CanManageMachineConfigPatches {
 		i--
@@ -551,6 +565,9 @@ func (m *PermissionsSpec) SizeVT() (n int) {
 		n += 2
 	}
 	if m.CanManageMachineConfigPatches {
+		n += 2
+	}
+	if m.CanManageBackupStore {
 		n += 2
 	}
 	n += len(m.unknownFields)
@@ -904,6 +921,26 @@ func (m *PermissionsSpec) UnmarshalVT(dAtA []byte) error {
 				}
 			}
 			m.CanManageMachineConfigPatches = bool(v != 0)
+		case 11:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CanManageBackupStore", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.CanManageBackupStore = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skip(dAtA[iNdEx:])
