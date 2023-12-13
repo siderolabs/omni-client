@@ -125,6 +125,16 @@ message MachineStatusSpec {
     bool spot = 8;
   }
 
+  message Schematic {
+    // Id is the image factory schematic id used for the image generation.
+    string id = 1;
+
+    // Invalid marks the machine as having extensions installed bypassing image factory.
+    // Which makes it impossible to detect schematic id and manage the image generation
+    // using image factory.
+    bool invalid = 2;
+  }
+
   // Talos version.
   string talos_version = 1;
 
@@ -166,6 +176,8 @@ message MachineStatusSpec {
   reserved 12;
 
   map<string, string> image_labels = 13;
+
+  Schematic schematic = 14;
 }
 
 // TalosConfigSpec describes a Talos cluster config.
@@ -852,3 +864,4 @@ message ImagePullStatusSpec {
 message SchematicSpec {
   repeated string extensions = 1;
 }
+
