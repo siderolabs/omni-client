@@ -30,7 +30,6 @@ var forbiddenFields = []string{
 	"cluster.secret",
 	"cluster.aescbcEncryptionSecret",
 	"cluster.secretboxEncryptionSecret",
-	"cluster.serviceAccount",
 	"machine.token",
 	"machine.ca",
 	"machine.type",
