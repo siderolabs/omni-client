@@ -55,7 +55,9 @@ func WithClient(f func(ctx context.Context, client *client.Client) error, client
 	}
 
 	return WithContext(func(ctx context.Context) error {
-		var opts []client.Option
+		opts := []client.Option{
+			client.WithInsecureSkipTLSVerify(CmdFlags.InsecureSkipTLSVerify),
+		}
 
 		conf, err := config.Current()
 		if err != nil {

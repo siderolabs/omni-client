@@ -36,5 +36,6 @@ func validate() error {
 }
 
 func init() {
+	addRequiredFileFlag(validateCmd)
 	templateCmd.AddCommand(validateCmd)
 }

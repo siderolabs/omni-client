@@ -24,16 +24,22 @@ type PatchList []Patch
 type Patch struct { //nolint:govet
 	// Name of the patch.
 	//
-	// Optional for 'path' patches, mandatory for 'inline' patches.
-	Name string `yaml:"name"`
+	// Optional for 'path' patches, mandatory for 'inline' patches if idOverride is not set.
+	Name string `yaml:"name,omitempty"`
+
+	// IDOverride overrides the ID of the patch. When set, the ID will not be generated using the name and/or the file path.
+	IDOverride string `yaml:"idOverride,omitempty"`
+
+	// Descriptors are the user descriptors to apply to the resource.
+	Descriptors Descriptors `yaml:",inline"`
 
 	// File path to the file containing the patch.
 	//
 	// Mutually exclusive with `inline:`.
-	File string `yaml:"file"`
+	File string `yaml:"file,omitempty"`
 
 	// Inline patch content.
-	Inline map[string]any `yaml:"inline"`
+	Inline map[string]any `yaml:"inline,omitempty"`
 }
 
 // Validate the model.
@@ -72,6 +78,10 @@ func (patch *Patch) Validate() error {
 		name = patch.File
 	}
 
+	if err := patch.Descriptors.Validate(); err != nil {
+		multiErr = multierror.Append(multiErr, err)
+	}
+
 	if patch.File != "" && patch.Inline != nil {
 		multiErr = multierror.Append(multiErr, fmt.Errorf("path and inline are mutually exclusive"))
 	}
@@ -91,8 +101,8 @@ func (patch *Patch) Validate() error {
 			}
 		}
 	case patch.Inline != nil:
-		if patch.Name == "" {
-			multiErr = multierror.Append(multiErr, fmt.Errorf("name is required for inline patches"))
+		if patch.Name == "" && patch.IDOverride == "" {
+			multiErr = multierror.Append(multiErr, fmt.Errorf("either name or idOverride is required for inline patches"))
 		}
 
 		raw, err := yaml.Marshal(patch.Inline)
@@ -119,7 +129,10 @@ func (patch *Patch) Translate(prefix string, weight int, labels ...pair.Pair[str
 		name = patch.File
 	}
 
-	id := fmt.Sprintf("%03d-%s-%s", weight, prefix, name)
+	id := patch.IDOverride
+	if id == "" {
+		id = fmt.Sprintf("%03d-%s-%s", weight, prefix, name)
+	}
 
 	var (
 		raw []byte
@@ -141,6 +154,8 @@ func (patch *Patch) Translate(prefix string, weight int, labels ...pair.Pair[str
 
 	patchResource := omni.NewConfigPatch(resources.DefaultNamespace, id, labels...)
 	patchResource.Metadata().Annotations().Set("name", name)
+
+	patch.Descriptors.Apply(patchResource)
 
 	patchResource.TypedSpec().Value.Data = string(raw)
 

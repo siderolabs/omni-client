@@ -43,6 +43,7 @@ func deleteImpl(ctx context.Context, client *client.Client) error {
 }
 
 func init() {
+	addRequiredFileFlag(deleteCmd)
 	deleteCmd.PersistentFlags().BoolVarP(&deleteCmdFlags.options.Verbose, "verbose", "v", false, "verbose output (show diff for each resource)")
 	deleteCmd.PersistentFlags().BoolVarP(&deleteCmdFlags.options.DryRun, "dry-run", "d", false, "dry run")
 	deleteCmd.PersistentFlags().BoolVar(&deleteCmdFlags.options.DestroyMachines, "destroy-disconnected-machines", false, "removes all disconnected machines which are part of the cluster from Omni")

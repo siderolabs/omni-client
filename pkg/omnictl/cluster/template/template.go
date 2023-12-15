@@ -30,7 +30,7 @@ func RootCmd() *cobra.Command {
 	return templateCmd
 }
 
-func init() {
-	templateCmd.PersistentFlags().StringVarP(&cmdFlags.TemplatePath, "file", "f", "", "path to the cluster template file.")
-	ensure.NoError(templateCmd.MarkPersistentFlagRequired("file"))
+func addRequiredFileFlag(cmd *cobra.Command) {
+	cmd.PersistentFlags().StringVarP(&cmdFlags.TemplatePath, "file", "f", "", "path to the cluster template file.")
+	ensure.NoError(cmd.MarkPersistentFlagRequired("file"))
 }

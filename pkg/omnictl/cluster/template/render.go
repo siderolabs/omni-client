@@ -36,5 +36,6 @@ func render() error {
 }
 
 func init() {
+	addRequiredFileFlag(renderCmd)
 	templateCmd.AddCommand(renderCmd)
 }

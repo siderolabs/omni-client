@@ -160,7 +160,7 @@ func TestValidate(t *testing.T) {
 
 
 	* patch "" is invalid: 1 error occurred:
-	* name is required for inline patches
+	* either name or idOverride is required for inline patches
 
 
 

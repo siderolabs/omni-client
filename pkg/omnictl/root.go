@@ -29,4 +29,6 @@ func init() {
 		))
 	RootCmd.PersistentFlags().StringVar(&access.CmdFlags.Context, "context", "",
 		"The context to be used. Defaults to the selected context in the omniconfig file.")
+	RootCmd.PersistentFlags().BoolVar(&access.CmdFlags.InsecureSkipTLSVerify, "insecure-skip-tls-verify", false,
+		"Skip TLS verification for the Omni GRPC and HTTP API endpoints.")
 }

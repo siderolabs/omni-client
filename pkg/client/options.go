@@ -26,6 +26,8 @@ type Options struct {
 	AuthInterceptor *interceptor.Interceptor
 
 	AdditionalGRPCDialOptions []grpc.DialOption
+
+	InsecureSkipTLSVerify bool
 }
 
 // Option is a functional option for the client.
@@ -35,6 +37,13 @@ type Option func(*Options)
 func WithBasicAuth(auth string) Option {
 	return func(options *Options) {
 		options.BasicAuth = auth
+	}
+}
+
+// WithInsecureSkipTLSVerify creates the client with insecure TLS verification.
+func WithInsecureSkipTLSVerify(insecureSkipTLSVerify bool) Option {
+	return func(options *Options) {
+		options.InsecureSkipTLSVerify = insecureSkipTLSVerify
 	}
 }
 

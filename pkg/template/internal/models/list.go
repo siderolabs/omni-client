@@ -123,7 +123,8 @@ func (l List) Validate() error {
 // Translate assumes that the template is valid.
 func (l List) Translate() ([]resource.Resource, error) {
 	context := TranslateContext{
-		LockedMachines: make(map[MachineID]struct{}),
+		LockedMachines:     make(map[MachineID]struct{}),
+		MachineDescriptors: make(map[MachineID]Descriptors),
 	}
 
 	for _, model := range l {
@@ -131,6 +132,8 @@ func (l List) Translate() ([]resource.Resource, error) {
 		case *Cluster:
 			context.ClusterName = m.Name
 		case *Machine:
+			context.MachineDescriptors[m.Name] = m.Descriptors
+
 			if m.Locked {
 				context.LockedMachines[m.Name] = struct{}{}
 			}

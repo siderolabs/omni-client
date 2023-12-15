@@ -75,7 +75,9 @@ func New(ctx context.Context, endpoint string, opts ...Option) (*Client, error) 
 
 	switch u.Scheme {
 	case "https":
-		grpcDialOptions = append(grpcDialOptions, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{})))
+		grpcDialOptions = append(grpcDialOptions, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{
+			InsecureSkipVerify: options.InsecureSkipTLSVerify,
+		})))
 	default:
 		grpcDialOptions = append(grpcDialOptions, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	}

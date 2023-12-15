@@ -6,6 +6,7 @@ package access
 
 // CmdFlags contains the common CLI flags.
 var CmdFlags struct {
-	Omniconfig string
-	Context    string
+	Omniconfig            string
+	Context               string
+	InsecureSkipTLSVerify bool
 }

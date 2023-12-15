@@ -39,5 +39,6 @@ func diff(ctx context.Context, client *client.Client) error {
 }
 
 func init() {
+	addRequiredFileFlag(diffCmd)
 	templateCmd.AddCommand(diffCmd)
 }

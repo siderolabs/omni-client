@@ -32,14 +32,17 @@ type Machine struct { //nolint:govet
 	// Machine name (ID).
 	Name MachineID `yaml:"name"`
 
+	// Descriptors are the user descriptors to apply to the cluster.
+	Descriptors Descriptors `yaml:",inline"`
+
 	// Locked locks the machine, so no config updates, upgrades and downgrades will be performed on the machine.
-	Locked bool `yaml:"locked"`
+	Locked bool `yaml:"locked,omitempty"`
 
 	// Install specification.
-	Install MachineInstall `yaml:"install"`
+	Install MachineInstall `yaml:"install,omitempty"`
 
 	// ClusterMachine patches.
-	Patches PatchList `yaml:"patches"`
+	Patches PatchList `yaml:"patches,omitempty"`
 }
 
 // MachineInstall provides machine install configuration.
@@ -79,6 +82,10 @@ func (machine *Machine) Validate() error {
 
 	if machine.Name == "" {
 		multiErr = multierror.Append(multiErr, fmt.Errorf("name is required for machine"))
+	}
+
+	if err := machine.Descriptors.Validate(); err != nil {
+		multiErr = multierror.Append(multiErr, err)
 	}
 
 	multiErr = joinErrors(multiErr, machine.Name.Validate(), machine.Install.Validate(), machine.Patches.Validate())

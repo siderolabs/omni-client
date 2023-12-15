@@ -32,8 +32,8 @@ type Cluster struct { //nolint:govet
 	// Name is the name of the cluster.
 	Name string `yaml:"name"`
 
-	// Labels are the user labels to apply to the cluster.
-	Labels map[string]string `yaml:"labels"`
+	// Descriptors are the user descriptors to apply to the cluster.
+	Descriptors Descriptors `yaml:",inline"`
 
 	// Kubernetes settings.
 	Kubernetes KubernetesCluster `yaml:"kubernetes"`
@@ -42,26 +42,26 @@ type Cluster struct { //nolint:govet
 	Talos TalosCluster `yaml:"talos"`
 
 	// Features settings.
-	Features Features `yaml:"features"`
+	Features Features `yaml:"features,omitempty"`
 
 	// Cluster-wide patches.
-	Patches PatchList `yaml:"patches"`
+	Patches PatchList `yaml:"patches,omitempty"`
 }
 
 // Features defines cluster-wide features.
 type Features struct {
 	// DiskEncryption enables KMS encryption.
-	DiskEncryption bool `yaml:"diskEncryption"`
+	DiskEncryption bool `yaml:"diskEncryption,omitempty"`
 	// EnableWorkloadProxy enables workload proxy.
-	EnableWorkloadProxy bool `yaml:"enableWorkloadProxy"`
+	EnableWorkloadProxy bool `yaml:"enableWorkloadProxy,omitempty"`
 	// BackupConfiguration contains backup configuration settings.
-	BackupConfiguration BackupConfiguration `yaml:"backupConfiguration"`
+	BackupConfiguration BackupConfiguration `yaml:"backupConfiguration,omitempty"`
 }
 
 // BackupConfiguration contains backup configuration settings.
 type BackupConfiguration struct {
-	// Interval configures intervals between backups. If set to 0, etcd backups for this cluser are disabled.
-	Interval time.Duration `yaml:"interval"`
+	// Interval configures intervals between backups. If set to 0, etcd backups for this cluster are disabled.
+	Interval time.Duration `yaml:"interval,omitempty"`
 }
 
 // KubernetesCluster is a Kubernetes cluster settings.
@@ -92,10 +92,8 @@ func (cluster *Cluster) Validate() error {
 		}
 	}
 
-	for labelKey := range cluster.Labels {
-		if strings.HasPrefix(labelKey, omni.SystemLabelPrefix) {
-			multiErr = multierror.Append(multiErr, fmt.Errorf("label %q is invalid: prefix %q is reserved for internal use", labelKey, omni.SystemLabelPrefix))
-		}
+	if err := cluster.Descriptors.Validate(); err != nil {
+		multiErr = multierror.Append(multiErr, err)
 	}
 
 	multiErr = joinErrors(multiErr, cluster.Kubernetes.Validate(), cluster.Talos.Validate(), cluster.Patches.Validate())
@@ -153,9 +151,7 @@ func (cluster *Cluster) Translate(TranslateContext) ([]resource.Resource, error)
 
 	clusterResource.Metadata().Annotations().Set(omni.ResourceManagedByClusterTemplates, "")
 
-	for key, value := range cluster.Labels {
-		clusterResource.Metadata().Labels().Set(key, value)
-	}
+	cluster.Descriptors.Apply(clusterResource)
 
 	clusterResource.TypedSpec().Value.Features = &specs.ClusterSpec_Features{
 		EnableWorkloadProxy: cluster.Features.EnableWorkloadProxy,

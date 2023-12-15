@@ -43,6 +43,7 @@ func sync(ctx context.Context, client *client.Client) error {
 }
 
 func init() {
+	addRequiredFileFlag(syncCmd)
 	syncCmd.PersistentFlags().BoolVarP(&syncCmdFlags.options.Verbose, "verbose", "v", false, "verbose output (show diff for each resource)")
 	syncCmd.PersistentFlags().BoolVarP(&syncCmdFlags.options.DryRun, "dry-run", "d", false, "dry run")
 	templateCmd.AddCommand(syncCmd)

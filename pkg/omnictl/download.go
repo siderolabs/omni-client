@@ -155,7 +155,25 @@ func downloadImageTo(ctx context.Context, client *client.Client, media *omni.Ins
 		return err
 	}
 
-	resp, err := http.DefaultClient.Do(req)
+	httpTransport := http.DefaultTransport
+
+	if access.CmdFlags.InsecureSkipTLSVerify {
+		defaultTransport, ok := http.DefaultTransport.(*http.Transport)
+		if !ok {
+			return fmt.Errorf("unexpected default transport type: %T", http.DefaultTransport)
+		}
+
+		defaultTransportClone := defaultTransport.Clone()
+		defaultTransportClone.TLSClientConfig.InsecureSkipVerify = true
+
+		httpTransport = defaultTransportClone
+	}
+
+	httpClient := &http.Client{
+		Transport: httpTransport,
+	}
+
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return err
 	}

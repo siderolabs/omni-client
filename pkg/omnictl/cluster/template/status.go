@@ -56,6 +56,7 @@ func status(ctx context.Context, client *client.Client) error {
 }
 
 func init() {
+	addRequiredFileFlag(statusCmd)
 	statusCmd.PersistentFlags().BoolVarP(&statusCmdFlags.options.Quiet, "quiet", "q", false, "suppress output")
 	statusCmd.PersistentFlags().DurationVarP(&statusCmdFlags.wait, "wait", "w", 5*time.Minute, "wait timeout, if zero, report current status and exit")
 	templateCmd.AddCommand(statusCmd)
