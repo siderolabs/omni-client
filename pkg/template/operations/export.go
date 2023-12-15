@@ -452,6 +452,10 @@ func getInstallDiskFromConfigPatch(configPatch *omni.ConfigPatch) string {
 		return ""
 	}
 
+	if slices.ContainsFunc([]map[string]any{data, machine, install}, func(m map[string]any) bool { return len(m) != 1 }) {
+		return "" // there is some data in the patch other than the install disk, so it cannot be converted into install.disk block in the Machine model
+	}
+
 	disk, ok := install["disk"].(string)
 	if !ok {
 		return ""
