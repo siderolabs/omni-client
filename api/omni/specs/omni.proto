@@ -865,3 +865,17 @@ message SchematicSpec {
   repeated string extensions = 1;
 }
 
+// TalosExtensionsSpec represents all available extensions for a particular Talos version.
+message TalosExtensionsSpec {
+  // Info is a merged representation of the extensions manifest and image factory versions response.
+  message Info {
+    string name = 1;
+    string author = 2;
+    string version = 3;
+    string description = 4;
+    string ref = 5;
+    string digest = 6;
+  }
+
+  repeated Info items = 1;
+}
