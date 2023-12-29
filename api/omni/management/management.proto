@@ -127,6 +127,7 @@ message CreateSchematicRequest {
 
 message CreateSchematicResponse {
   string schematic_id = 1;
+  string pxe_url = 2;
 }
 
 service ManagementService {

@@ -106,6 +106,16 @@ func (client *Client) LogsReader(ctx context.Context, machineID string, follow b
 	}, nil
 }
 
+// CreateSchematic using the image factory.
+func (client *Client) CreateSchematic(ctx context.Context, req *management.CreateSchematicRequest) (*management.CreateSchematicResponse, error) {
+	schematic, err := client.conn.CreateSchematic(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return schematic, nil
+}
+
 // CreateServiceAccount creates a service account and returns the public key ID.
 func (client *Client) CreateServiceAccount(ctx context.Context, armoredPGPPublicKey string, role string, useUserRole bool) (string, error) {
 	resp, err := client.conn.CreateServiceAccount(ctx, &management.CreateServiceAccountRequest{
