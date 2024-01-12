@@ -63,7 +63,6 @@ func init() {
 	registry.MustRegisterResource(RedactedClusterMachineConfigType, &RedactedClusterMachineConfig{})
 	registry.MustRegisterResource(SchematicType, &Schematic{})
 	registry.MustRegisterResource(TalosConfigType, &TalosConfig{})
-	registry.MustRegisterResource(TalosExtensionsType, &TalosExtensions{})
 	registry.MustRegisterResource(TalosVersionType, &TalosVersion{})
 	registry.MustRegisterResource(TalosUpgradeStatusType, &TalosUpgradeStatus{})
 }
