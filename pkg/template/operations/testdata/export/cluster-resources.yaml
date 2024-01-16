@@ -80,6 +80,14 @@ spec:
   updatestrategy: 1
   machineclass: null
   bootstrapspec: null
+  deletestrategy: 1
+  updatestrategyconfig:
+    rolling:
+      maxparallelism: 3
+  deletestrategyconfig:
+    type: Rolling
+    rolling:
+      maxparallelism: 5
 ---
 
 
@@ -514,6 +522,9 @@ spec:
                   endpoint: grpc://192.168.178.167:8090
                 slot: 0
 ---
+
+
+
 ################################ Special Config Patches - install disk
 metadata:
   namespace: default

@@ -39,6 +39,14 @@ func (controlplane *ControlPlane) Validate() error {
 		}
 	}
 
+	if controlplane.UpdateStrategy != nil {
+		multiErr = multierror.Append(multiErr, fmt.Errorf("updateStrategy is not allowed in the controlplane"))
+	}
+
+	if controlplane.DeleteStrategy != nil {
+		multiErr = multierror.Append(multiErr, fmt.Errorf("deleteStrategy is not allowed in the controlplane"))
+	}
+
 	multiErr = joinErrors(multiErr, controlplane.MachineSet.Validate(), controlplane.Machines.Validate(), controlplane.Patches.Validate())
 
 	if multiErr != nil {

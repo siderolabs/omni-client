@@ -1065,14 +1065,53 @@ func (m *MachineSetSpec_BootstrapSpec) CloneMessageVT() proto.Message {
 	return m.CloneVT()
 }
 
+func (m *MachineSetSpec_RollingUpdateStrategyConfig) CloneVT() *MachineSetSpec_RollingUpdateStrategyConfig {
+	if m == nil {
+		return (*MachineSetSpec_RollingUpdateStrategyConfig)(nil)
+	}
+	r := &MachineSetSpec_RollingUpdateStrategyConfig{
+		MaxParallelism: m.MaxParallelism,
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *MachineSetSpec_RollingUpdateStrategyConfig) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
+func (m *MachineSetSpec_UpdateStrategyConfig) CloneVT() *MachineSetSpec_UpdateStrategyConfig {
+	if m == nil {
+		return (*MachineSetSpec_UpdateStrategyConfig)(nil)
+	}
+	r := &MachineSetSpec_UpdateStrategyConfig{
+		Rolling: m.Rolling.CloneVT(),
+	}
+	if len(m.unknownFields) > 0 {
+		r.unknownFields = make([]byte, len(m.unknownFields))
+		copy(r.unknownFields, m.unknownFields)
+	}
+	return r
+}
+
+func (m *MachineSetSpec_UpdateStrategyConfig) CloneMessageVT() proto.Message {
+	return m.CloneVT()
+}
+
 func (m *MachineSetSpec) CloneVT() *MachineSetSpec {
 	if m == nil {
 		return (*MachineSetSpec)(nil)
 	}
 	r := &MachineSetSpec{
-		UpdateStrategy: m.UpdateStrategy,
-		MachineClass:   m.MachineClass.CloneVT(),
-		BootstrapSpec:  m.BootstrapSpec.CloneVT(),
+		UpdateStrategy:       m.UpdateStrategy,
+		MachineClass:         m.MachineClass.CloneVT(),
+		BootstrapSpec:        m.BootstrapSpec.CloneVT(),
+		DeleteStrategy:       m.DeleteStrategy,
+		UpdateStrategyConfig: m.UpdateStrategyConfig.CloneVT(),
+		DeleteStrategyConfig: m.DeleteStrategyConfig.CloneVT(),
 	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
@@ -3186,6 +3225,44 @@ func (this *MachineSetSpec_BootstrapSpec) EqualMessageVT(thatMsg proto.Message) 
 	}
 	return this.EqualVT(that)
 }
+func (this *MachineSetSpec_RollingUpdateStrategyConfig) EqualVT(that *MachineSetSpec_RollingUpdateStrategyConfig) bool {
+	if this == that {
+		return true
+	} else if this == nil || that == nil {
+		return false
+	}
+	if this.MaxParallelism != that.MaxParallelism {
+		return false
+	}
+	return string(this.unknownFields) == string(that.unknownFields)
+}
+
+func (this *MachineSetSpec_RollingUpdateStrategyConfig) EqualMessageVT(thatMsg proto.Message) bool {
+	that, ok := thatMsg.(*MachineSetSpec_RollingUpdateStrategyConfig)
+	if !ok {
+		return false
+	}
+	return this.EqualVT(that)
+}
+func (this *MachineSetSpec_UpdateStrategyConfig) EqualVT(that *MachineSetSpec_UpdateStrategyConfig) bool {
+	if this == that {
+		return true
+	} else if this == nil || that == nil {
+		return false
+	}
+	if !this.Rolling.EqualVT(that.Rolling) {
+		return false
+	}
+	return string(this.unknownFields) == string(that.unknownFields)
+}
+
+func (this *MachineSetSpec_UpdateStrategyConfig) EqualMessageVT(thatMsg proto.Message) bool {
+	that, ok := thatMsg.(*MachineSetSpec_UpdateStrategyConfig)
+	if !ok {
+		return false
+	}
+	return this.EqualVT(that)
+}
 func (this *MachineSetSpec) EqualVT(that *MachineSetSpec) bool {
 	if this == that {
 		return true
@@ -3199,6 +3276,15 @@ func (this *MachineSetSpec) EqualVT(that *MachineSetSpec) bool {
 		return false
 	}
 	if !this.BootstrapSpec.EqualVT(that.BootstrapSpec) {
+		return false
+	}
+	if this.DeleteStrategy != that.DeleteStrategy {
+		return false
+	}
+	if !this.UpdateStrategyConfig.EqualVT(that.UpdateStrategyConfig) {
+		return false
+	}
+	if !this.DeleteStrategyConfig.EqualVT(that.DeleteStrategyConfig) {
 		return false
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
@@ -7011,6 +7097,87 @@ func (m *MachineSetSpec_BootstrapSpec) MarshalToSizedBufferVT(dAtA []byte) (int,
 	return len(dAtA) - i, nil
 }
 
+func (m *MachineSetSpec_RollingUpdateStrategyConfig) MarshalVT() (dAtA []byte, err error) {
+	if m == nil {
+		return nil, nil
+	}
+	size := m.SizeVT()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBufferVT(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MachineSetSpec_RollingUpdateStrategyConfig) MarshalToVT(dAtA []byte) (int, error) {
+	size := m.SizeVT()
+	return m.MarshalToSizedBufferVT(dAtA[:size])
+}
+
+func (m *MachineSetSpec_RollingUpdateStrategyConfig) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+	if m == nil {
+		return 0, nil
+	}
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.unknownFields != nil {
+		i -= len(m.unknownFields)
+		copy(dAtA[i:], m.unknownFields)
+	}
+	if m.MaxParallelism != 0 {
+		i = encodeVarint(dAtA, i, uint64(m.MaxParallelism))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MachineSetSpec_UpdateStrategyConfig) MarshalVT() (dAtA []byte, err error) {
+	if m == nil {
+		return nil, nil
+	}
+	size := m.SizeVT()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBufferVT(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MachineSetSpec_UpdateStrategyConfig) MarshalToVT(dAtA []byte) (int, error) {
+	size := m.SizeVT()
+	return m.MarshalToSizedBufferVT(dAtA[:size])
+}
+
+func (m *MachineSetSpec_UpdateStrategyConfig) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+	if m == nil {
+		return 0, nil
+	}
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.unknownFields != nil {
+		i -= len(m.unknownFields)
+		copy(dAtA[i:], m.unknownFields)
+	}
+	if m.Rolling != nil {
+		size, err := m.Rolling.MarshalToSizedBufferVT(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarint(dAtA, i, uint64(size))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *MachineSetSpec) MarshalVT() (dAtA []byte, err error) {
 	if m == nil {
 		return nil, nil
@@ -7040,6 +7207,31 @@ func (m *MachineSetSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 	if m.unknownFields != nil {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
+	}
+	if m.DeleteStrategyConfig != nil {
+		size, err := m.DeleteStrategyConfig.MarshalToSizedBufferVT(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarint(dAtA, i, uint64(size))
+		i--
+		dAtA[i] = 0x32
+	}
+	if m.UpdateStrategyConfig != nil {
+		size, err := m.UpdateStrategyConfig.MarshalToSizedBufferVT(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarint(dAtA, i, uint64(size))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.DeleteStrategy != 0 {
+		i = encodeVarint(dAtA, i, uint64(m.DeleteStrategy))
+		i--
+		dAtA[i] = 0x20
 	}
 	if m.BootstrapSpec != nil {
 		size, err := m.BootstrapSpec.MarshalToSizedBufferVT(dAtA[:i])
@@ -9996,6 +10188,33 @@ func (m *MachineSetSpec_BootstrapSpec) SizeVT() (n int) {
 	return n
 }
 
+func (m *MachineSetSpec_RollingUpdateStrategyConfig) SizeVT() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.MaxParallelism != 0 {
+		n += 1 + sov(uint64(m.MaxParallelism))
+	}
+	n += len(m.unknownFields)
+	return n
+}
+
+func (m *MachineSetSpec_UpdateStrategyConfig) SizeVT() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Rolling != nil {
+		l = m.Rolling.SizeVT()
+		n += 1 + l + sov(uint64(l))
+	}
+	n += len(m.unknownFields)
+	return n
+}
+
 func (m *MachineSetSpec) SizeVT() (n int) {
 	if m == nil {
 		return 0
@@ -10011,6 +10230,17 @@ func (m *MachineSetSpec) SizeVT() (n int) {
 	}
 	if m.BootstrapSpec != nil {
 		l = m.BootstrapSpec.SizeVT()
+		n += 1 + l + sov(uint64(l))
+	}
+	if m.DeleteStrategy != 0 {
+		n += 1 + sov(uint64(m.DeleteStrategy))
+	}
+	if m.UpdateStrategyConfig != nil {
+		l = m.UpdateStrategyConfig.SizeVT()
+		n += 1 + l + sov(uint64(l))
+	}
+	if m.DeleteStrategyConfig != nil {
+		l = m.DeleteStrategyConfig.SizeVT()
 		n += 1 + l + sov(uint64(l))
 	}
 	n += len(m.unknownFields)
@@ -17795,6 +18025,163 @@ func (m *MachineSetSpec_BootstrapSpec) UnmarshalVT(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *MachineSetSpec_RollingUpdateStrategyConfig) UnmarshalVT(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflow
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MachineSetSpec_RollingUpdateStrategyConfig: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MachineSetSpec_RollingUpdateStrategyConfig: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaxParallelism", wireType)
+			}
+			m.MaxParallelism = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MaxParallelism |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skip(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLength
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.unknownFields = append(m.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MachineSetSpec_UpdateStrategyConfig) UnmarshalVT(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflow
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MachineSetSpec_UpdateStrategyConfig: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MachineSetSpec_UpdateStrategyConfig: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Rolling", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Rolling == nil {
+				m.Rolling = &MachineSetSpec_RollingUpdateStrategyConfig{}
+			}
+			if err := m.Rolling.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skip(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLength
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.unknownFields = append(m.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *MachineSetSpec) UnmarshalVT(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -17912,6 +18299,97 @@ func (m *MachineSetSpec) UnmarshalVT(dAtA []byte) error {
 				m.BootstrapSpec = &MachineSetSpec_BootstrapSpec{}
 			}
 			if err := m.BootstrapSpec.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DeleteStrategy", wireType)
+			}
+			m.DeleteStrategy = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.DeleteStrategy |= MachineSetSpec_UpdateStrategy(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UpdateStrategyConfig", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.UpdateStrategyConfig == nil {
+				m.UpdateStrategyConfig = &MachineSetSpec_UpdateStrategyConfig{}
+			}
+			if err := m.UpdateStrategyConfig.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DeleteStrategyConfig", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.DeleteStrategyConfig == nil {
+				m.DeleteStrategyConfig = &MachineSetSpec_UpdateStrategyConfig{}
+			}
+			if err := m.DeleteStrategyConfig.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

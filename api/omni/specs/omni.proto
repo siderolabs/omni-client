@@ -544,6 +544,7 @@ enum MachineSetPhase {
 
 // MachineSetSpec describes the cluster machine group.
 message MachineSetSpec {
+  // MachineClass defines the machine class configuration.
   message MachineClass {
     enum AllocationType {
       // Static uses the count defined in the count field.
@@ -570,19 +571,45 @@ message MachineSetSpec {
     string snapshot = 2;
   }
 
+  // UpdateStrategy defines the update strategy of the machine set.
   enum UpdateStrategy {
     Unset = 0;
     Rolling = 1;
   }
 
+  // RollingUpdateStrategyConfig defines the rolling update strategy configuration.
+  message RollingUpdateStrategyConfig {
+    // MaxParallelism is the maximum number of machines that can be processed in parallel.
+    // When unset or set to 0, it defaults to 1.
+    uint32 max_parallelism = 1;
+  }
+
+  // UpdateConfig defines the update configuration.
+  message UpdateStrategyConfig {
+    // Rolling is the rolling update configuration.
+    // Used only when the UpdateStrategy is set to Rolling.
+    RollingUpdateStrategyConfig rolling = 1;
+  }
+
+  // UpdateStrategy is the update strategy of the machine set.
   UpdateStrategy update_strategy = 1;
 
+  // MachineClass is the machine class to pick machines from for the machine set.
   MachineClass machine_class = 2;
 
   // BootstrapSpec defines the bootstrapping spec of the machine set.
   // This field is immutable, only valid for the control plane machine set and used only once at the creation time.
   // When set, the machine set won't be created from scratch, instead, it will be bootstrapped using the given spec.
   BootstrapSpec bootstrap_spec = 3;
+
+  // DeleteStrategy defines the delete strategy of the machine set.
+  UpdateStrategy delete_strategy = 4;
+
+  // UpdateStrategyConfig defines the update strategy configuration.
+  UpdateStrategyConfig update_strategy_config = 5;
+
+  // DeleteStrategyConfig defines the delete strategy configuration.
+  UpdateStrategyConfig delete_strategy_config = 6;
 }
 
 // TalosUpgradeStatusSpec contains the status of the Talos upgrade process.

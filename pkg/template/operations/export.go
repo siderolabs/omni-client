@@ -17,8 +17,10 @@ import (
 	"github.com/cosi-project/runtime/pkg/safe"
 	"github.com/cosi-project/runtime/pkg/state"
 	"github.com/siderolabs/gen/xslices"
+	"github.com/siderolabs/go-pointer"
 	"gopkg.in/yaml.v3"
 
+	"github.com/siderolabs/omni-client/api/omni/specs"
 	"github.com/siderolabs/omni-client/pkg/constants"
 	"github.com/siderolabs/omni-client/pkg/omni/resources/omni"
 	"github.com/siderolabs/omni-client/pkg/template/internal/models"
@@ -238,6 +240,38 @@ func transformMachineSetToModel(machineSet *omni.MachineSet, nodes []*omni.Machi
 		slices.Sort(machineIDs)
 	}
 
+	var updateStrategyConfig *models.UpdateStrategyConfig
+
+	if spec.GetUpdateStrategyConfig() != nil {
+		updateStrategyConfig = &models.UpdateStrategyConfig{}
+
+		if spec.GetUpdateStrategy() != specs.MachineSetSpec_Rolling { // Rolling is the default for update, so set the strategy type only when it is not Rolling.
+			updateStrategyConfig.Type = pointer.To(models.UpdateStrategyType(spec.GetUpdateStrategy()))
+		}
+
+		if spec.GetUpdateStrategyConfig().GetRolling() != nil {
+			updateStrategyConfig.Rolling = &models.RollingUpdateStrategyConfig{
+				MaxParallelism: spec.GetUpdateStrategyConfig().GetRolling().GetMaxParallelism(),
+			}
+		}
+	}
+
+	var deleteStrategyConfig *models.UpdateStrategyConfig
+
+	if spec.GetDeleteStrategyConfig() != nil {
+		deleteStrategyConfig = &models.UpdateStrategyConfig{}
+
+		if spec.GetDeleteStrategy() != specs.MachineSetSpec_Unset { // Unset is the default for delete, so set the strategy type only when it is not Unset.
+			deleteStrategyConfig.Type = pointer.To(models.UpdateStrategyType(spec.GetDeleteStrategy()))
+		}
+
+		if spec.GetDeleteStrategyConfig().GetRolling() != nil {
+			deleteStrategyConfig.Rolling = &models.RollingUpdateStrategyConfig{
+				MaxParallelism: spec.GetDeleteStrategyConfig().GetRolling().GetMaxParallelism(),
+			}
+		}
+	}
+
 	kind := models.KindControlPlane
 	if isWorker {
 		kind = models.KindWorkers
@@ -257,12 +291,14 @@ func transformMachineSetToModel(machineSet *omni.MachineSet, nodes []*omni.Machi
 		Meta: models.Meta{
 			Kind: kind,
 		},
-		Name:          name,
-		Descriptors:   getUserDescriptors(machineSet),
-		BootstrapSpec: bootstrapSpec,
-		Machines:      machineIDs,
-		MachineClass:  machineClassConfig,
-		Patches:       patchModels,
+		Name:           name,
+		Descriptors:    getUserDescriptors(machineSet),
+		BootstrapSpec:  bootstrapSpec,
+		Machines:       machineIDs,
+		MachineClass:   machineClassConfig,
+		Patches:        patchModels,
+		UpdateStrategy: updateStrategyConfig,
+		DeleteStrategy: deleteStrategyConfig,
 	}, nil
 }
 

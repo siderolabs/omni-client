@@ -165,7 +165,9 @@ func TestValidate(t *testing.T) {
 
 
 
-	* controlplane is invalid: 2 errors occurred:
+	* controlplane is invalid: 4 errors occurred:
+	* updateStrategy is not allowed in the controlplane
+	* deleteStrategy is not allowed in the controlplane
 	* patch "patches/invalid.yaml" is invalid: 1 error occurred:
 	* failed to validate patch "patches/invalid.yaml": missing kind
 

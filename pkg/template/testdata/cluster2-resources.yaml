@@ -77,6 +77,9 @@ spec:
     updatestrategy: 1
     machineclass: null
     bootstrapspec: null
+    deletestrategy: 0
+    updatestrategyconfig: null
+    deletestrategyconfig: null
 ---
 metadata:
     namespace: default
@@ -130,6 +133,9 @@ spec:
     updatestrategy: 1
     machineclass: null
     bootstrapspec: null
+    deletestrategy: 0
+    updatestrategyconfig: null
+    deletestrategyconfig: null
 ---
 metadata:
     namespace: default

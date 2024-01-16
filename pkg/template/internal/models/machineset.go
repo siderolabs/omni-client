@@ -35,17 +35,14 @@ type MachineSet struct {
 
 	MachineClass *MachineClassConfig `yaml:"machineClass,omitempty"`
 
+	// UpdateStrategy defines the update strategy for the machine set.
+	UpdateStrategy *UpdateStrategyConfig `yaml:"updateStrategy,omitempty"`
+
+	// DeleteStrategy defines the delete strategy for the machine set.
+	DeleteStrategy *UpdateStrategyConfig `yaml:"deleteStrategy,omitempty"`
+
 	// MachineSet patches.
 	Patches PatchList `yaml:"patches,omitempty"`
-}
-
-// MachineClassConfig defines the model for setting the machine class based machine selector in the machine set.
-type MachineClassConfig struct {
-	// Name defines used machine class name.
-	Name string `yaml:"name"`
-
-	// Size sets the number of machines to be pulled from the machine class.
-	Size Size `yaml:"size"`
 }
 
 // BootstrapSpec defines the model for setting the bootstrap specification, i.e. restoring from a backup, in the machine set.
@@ -58,13 +55,22 @@ type BootstrapSpec struct {
 	Snapshot string `yaml:"snapshot"`
 }
 
+// MachineClassConfig defines the model for setting the machine class based machine selector in the machine set.
+type MachineClassConfig struct {
+	// Name defines used machine class name.
+	Name string `yaml:"name"`
+
+	// Size sets the number of machines to be pulled from the machine class.
+	Size Size `yaml:"size"`
+}
+
 // Size extends protobuf generated allocation type enum to parse string constants.
 type Size struct {
 	Value          uint32
 	AllocationType specs.MachineSetSpec_MachineClass_AllocationType
 }
 
-// UnmarshalYAML implements yaml.Unmarshaller.
+// UnmarshalYAML implements yaml.Unmarshaler.
 func (c *Size) UnmarshalYAML(unmarshal func(any) error) error {
 	var value string
 
@@ -104,6 +110,44 @@ func (c Size) MarshalYAML() (any, error) {
 	return c.Value, nil
 }
 
+// UpdateStrategyType extends protobuf generated update strategy enum to parse string constants.
+type UpdateStrategyType uint32
+
+// UnmarshalYAML implements yaml.Unmarshaler.
+func (t *UpdateStrategyType) UnmarshalYAML(unmarshal func(any) error) error {
+	var value string
+
+	if err := unmarshal(&value); err != nil {
+		return err
+	}
+
+	v, ok := specs.MachineSetSpec_UpdateStrategy_value[value]
+
+	if !ok {
+		return fmt.Errorf("invalid update strategy type %s", value)
+	}
+
+	*t = UpdateStrategyType(v)
+
+	return nil
+}
+
+// MarshalYAML implements yaml.Marshaler.
+func (t UpdateStrategyType) MarshalYAML() (any, error) {
+	return specs.MachineSetSpec_UpdateStrategy_name[int32(t)], nil
+}
+
+// RollingUpdateStrategyConfig defines the model for setting the rolling update strategy in the machine set.
+type RollingUpdateStrategyConfig struct {
+	MaxParallelism uint32 `yaml:"maxParallelism,omitempty"`
+}
+
+// UpdateStrategyConfig defines the model for setting the update strategy in the machine set.
+type UpdateStrategyConfig struct {
+	Type    *UpdateStrategyType          `yaml:"type,omitempty"`
+	Rolling *RollingUpdateStrategyConfig `yaml:"rolling,omitempty"`
+}
+
 // Validate checks the machine set fields correctness.
 func (machineset *MachineSet) Validate() error {
 	var multiErr error
@@ -129,7 +173,35 @@ func (machineset *MachineSet) translate(ctx TranslateContext, nameSuffix, roleLa
 
 	machineset.Descriptors.Apply(machineSet)
 
-	machineSet.TypedSpec().Value.UpdateStrategy = specs.MachineSetSpec_Rolling
+	machineSet.TypedSpec().Value.UpdateStrategy = specs.MachineSetSpec_Rolling // Update strategy is Rolling when not specified.
+
+	if machineset.UpdateStrategy != nil {
+		if machineset.UpdateStrategy.Type != nil {
+			machineSet.TypedSpec().Value.UpdateStrategy = specs.MachineSetSpec_UpdateStrategy(*machineset.UpdateStrategy.Type)
+		}
+
+		if machineset.UpdateStrategy.Rolling != nil {
+			machineSet.TypedSpec().Value.UpdateStrategyConfig = &specs.MachineSetSpec_UpdateStrategyConfig{
+				Rolling: &specs.MachineSetSpec_RollingUpdateStrategyConfig{
+					MaxParallelism: machineset.UpdateStrategy.Rolling.MaxParallelism,
+				},
+			}
+		}
+	}
+
+	if machineset.DeleteStrategy != nil {
+		if machineset.DeleteStrategy.Type != nil {
+			machineSet.TypedSpec().Value.DeleteStrategy = specs.MachineSetSpec_UpdateStrategy(*machineset.DeleteStrategy.Type)
+		}
+
+		if machineset.DeleteStrategy.Rolling != nil {
+			machineSet.TypedSpec().Value.DeleteStrategyConfig = &specs.MachineSetSpec_UpdateStrategyConfig{
+				Rolling: &specs.MachineSetSpec_RollingUpdateStrategyConfig{
+					MaxParallelism: machineset.DeleteStrategy.Rolling.MaxParallelism,
+				},
+			}
+		}
+	}
 
 	resourceList := []resource.Resource{machineSet}
 

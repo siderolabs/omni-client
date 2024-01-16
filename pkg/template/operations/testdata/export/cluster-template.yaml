@@ -63,6 +63,13 @@ patches:
 kind: Workers
 machines:
   - 024780fe-b0d6-43e0-a868-b142ba0a67a6
+updateStrategy:
+  rolling:
+    maxParallelism: 3
+deleteStrategy:
+  type: Rolling
+  rolling:
+    maxParallelism: 5
 patches:
   - idOverride: 500-3792b0d9-0fc2-46fb-becf-4d5439bbe5ba
     annotations:

@@ -169,7 +169,7 @@ func assertAllFieldsSet(t *testing.T, modelList models.List) {
 				modelField = machineSetTypeName + "." + visibleField.Name
 			}
 
-			if modelFieldToIsZero[modelField] {
+			if isZero, ok := modelFieldToIsZero[modelField]; !ok || isZero {
 				modelFieldToIsZero[modelField] = modelValue.FieldByName(visibleField.Name).IsZero()
 			}
 		}

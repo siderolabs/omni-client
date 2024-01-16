@@ -36,6 +36,13 @@ name: additional-1
 machines:
   - b1ed45d8-4e79-4a07-a29a-b1b075843d41
   - 7d75e61c-ebc8-4faa-a763-6e2b14714720
+updateStrategy:
+  rolling:
+    maxParallelism: 3
+deleteStrategy:
+  type: Rolling
+  rolling:
+    maxParallelism: 5
 patches: # ClusterMachine ConfigPatch
   - name: my-address
     inline:
@@ -54,6 +61,8 @@ name: 919b1d5b-daf8-4b82-bc0d-48929f05a405
 ---
 kind: Workers
 name: additional-2
+updateStrategy:
+  type: Unset
 machines:
   - 919b1d5b-daf8-4b82-bc0d-48929f05a405
 ---
