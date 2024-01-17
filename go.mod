@@ -13,7 +13,7 @@ replace (
 require (
 	github.com/adrg/xdg v0.4.0
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/cosi-project/runtime v0.3.19
+	github.com/cosi-project/runtime v0.4.0-alpha.1
 	github.com/fatih/color v1.16.0
 	github.com/google/uuid v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.1
@@ -24,13 +24,14 @@ require (
 	github.com/siderolabs/gen v0.4.7
 	github.com/siderolabs/go-api-signature v0.3.1
 	github.com/siderolabs/go-kubeconfig v0.1.0
-	github.com/siderolabs/talos/pkg/machinery v1.6.0-beta.0
+	github.com/siderolabs/go-pointer v1.0.0
+	github.com/siderolabs/talos/pkg/machinery v1.6.0
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.8.4
 	github.com/xlab/treeprint v1.2.0
 	go.uber.org/zap v1.26.0
 	golang.org/x/term v0.15.0
-	google.golang.org/grpc v1.59.0
+	google.golang.org/grpc v1.60.0
 	google.golang.org/protobuf v1.31.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/client-go v0.28.4
@@ -73,7 +74,6 @@ require (
 	github.com/ryanuber/go-glob v1.0.0 // indirect
 	github.com/siderolabs/crypto v0.4.1 // indirect
 	github.com/siderolabs/go-blockdevice v0.4.7 // indirect
-	github.com/siderolabs/go-pointer v1.0.0 // indirect
 	github.com/siderolabs/net v0.4.0 // indirect
 	github.com/siderolabs/protoenc v0.2.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
