@@ -9,7 +9,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"mime"
 	"net/http"
 	"net/url"
 	"os"
@@ -23,12 +22,8 @@ import (
 	"github.com/siderolabs/go-api-signature/pkg/serviceaccount"
 	"github.com/spf13/cobra"
 
-	"github.com/siderolabs/omni-client/api/omni/management"
-	"github.com/siderolabs/omni-client/api/omni/specs"
 	"github.com/siderolabs/omni-client/pkg/client"
 	"github.com/siderolabs/omni-client/pkg/constants"
-	"github.com/siderolabs/omni-client/pkg/meta"
-	"github.com/siderolabs/omni-client/pkg/omni/resources"
 	"github.com/siderolabs/omni-client/pkg/omni/resources/omni"
 	"github.com/siderolabs/omni-client/pkg/omnictl/config"
 	"github.com/siderolabs/omni-client/pkg/omnictl/internal/access"
@@ -38,26 +33,16 @@ import (
 type downloadFlags struct {
 	architecture string
 
-	output          string
-	talosVersion    string
-	labels          []string
-	extraKernelArgs []string
-	extensions      []string
-	pxe             bool
-	secureBoot      bool
+	output string
+	labels []string
 }
 
 var downloadCmdFlags downloadFlags
 
 func init() {
-	downloadCmd.Flags().BoolVar(&downloadCmdFlags.pxe, "pxe", false, "Print PXE URL and exit")
-	downloadCmd.Flags().BoolVar(&downloadCmdFlags.secureBoot, "secureboot", false, "Download SecureBoot enabled installation media")
 	downloadCmd.Flags().StringVar(&downloadCmdFlags.architecture, "arch", "amd64", "Image architecture to download (amd64, arm64)")
 	downloadCmd.Flags().StringVar(&downloadCmdFlags.output, "output", ".", "Output file or directory, defaults to current working directory")
-	downloadCmd.Flags().StringVar(&downloadCmdFlags.talosVersion, "talos-version", constants.DefaultTalosVersion, "Output file or directory, defaults to current working directory")
 	downloadCmd.Flags().StringArrayVar(&downloadCmdFlags.labels, "initial-labels", nil, "Bake initial labels into the generated installation media")
-	downloadCmd.Flags().StringArrayVar(&downloadCmdFlags.extraKernelArgs, "extra-kernel-args", nil, "Add extra kernel args to the generated installation media")
-	downloadCmd.Flags().StringArrayVar(&downloadCmdFlags.extensions, "extensions", nil, "Generate installation media with extensions pre-installed")
 
 	RootCmd.AddCommand(downloadCmd)
 }
@@ -69,11 +54,11 @@ var downloadCmd = &cobra.Command{
 	Long: `This command downloads installer media from the server
 
 It accepts one argument, which is the name of the image to download. Name can be one of the following:
-
+     
      * iso - downloads the latest ISO image
      * AWS AMI (amd64), Vultr (arm64), Raspberry Pi 4 Model B - full image name
      * oracle, aws, vmware - platform name
-     * rpi_generic, rockpi_4c, rock64 - board name
+     * rockpi_4, rock64 - board name
 
 To get the full list of available images, look at the output of the following command:
     omnictl get installationmedia -o yaml
@@ -95,7 +80,7 @@ To download the latest Vultr image, run:
 
 To download the latest Radxa ROCK PI 4 image, run:
 
-    omnictl download "rpi_generic"
+    omnictl download "rockpi_4"
 `,
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -130,7 +115,7 @@ func findImage(ctx context.Context, client *client.Client, name, arch string) (*
 		spec := val.TypedSpec().Value
 
 		if strings.EqualFold(name, "iso") {
-			return val, strings.Contains(strings.ToLower(spec.Name), strings.ToLower(name))
+			return val, spec.Profile == "iso"
 		}
 
 		return val, strings.EqualFold(spec.Name, name) ||
@@ -150,7 +135,7 @@ func findImage(ctx context.Context, client *client.Client, name, arch string) (*
 		return nil, fmt.Errorf("no image found for %q", name)
 	} else if len(result) > 1 {
 		names := xslices.Map(result, func(val *omni.InstallationMedia) string {
-			return val.Metadata().ID()
+			return val.TypedSpec().Value.Filename
 		})
 
 		return nil, fmt.Errorf("multiple images found:\n  %s", strings.Join(names, "\n  "))
@@ -159,71 +144,8 @@ func findImage(ctx context.Context, client *client.Client, name, arch string) (*
 	return result[0], nil
 }
 
-func createSchematic(ctx context.Context, client *client.Client) (*management.CreateSchematicResponse, error) {
-	metaValues := map[uint32]string{}
-
-	var extensions []string
-
-	if downloadCmdFlags.labels != nil {
-		labels, err := getMachineLabels()
-		if err != nil {
-			return nil, fmt.Errorf("failed to gen image labels: %w", err)
-		}
-
-		metaValues[meta.LabelsMeta] = string(labels)
-	}
-
-	var err error
-
-	if downloadCmdFlags.extensions != nil {
-		extensions, err = getExtensions(ctx, client)
-		if err != nil {
-			return nil, fmt.Errorf("failed to lookup extensions: %w", err)
-		}
-	}
-
-	resp, err := client.Management().CreateSchematic(ctx, &management.CreateSchematicRequest{
-		MetaValues:      metaValues,
-		ExtraKernelArgs: downloadCmdFlags.extraKernelArgs,
-		Extensions:      extensions,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to create schematic: %w", err)
-	}
-
-	return resp, nil
-}
-
 func downloadImageTo(ctx context.Context, client *client.Client, media *omni.InstallationMedia, output string) error {
-	schematicResp, err := createSchematic(ctx, client)
-	if err != nil {
-		return err
-	}
-
-	if media.TypedSpec().Value.NoSecureBoot && downloadCmdFlags.secureBoot {
-		return fmt.Errorf("%q doesn't support secure boot", media.TypedSpec().Value.Name)
-	}
-
-	if downloadCmdFlags.pxe {
-		var u *url.URL
-
-		u, err = url.Parse(schematicResp.PxeUrl)
-		if err != nil {
-			return err
-		}
-
-		url := u.JoinPath(downloadCmdFlags.talosVersion, media.TypedSpec().Value.SrcFilePrefix).String()
-
-		if downloadCmdFlags.secureBoot {
-			url += "-secureboot"
-		}
-
-		fmt.Println(url)
-
-		return nil
-	}
-
-	req, err := createRequest(ctx, client, schematicResp.SchematicId, media)
+	req, err := createRequest(ctx, client, media)
 	if err != nil {
 		return err
 	}
@@ -251,8 +173,6 @@ func downloadImageTo(ctx context.Context, client *client.Client, media *omni.Ins
 		Transport: httpTransport,
 	}
 
-	fmt.Println("Generating the image...")
-
 	resp, err := httpClient.Do(req)
 	if err != nil {
 		return err
@@ -260,49 +180,21 @@ func downloadImageTo(ctx context.Context, client *client.Client, media *omni.Ins
 
 	defer checkCloser(resp.Body)
 
-	if resp.StatusCode >= http.StatusBadRequest {
-		var message []byte
-
-		message, err = io.ReadAll(resp.Body)
-		if err != nil {
-			return err
-		}
-
-		return fmt.Errorf("failed to download the installation media, error code: %d, message: %s", resp.StatusCode, message)
-	}
+	filename := media.TypedSpec().Value.Filename
 
 	dest := output
-
 	if filepath.Ext(output) == "" {
-		disposition := resp.Header.Get("Content-Disposition")
-
-		if disposition == "" {
-			return fmt.Errorf("no content disposition header in the server response")
-		}
-
-		var params map[string]string
-
-		_, params, err = mime.ParseMediaType(disposition)
-		if err != nil {
-			return fmt.Errorf("failed to parse content disposition header: %w", err)
-		}
-
-		filename, ok := params["filename"]
-		if !ok {
-			return fmt.Errorf("failed to auto-detect filename from the response headers, filename is not present in the content disposition header")
-		}
-
 		dest = filepath.Join(output, filename)
 	}
 
-	fmt.Printf("Downloading %s to %s\n", media.Metadata().ID(), dest)
+	fmt.Printf("Downloading %s to %s\n", filename, dest)
 
 	err = downloadResponseTo(dest, resp)
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Downloaded %s to %s\n", media.Metadata().ID(), dest)
+	fmt.Printf("Downloaded %s to %s\n", filename, dest)
 
 	return nil
 }
@@ -327,7 +219,7 @@ func filterMedia[T any](ctx context.Context, client *client.Client, check func(v
 	return result, nil
 }
 
-func createRequest(ctx context.Context, client *client.Client, schematic string, image *omni.InstallationMedia) (*http.Request, error) {
+func createRequest(ctx context.Context, client *client.Client, image *omni.InstallationMedia) (*http.Request, error) {
 	u, err := url.Parse(client.Endpoint())
 	if err != nil {
 		return nil, err
@@ -335,14 +227,21 @@ func createRequest(ctx context.Context, client *client.Client, schematic string,
 
 	u.Scheme = "https"
 
-	u.Path, err = url.JoinPath(u.Path, "image", schematic, downloadCmdFlags.talosVersion, image.Metadata().ID())
+	u.Path, err = url.JoinPath(u.Path, "image", image.Metadata().ID())
 	if err != nil {
 		return nil, err
 	}
 
-	if downloadCmdFlags.secureBoot {
+	if downloadCmdFlags.labels != nil {
+		var labels []byte
+
+		labels, err = getMachineLabels()
+		if err != nil {
+			return nil, err
+		}
+
 		query := u.Query()
-		query.Add(constants.SecureBoot, "true")
+		query.Add(constants.ImageLabels, string(labels))
 
 		u.RawQuery = query.Encode()
 	}
@@ -417,43 +316,6 @@ func getMachineLabels() ([]byte, error) {
 	}
 
 	return json.Marshal(labels)
-}
-
-func getExtensions(ctx context.Context, client *client.Client) ([]string, error) {
-	extensions, err := safe.StateGet[*omni.TalosExtensions](
-		ctx,
-		client.Omni().State(),
-		omni.NewTalosExtensions(resources.DefaultNamespace, strings.TrimLeft(downloadCmdFlags.talosVersion, "v")).Metadata(),
-	)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get extensions for talos version %q: %w", downloadCmdFlags.talosVersion, err)
-	}
-
-	result := make([]string, 0, len(downloadCmdFlags.extensions))
-
-	for _, extension := range downloadCmdFlags.extensions {
-		items := xslices.Map(extensions.TypedSpec().Value.Items, func(e *specs.TalosExtensionsSpec_Info) string {
-			return e.Name
-		})
-
-		items = xslices.FilterInPlace(items, func(item string) bool {
-			if strings.Contains(item, extension) {
-				fmt.Printf("Install Extension: %s\n", item)
-
-				return true
-			}
-
-			return false
-		})
-
-		if len(items) == 0 {
-			return nil, fmt.Errorf("failed to find extension with name %q for talos version %q", extension, downloadCmdFlags.talosVersion)
-		}
-
-		result = append(result, items...)
-	}
-
-	return result, nil
 }
 
 func currentConfigCtx() (name string, ctx *config.Context, err error) {
