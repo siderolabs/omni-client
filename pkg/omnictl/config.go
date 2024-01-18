@@ -50,29 +50,6 @@ var configURLCmd = &cobra.Command{
 	},
 }
 
-// configBasicAuthCmd represents the `config basic-auth` command.
-var configBasicAuthCmd = &cobra.Command{
-	Use:   "basic-auth <username> <password>",
-	Short: "Set the basic auth credentials",
-	Long:  ``,
-	Args:  cobra.ExactArgs(2),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		conf, err := config.Init(access.CmdFlags.Omniconfig, false)
-		if err != nil {
-			return err
-		}
-
-		context, err := conf.GetContext(access.CmdFlags.Context)
-		if err != nil {
-			return err
-		}
-
-		context.Auth.Basic = args[0] + ":" + args[1]
-
-		return conf.Save()
-	},
-}
-
 // configIdentityCmd represents the `config identity` command.
 var configIdentityCmd = &cobra.Command{
 	Use:   "identity <identity>",
@@ -120,10 +97,9 @@ var configContextCmd = &cobra.Command{
 
 // configAddCmdFlags represents the `config add` command flags.
 var configAddCmdFlags struct {
-	url       string
-	httpURL   string
-	identity  string
-	basicAuth string
+	url      string
+	httpURL  string
+	identity string
 }
 
 // configAddCmd represents the `config add` command.
@@ -148,7 +124,6 @@ var configAddCmd = &cobra.Command{
 		newContext := config.Context{
 			URL: configAddCmdFlags.url,
 			Auth: config.Auth{
-				Basic: configAddCmdFlags.basicAuth,
 				SideroV1: config.SideroV1{
 					Identity: configAddCmdFlags.identity,
 				},
@@ -230,10 +205,9 @@ var configMergeCmd = &cobra.Command{
 
 // configNewCmdFlags represents the `config new` command flags.
 var configNewCmdFlags struct {
-	url       string
-	httpURL   string
-	basicAuth string
-	identity  string
+	url      string
+	httpURL  string
+	identity string
 }
 
 // configNewCmd represents the `config new` command.
@@ -258,7 +232,6 @@ var configNewCmd = &cobra.Command{
 		}
 
 		context.URL = configNewCmdFlags.url
-		context.Auth.Basic = configNewCmdFlags.basicAuth
 		context.Auth.SideroV1.Identity = configNewCmdFlags.identity
 
 		return conf.Save()
@@ -327,7 +300,6 @@ func init() {
 	configCmd.AddCommand(
 		configURLCmd,
 		configIdentityCmd,
-		configBasicAuthCmd,
 		configContextCmd,
 		configAddCmd,
 		configGetContextsCmd,
@@ -337,11 +309,9 @@ func init() {
 	)
 
 	configAddCmd.Flags().StringVar(&configAddCmdFlags.url, "url", config.DefaultContext.URL, "URL of the server")
-	configAddCmd.Flags().StringVar(&configAddCmdFlags.basicAuth, "basic-auth", "", "basic auth credentials")
 	configAddCmd.Flags().StringVar(&configAddCmdFlags.identity, "identity", "", "identity to use for authentication")
 
 	configNewCmd.Flags().StringVar(&configNewCmdFlags.url, "url", config.DefaultContext.URL, "URL of the server")
-	configNewCmd.Flags().StringVar(&configNewCmdFlags.basicAuth, "basic-auth", "", "basic auth credentials")
 	configNewCmd.Flags().StringVar(&configNewCmdFlags.identity, "identity", "", "identity to use for authentication")
 
 	RootCmd.AddCommand(configCmd)

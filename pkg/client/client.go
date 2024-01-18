@@ -59,12 +59,6 @@ func New(ctx context.Context, endpoint string, opts ...Option) (*Client, error) 
 		opt(&options)
 	}
 
-	if options.BasicAuth != "" {
-		grpcDialOptions = append(grpcDialOptions, grpc.WithPerRPCCredentials(BasicAuth{
-			auth: options.BasicAuth,
-		}))
-	}
-
 	if options.AuthInterceptor != nil {
 		grpcDialOptions = append(grpcDialOptions,
 			grpc.WithUnaryInterceptor(options.AuthInterceptor.Unary()),

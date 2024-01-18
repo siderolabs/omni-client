@@ -6,23 +6,15 @@
 package client
 
 import (
-	"context"
-
-	"github.com/cosi-project/runtime/pkg/safe"
 	"github.com/siderolabs/go-api-signature/pkg/client/interceptor"
 	"github.com/siderolabs/go-api-signature/pkg/pgp/client"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/metadata"
 
-	"github.com/siderolabs/omni-client/pkg/client/omni"
-	authres "github.com/siderolabs/omni-client/pkg/omni/resources/auth"
 	"github.com/siderolabs/omni-client/pkg/version"
 )
 
 // Options is the options for the client.
 type Options struct {
-	BasicAuth string
-
 	AuthInterceptor *interceptor.Interceptor
 
 	AdditionalGRPCDialOptions []grpc.DialOption
@@ -32,13 +24,6 @@ type Options struct {
 
 // Option is a functional option for the client.
 type Option func(*Options)
-
-// WithBasicAuth creates the client with basic auth.
-func WithBasicAuth(auth string) Option {
-	return func(options *Options) {
-		options.BasicAuth = auth
-	}
-}
 
 // WithInsecureSkipTLSVerify creates the client with insecure TLS verification.
 func WithInsecureSkipTLSVerify(insecureSkipTLSVerify bool) Option {
@@ -63,22 +48,6 @@ func WithUserAccount(contextName, identity string) Option {
 
 func signatureAuthInterceptor(contextName, identity, serviceAccountBase64 string) *interceptor.Interceptor {
 	return interceptor.New(interceptor.Options{
-		AuthEnabledFunc: func(ctx context.Context, cc *grpc.ClientConn) (bool, error) {
-			st := omni.NewClient(cc).State()
-			confPtr := authres.NewAuthConfig().Metadata()
-
-			// clear the outgoing metadata to prevent the request from being proxied to the Talos backend
-			ctx = metadata.NewOutgoingContext(ctx, metadata.Pairs())
-
-			authConfig, err := safe.StateGet[*authres.Config](ctx, st, confPtr)
-			if err != nil {
-				return false, err
-			}
-
-			enabled := authres.Enabled(authConfig)
-
-			return enabled, nil
-		},
 		UserKeyProvider:      client.NewKeyProvider("omni/keys"),
 		ContextName:          contextName,
 		Identity:             identity,

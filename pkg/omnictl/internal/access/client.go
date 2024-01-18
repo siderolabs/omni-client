@@ -74,13 +74,8 @@ func WithClient(f func(ctx context.Context, client *client.Client) error, client
 			return err
 		}
 
-		if configCtx.Auth.Basic != "" {
-			_, _, found := strings.Cut(configCtx.Auth.Basic, ":")
-			if !found {
-				return fmt.Errorf("auth-basic should be in the format of <username>:<password>")
-			}
-
-			opts = append(opts, client.WithBasicAuth(configCtx.Auth.Basic))
+		if configCtx.Auth.Basic != "" { //nolint:staticcheck
+			fmt.Fprintf(os.Stderr, "[WARN] basic auth is deprecated and has no effect\n")
 		}
 
 		opts = append(opts, client.WithUserAccount(contextName, configCtx.Auth.SideroV1.Identity))
