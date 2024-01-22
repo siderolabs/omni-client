@@ -7,9 +7,14 @@ package constants
 
 import "time"
 
-// ImageLabels defines query parameter for the initial labels to write to META partition when getting installation media.
-// tsgen:ImageLabels
-const ImageLabels = "imageLabels"
+// SecureBoot defines query parameter for enabling secure boot for the generated image.
+// tsgen:SecureBoot
+const SecureBoot = "secureboot"
+
+// DefaultTalosVersion is pre-selected in the UI, default image and used in the integration tests.
+//
+// tsgen:DefaultTalosVersion
+const DefaultTalosVersion = "1.6.2"
 
 const (
 	// TalosRegistry is the default Talos repository URL.

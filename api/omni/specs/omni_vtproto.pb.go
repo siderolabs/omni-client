@@ -988,11 +988,14 @@ func (m *InstallationMediaSpec) CloneVT() *InstallationMediaSpec {
 		return (*InstallationMediaSpec)(nil)
 	}
 	r := &InstallationMediaSpec{
-		Name:         m.Name,
-		Architecture: m.Architecture,
-		Profile:      m.Profile,
-		ContentType:  m.ContentType,
-		Filename:     m.Filename,
+		Name:           m.Name,
+		Architecture:   m.Architecture,
+		Profile:        m.Profile,
+		ContentType:    m.ContentType,
+		SrcFilePrefix:  m.SrcFilePrefix,
+		DestFilePrefix: m.DestFilePrefix,
+		Extension:      m.Extension,
+		NoSecureBoot:   m.NoSecureBoot,
 	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
@@ -3134,7 +3137,16 @@ func (this *InstallationMediaSpec) EqualVT(that *InstallationMediaSpec) bool {
 	if this.ContentType != that.ContentType {
 		return false
 	}
-	if this.Filename != that.Filename {
+	if this.SrcFilePrefix != that.SrcFilePrefix {
+		return false
+	}
+	if this.DestFilePrefix != that.DestFilePrefix {
+		return false
+	}
+	if this.Extension != that.Extension {
+		return false
+	}
+	if this.NoSecureBoot != that.NoSecureBoot {
 		return false
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
@@ -6886,10 +6898,34 @@ func (m *InstallationMediaSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error)
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
-	if len(m.Filename) > 0 {
-		i -= len(m.Filename)
-		copy(dAtA[i:], m.Filename)
-		i = encodeVarint(dAtA, i, uint64(len(m.Filename)))
+	if m.NoSecureBoot {
+		i--
+		if m.NoSecureBoot {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x58
+	}
+	if len(m.Extension) > 0 {
+		i -= len(m.Extension)
+		copy(dAtA[i:], m.Extension)
+		i = encodeVarint(dAtA, i, uint64(len(m.Extension)))
+		i--
+		dAtA[i] = 0x4a
+	}
+	if len(m.DestFilePrefix) > 0 {
+		i -= len(m.DestFilePrefix)
+		copy(dAtA[i:], m.DestFilePrefix)
+		i = encodeVarint(dAtA, i, uint64(len(m.DestFilePrefix)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.SrcFilePrefix) > 0 {
+		i -= len(m.SrcFilePrefix)
+		copy(dAtA[i:], m.SrcFilePrefix)
+		i = encodeVarint(dAtA, i, uint64(len(m.SrcFilePrefix)))
 		i--
 		dAtA[i] = 0x3a
 	}
@@ -10081,9 +10117,20 @@ func (m *InstallationMediaSpec) SizeVT() (n int) {
 	if l > 0 {
 		n += 1 + l + sov(uint64(l))
 	}
-	l = len(m.Filename)
+	l = len(m.SrcFilePrefix)
 	if l > 0 {
 		n += 1 + l + sov(uint64(l))
+	}
+	l = len(m.DestFilePrefix)
+	if l > 0 {
+		n += 1 + l + sov(uint64(l))
+	}
+	l = len(m.Extension)
+	if l > 0 {
+		n += 1 + l + sov(uint64(l))
+	}
+	if m.NoSecureBoot {
+		n += 2
 	}
 	n += len(m.unknownFields)
 	return n
@@ -17523,7 +17570,7 @@ func (m *InstallationMediaSpec) UnmarshalVT(dAtA []byte) error {
 			iNdEx = postIndex
 		case 7:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Filename", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field SrcFilePrefix", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -17551,8 +17598,92 @@ func (m *InstallationMediaSpec) UnmarshalVT(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Filename = string(dAtA[iNdEx:postIndex])
+			m.SrcFilePrefix = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DestFilePrefix", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DestFilePrefix = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Extension", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLength
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Extension = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 11:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NoSecureBoot", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.NoSecureBoot = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skip(dAtA[iNdEx:])
