@@ -33,6 +33,7 @@ var forbiddenFields = []string{
 	"machine.token",
 	"machine.ca",
 	"machine.type",
+	"machine.install.extensions",
 }
 
 var forbiddenSliceElements = map[string]map[any]struct{}{
