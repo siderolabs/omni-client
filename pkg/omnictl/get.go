@@ -155,6 +155,8 @@ func getResources(cmd *cobra.Command, args []string) func(ctx context.Context, c
 						if err = out.Flush(); err != nil {
 							return err
 						}
+
+						continue
 					}
 
 					if e.Resource == nil {
