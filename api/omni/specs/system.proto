@@ -12,6 +12,7 @@ message DBVersionSpec {
 message SysVersionSpec {
   string backend_version = 1;
   string instance_name = 2;
+  uint32 backend_api_version = 3;
 }
 
 // CertRefreshTickSpec is a certificate refresh tick.

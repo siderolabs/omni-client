@@ -8,9 +8,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"strings"
 
-	"github.com/blang/semver"
 	"github.com/cosi-project/runtime/pkg/resource"
 	"github.com/cosi-project/runtime/pkg/safe"
 	"github.com/cosi-project/runtime/pkg/state"
@@ -114,30 +112,27 @@ func WithClient(f func(ctx context.Context, client *client.Client) error, client
 }
 
 func checkVersion(ctx context.Context, state state.State) error {
-	if version.Tag == "" && !version.SuppressVersionWarning {
-		fmt.Println(`[WARN] github.com/siderolabs/omni-client/pkg/version.Tag is not set, client-server version validation is disabled.
-If you want to disable this warning set github.com/siderolabs/omni-client/pkg/version.SuppressVersionWarning to true.`)
+	if version.API == 0 && !version.SuppressVersionWarning {
+		fmt.Println(`[WARN] github.com/siderolabs/omni-client/pkg/version.API is not set, client-server version validation is disabled.
+If you want to enable the version validation and disable this warning, set github.com/siderolabs/omni-client/pkg/version.SuppressVersionWarning to true.`)
 
 		return nil
 	}
 
-	sysversion, err := safe.StateGet[*system.SysVersion](ctx, state, system.NewSysVersion(resources.EphemeralNamespace, system.SysVersionID).Metadata())
+	sysVersion, err := safe.StateGet[*system.SysVersion](ctx, state, system.NewSysVersion(resources.EphemeralNamespace, system.SysVersionID).Metadata())
 	if err != nil {
 		return err
 	}
 
-	backendVersion, err := semver.ParseTolerant(strings.TrimLeft(sysversion.TypedSpec().Value.BackendVersion, "v"))
-	if err != nil {
-		return err
+	if sysVersion.TypedSpec().Value.BackendApiVersion == 0 { // API versions are not supported (yet) on backend, i.e., the client is newer than the backend
+		return fmt.Errorf("server API does not support API versions, i.e., the server is older than the client, "+
+			"please upgrade the server to have the same API version as the client: client API version %v, "+
+			"client version %v, server version %v", version.API, version.Tag, sysVersion.TypedSpec().Value.BackendVersion)
 	}
 
-	clientVersion, err := semver.ParseTolerant(strings.TrimLeft(version.Tag, "v"))
-	if err != nil {
-		return err
-	}
-
-	if backendVersion.Major != clientVersion.Major || backendVersion.Minor != clientVersion.Minor {
-		return fmt.Errorf("client version mismatch: backend version %s, client version %s", sysversion.TypedSpec().Value.BackendVersion, version.Tag)
+	// compare the API versions
+	if sysVersion.TypedSpec().Value.BackendApiVersion != version.API {
+		return fmt.Errorf("client API version mismatch: backend API version %v, client API version %v", sysVersion.TypedSpec().Value.BackendApiVersion, version.API)
 	}
 
 	return nil

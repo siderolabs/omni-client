@@ -42,8 +42,9 @@ func (m *SysVersionSpec) CloneVT() *SysVersionSpec {
 		return (*SysVersionSpec)(nil)
 	}
 	r := &SysVersionSpec{
-		BackendVersion: m.BackendVersion,
-		InstanceName:   m.InstanceName,
+		BackendVersion:    m.BackendVersion,
+		InstanceName:      m.InstanceName,
+		BackendApiVersion: m.BackendApiVersion,
 	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
@@ -101,6 +102,9 @@ func (this *SysVersionSpec) EqualVT(that *SysVersionSpec) bool {
 		return false
 	}
 	if this.InstanceName != that.InstanceName {
+		return false
+	}
+	if this.BackendApiVersion != that.BackendApiVersion {
 		return false
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
@@ -197,6 +201,11 @@ func (m *SysVersionSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
+	if m.BackendApiVersion != 0 {
+		i = encodeVarint(dAtA, i, uint64(m.BackendApiVersion))
+		i--
+		dAtA[i] = 0x18
+	}
 	if len(m.InstanceName) > 0 {
 		i -= len(m.InstanceName)
 		copy(dAtA[i:], m.InstanceName)
@@ -273,6 +282,9 @@ func (m *SysVersionSpec) SizeVT() (n int) {
 	l = len(m.InstanceName)
 	if l > 0 {
 		n += 1 + l + sov(uint64(l))
+	}
+	if m.BackendApiVersion != 0 {
+		n += 1 + sov(uint64(m.BackendApiVersion))
 	}
 	n += len(m.unknownFields)
 	return n
@@ -451,6 +463,25 @@ func (m *SysVersionSpec) UnmarshalVT(dAtA []byte) error {
 			}
 			m.InstanceName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BackendApiVersion", wireType)
+			}
+			m.BackendApiVersion = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BackendApiVersion |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skip(dAtA[iNdEx:])

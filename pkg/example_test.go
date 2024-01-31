@@ -17,13 +17,14 @@ func Example() {
 
 	version.Name = "omni"
 	version.SHA = "build SHA" // Optional.
-	version.Tag = "v0.9.1"    // Required: omnictl validates that server major.minor version are the same as the client.
+	version.Tag = "v0.29.0"   // Optional.
+	version.API = 1           // Required: omnictl validates that the client has the same API version as the server.
 
 	// You can disable this validation and warnings by setting:
 	// version.SuppressVersionWarning = true
 
 	// Initialize Root cmd version.
-	omnictl.RootCmd.Version = version.Tag
+	omnictl.RootCmd.Version = version.String()
 
 	// Run Root command.
 	if err := omnictl.RootCmd.Execute(); err != nil {
