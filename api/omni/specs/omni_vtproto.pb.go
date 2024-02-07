@@ -1539,7 +1539,11 @@ func (m *EtcdAuditResultSpec) CloneVT() *EtcdAuditResultSpec {
 		return (*EtcdAuditResultSpec)(nil)
 	}
 	r := new(EtcdAuditResultSpec)
-	r.EtcdMemberId = m.EtcdMemberId
+	if rhs := m.EtcdMemberIds; rhs != nil {
+		tmpContainer := make([]uint64, len(rhs))
+		copy(tmpContainer, rhs)
+		r.EtcdMemberIds = tmpContainer
+	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
 		copy(r.unknownFields, m.unknownFields)
@@ -3829,8 +3833,14 @@ func (this *EtcdAuditResultSpec) EqualVT(that *EtcdAuditResultSpec) bool {
 	} else if this == nil || that == nil {
 		return false
 	}
-	if this.EtcdMemberId != that.EtcdMemberId {
+	if len(this.EtcdMemberIds) != len(that.EtcdMemberIds) {
 		return false
+	}
+	for i, vx := range this.EtcdMemberIds {
+		vy := that.EtcdMemberIds[i]
+		if vx != vy {
+			return false
+		}
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
 }
@@ -8259,10 +8269,25 @@ func (m *EtcdAuditResultSpec) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
-	if m.EtcdMemberId != 0 {
-		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.EtcdMemberId))
+	if len(m.EtcdMemberIds) > 0 {
+		var pksize2 int
+		for _, num := range m.EtcdMemberIds {
+			pksize2 += protohelpers.SizeOfVarint(uint64(num))
+		}
+		i -= pksize2
+		j1 := i
+		for _, num := range m.EtcdMemberIds {
+			for num >= 1<<7 {
+				dAtA[j1] = uint8(uint64(num)&0x7f | 0x80)
+				num >>= 7
+				j1++
+			}
+			dAtA[j1] = uint8(num)
+			j1++
+		}
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(pksize2))
 		i--
-		dAtA[i] = 0x8
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -10413,8 +10438,12 @@ func (m *EtcdAuditResultSpec) SizeVT() (n int) {
 	}
 	var l int
 	_ = l
-	if m.EtcdMemberId != 0 {
-		n += 1 + protohelpers.SizeOfVarint(uint64(m.EtcdMemberId))
+	if len(m.EtcdMemberIds) > 0 {
+		l = 0
+		for _, e := range m.EtcdMemberIds {
+			l += protohelpers.SizeOfVarint(uint64(e))
+		}
+		n += 1 + protohelpers.SizeOfVarint(uint64(l)) + l
 	}
 	n += len(m.unknownFields)
 	return n
@@ -20865,23 +20894,80 @@ func (m *EtcdAuditResultSpec) UnmarshalVT(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field EtcdMemberId", wireType)
-			}
-			m.EtcdMemberId = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protohelpers.ErrIntOverflow
+			if wireType == 0 {
+				var v uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protohelpers.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
 				}
-				if iNdEx >= l {
+				m.EtcdMemberIds = append(m.EtcdMemberIds, v)
+			} else if wireType == 2 {
+				var packedLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protohelpers.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					packedLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if packedLen < 0 {
+					return protohelpers.ErrInvalidLength
+				}
+				postIndex := iNdEx + packedLen
+				if postIndex < 0 {
+					return protohelpers.ErrInvalidLength
+				}
+				if postIndex > l {
 					return io.ErrUnexpectedEOF
 				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.EtcdMemberId |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
+				var elementCount int
+				var count int
+				for _, integer := range dAtA[iNdEx:postIndex] {
+					if integer < 128 {
+						count++
+					}
 				}
+				elementCount = count
+				if elementCount != 0 && len(m.EtcdMemberIds) == 0 {
+					m.EtcdMemberIds = make([]uint64, 0, elementCount)
+				}
+				for iNdEx < postIndex {
+					var v uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protohelpers.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					m.EtcdMemberIds = append(m.EtcdMemberIds, v)
+				}
+			} else {
+				return fmt.Errorf("proto: wrong wireType = %d for field EtcdMemberIds", wireType)
 			}
 		default:
 			iNdEx = preIndex

@@ -842,8 +842,9 @@ message MachineConfigGenOptionsSpec {
 //
 // This resource is used to re-trigger the controlplane status checks when etcd audit removes a member.
 message EtcdAuditResultSpec {
-  // EtcdMemberId is the id of the member that was last removed.
-  uint64 etcd_member_id = 1;
+  // EtcdMemberIds contains the list of ids of the members that were last removed.
+  // The list is always sorted.
+  repeated uint64 etcd_member_ids = 1;
 }
 
 // KubeconfigSpec describes a Kubernetes client configuraiton for a cluster.
