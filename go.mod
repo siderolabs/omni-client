@@ -20,12 +20,13 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/hexops/gotextdiff v1.0.3
 	github.com/mattn/go-isatty v0.0.20
+	github.com/planetscale/vtprotobuf v0.6.0
 	github.com/sergi/go-diff v1.3.1
 	github.com/siderolabs/gen v0.4.7
 	github.com/siderolabs/go-api-signature v0.3.1
 	github.com/siderolabs/go-kubeconfig v0.1.0
 	github.com/siderolabs/go-pointer v1.0.0
-	github.com/siderolabs/talos/pkg/machinery v1.6.2
+	github.com/siderolabs/talos/pkg/machinery v1.6.4
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.8.4
 	github.com/xlab/treeprint v1.2.0
