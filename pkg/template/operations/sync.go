@@ -179,13 +179,15 @@ func syncDeleteResources(ctx context.Context, toDelete []resource.Resource, out 
 					if err := st.Destroy(ctx, event.Resource.Metadata()); err != nil && !state.IsNotFoundError(err) {
 						return err
 					}
-
-					delete(tearingDownResources, utils.Describe(event.Resource))
-
-					yellow.Fprintf(out, "* destroyed%s %s\n", dryRun, boldFunc(utils.Describe(event.Resource))) //nolint:errcheck
 				}
 			}
-		case state.Destroyed, state.Bootstrapped:
+		case state.Destroyed:
+			if _, ok := tearingDownResources[utils.Describe(event.Resource)]; ok {
+				delete(tearingDownResources, utils.Describe(event.Resource))
+
+				yellow.Fprintf(out, "* destroyed%s %s\n", dryRun, boldFunc(utils.Describe(event.Resource))) //nolint:errcheck
+			}
+		case state.Bootstrapped:
 			// ignore
 		case state.Errored:
 			return event.Error
