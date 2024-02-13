@@ -329,9 +329,10 @@ message ClusterMachineConfigPatchesSpec {
   repeated string patches = 1;
 }
 
-// ClsuterMachineTalosVersionSpec describes a machine Talos version.
+// ClusterMachineTalosVersionSpec describes a machine Talos version and schematic.
 message ClusterMachineTalosVersionSpec {
-  string version = 1;
+  string talos_version = 1;
+  string schematic_id = 2;
 }
 
 // ClusterMachineConfigSpec stores generated Talos node machine config.
@@ -467,6 +468,7 @@ message ClusterMachineConfigStatusSpec {
   string cluster_machine_config_sha256 = 5;
   string last_config_error = 6;
   string talos_version = 7;
+  string schematic_id = 8;
 }
 
 // ClusterBootstrapStatusSpec keeps track of bootstrap calls for a cluster.
@@ -914,4 +916,18 @@ message TalosExtensionsSpec {
   }
 
   repeated Info items = 1;
+}
+
+// SchematicConfigurationSpec is the desired Image Factory schematic for a machine, machine set or a cluster.
+message SchematicConfigurationSpec {
+  enum Target {
+    Unknown = 0;
+    ClusterMachine = 1;
+    MachineSet = 2;
+    Cluster = 3;
+  }
+
+  string schematic_id = 1;
+
+  Target target = 2;
 }

@@ -6,6 +6,9 @@ package omni
 
 import (
 	"fmt"
+	"net/url"
+	"path/filepath"
+	"strings"
 
 	"github.com/cosi-project/runtime/pkg/resource"
 	"github.com/cosi-project/runtime/pkg/resource/meta"
@@ -50,13 +53,19 @@ func (ClusterExtension) ResourceDefinition() meta.ResourceDefinitionSpec {
 }
 
 // GetInstallImage extracts Talos version from the cluster resource and adds the installer image url.
-func GetInstallImage(cluster *Cluster, registry string) string {
-	version := cluster.TypedSpec().Value.TalosVersion
-	if version != "latest" {
-		version = "v" + version
+func GetInstallImage(vanillaInstallerBaseURL, factoryBaseURL, schematic, version string) (string, error) {
+	version = strings.TrimLeft(version, "v")
+
+	if schematic == "" {
+		return fmt.Sprintf("%s:v%s", vanillaInstallerBaseURL, version), nil
 	}
 
-	return fmt.Sprintf("%s:%s", registry, version)
+	u, err := url.Parse(factoryBaseURL)
+	if err != nil {
+		return "", fmt.Errorf("failed to parse image factory url %w", err)
+	}
+
+	return filepath.Join(u.Host, "installer", fmt.Sprintf("%s:v%s", schematic, version)), nil
 }
 
 // GetEncryptionEnabled returns cluster disk encryption feature flag state.

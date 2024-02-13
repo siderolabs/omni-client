@@ -20,6 +20,9 @@ const (
 	// TalosRegistry is the default Talos repository URL.
 	TalosRegistry = "ghcr.io/siderolabs/installer"
 
+	// ImageFactoryBaseURL is the default Image Factory base URL.
+	ImageFactoryBaseURL = "https://factory.talos.dev"
+
 	// KubernetesRegistry is the default kubernetes repository URL.
 	KubernetesRegistry = "ghcr.io/siderolabs/kubelet"
 )
