@@ -25,7 +25,7 @@ var upgradePreChecksCmd = &cobra.Command{
 	Long:    `Verify that upgrading Kubernetes version is available for the cluster: version compatibility, deprecated APIs, etc.`,
 	Example: "",
 	Args:    cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		return access.WithClient(upgradePreChecks(args[0]))
 	},
 }

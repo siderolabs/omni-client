@@ -34,7 +34,7 @@ var applyCmd = &cobra.Command{
 	Use:   "apply",
 	Short: "Create or update resource using YAML file as an input",
 	Args:  cobra.NoArgs,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(*cobra.Command, []string) error {
 		yamlRaw, err := os.ReadFile(applyCmdFlags.resFile)
 		if err != nil {
 			return fmt.Errorf("failed to read resource yaml file %q: %w", applyCmdFlags.resFile, err)

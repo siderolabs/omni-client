@@ -26,7 +26,7 @@ var deleteCmd = &cobra.Command{
 	Long:    `Delete all resources related to the cluster. The command waits for the cluster to be fully destroyed.`,
 	Example: "",
 	Args:    cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		return access.WithClient(deleteImpl(args[0]))
 	},
 }

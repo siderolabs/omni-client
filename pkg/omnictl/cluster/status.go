@@ -28,7 +28,7 @@ var statusCmd = &cobra.Command{
 	Long:    `Shows current cluster status, if the terminal supports it, watch the status as it updates. The command waits for the cluster to be ready by default.`,
 	Example: "",
 	Args:    cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		return access.WithClient(status(args[0]))
 	},
 }

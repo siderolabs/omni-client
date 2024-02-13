@@ -30,7 +30,7 @@ var exportCmd = &cobra.Command{
 	Short: "Export a cluster template from an existing cluster on Omni.",
 	Long:  `Export a cluster template from an existing cluster on Omni. This command requires API access.`,
 	Args:  cobra.NoArgs,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(*cobra.Command, []string) error {
 		return access.WithClient(export)
 	},
 }

@@ -19,7 +19,7 @@ var validateCmd = &cobra.Command{
 	Long:    `Validate that template contains valid structures, and there are no other warnings. This command is offline (doesn't access API).`,
 	Example: "",
 	Args:    cobra.NoArgs,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(*cobra.Command, []string) error {
 		return validate()
 	},
 }

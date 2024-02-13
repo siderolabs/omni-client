@@ -45,7 +45,7 @@ var (
 		Aliases: []string{"c"},
 		Short:   "Create a service account",
 		Args:    cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 
 			return access.WithClient(func(ctx context.Context, client *client.Client) error {
@@ -87,7 +87,7 @@ var (
 		Aliases: []string{"r"},
 		Short:   "Renew a service account by registering a new public key to it",
 		Args:    cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 
 			return access.WithClient(func(ctx context.Context, client *client.Client) error {
@@ -129,7 +129,7 @@ var (
 		Aliases: []string{"l"},
 		Short:   "List service accounts",
 		Args:    cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(*cobra.Command, []string) error {
 			return access.WithClient(func(ctx context.Context, client *client.Client) error {
 				serviceAccounts, err := client.Management().ListServiceAccounts(ctx)
 				if err != nil {
@@ -160,7 +160,7 @@ var (
 		Aliases: []string{"d"},
 		Short:   "Destroy a service account",
 		Args:    cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			name := args[0]
 
 			return access.WithClient(func(ctx context.Context, client *client.Client) error {

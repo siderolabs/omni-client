@@ -28,7 +28,7 @@ Bootstrap manifests might be updated with Talos version update, Kubernetes upgra
 Talos never updates or deletes Kubernetes manifests, so this command fills the gap to keep manifests up-to-date.`,
 	Example: "",
 	Args:    cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		return access.WithClient(manifestSync(args[0]))
 	},
 }

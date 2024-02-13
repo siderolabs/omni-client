@@ -24,7 +24,7 @@ var lockCmd = &cobra.Command{
 	Short: "Lock the machine",
 	Long:  `When locked, no config updates, upgrades and downgrades will be performed on the machine.`,
 	Args:  cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		return access.WithClient(setLocked(args[0], true))
 	},
 }
@@ -34,7 +34,7 @@ var unlockCmd = &cobra.Command{
 	Short: "Unlock the machine",
 	Long:  `Removes locked annotation from the machine.`,
 	Args:  cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		return access.WithClient(setLocked(args[0], false))
 	},
 }

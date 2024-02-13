@@ -50,7 +50,7 @@ var kubeconfigCmd = &cobra.Command{
 If merge flag is defined, config will be merged with ~/.kube/config or [local-path] if specified.
 Otherwise kubeconfig will be written to PWD or [local-path] if specified.`,
 	Args: cobra.MaximumNArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		return access.WithClient(getKubeconfig(args))
 	},
 }

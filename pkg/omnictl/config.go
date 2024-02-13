@@ -33,7 +33,7 @@ var configURLCmd = &cobra.Command{
 	Short: "Set the URL for the current context",
 	Long:  ``,
 	Args:  cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		conf, err := config.Init(access.CmdFlags.Omniconfig, false)
 		if err != nil {
 			return err
@@ -56,7 +56,7 @@ var configIdentityCmd = &cobra.Command{
 	Short: "Set the auth identity for the current context",
 	Long:  ``,
 	Args:  cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		conf, err := config.Init(access.CmdFlags.Omniconfig, false)
 		if err != nil {
 			return err
@@ -80,7 +80,7 @@ var configContextCmd = &cobra.Command{
 	Aliases: []string{"use-context"},
 	Long:    ``,
 	Args:    cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		conf, err := config.Init(access.CmdFlags.Omniconfig, false)
 		if err != nil {
 			return err
@@ -108,7 +108,7 @@ var configAddCmd = &cobra.Command{
 	Short: "Add a new context",
 	Long:  ``,
 	Args:  cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		conf, err := config.Init(access.CmdFlags.Omniconfig, true)
 		if err != nil {
 			return err
@@ -142,7 +142,7 @@ var configGetContextsCmd = &cobra.Command{
 	Short:   "List defined contexts",
 	Aliases: []string{"get-contexts"},
 	Long:    ``,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(*cobra.Command, []string) error {
 		conf, err := config.Init(access.CmdFlags.Omniconfig, false)
 		if err != nil {
 			return err
@@ -184,7 +184,7 @@ var configMergeCmd = &cobra.Command{
 	Short: "Merge additional contexts from another client configuration file",
 	Long:  "Contexts with the same name are renamed while merging configs.",
 	Args:  cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		conf, err := config.Init(access.CmdFlags.Omniconfig, true)
 		if err != nil {
 			return err
@@ -215,7 +215,7 @@ var configNewCmd = &cobra.Command{
 	Use:   "new [<path>]",
 	Short: "Generate a new client configuration file",
 	Args:  cobra.RangeArgs(0, 1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		path := ""
 		if len(args) > 0 {
 			path = args[0]
@@ -252,7 +252,7 @@ var configInfoCmd = &cobra.Command{
 	Use:   "info",
 	Short: "Show information about the current context",
 	Args:  cobra.NoArgs,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(*cobra.Command, []string) error {
 		conf, err := config.Init(access.CmdFlags.Omniconfig, false)
 		if err != nil {
 			return err

@@ -26,7 +26,7 @@ var deleteCmd = &cobra.Command{
 	Long:    `Delete all resources related to the cluster template. This command requires API access.`,
 	Example: "",
 	Args:    cobra.NoArgs,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(*cobra.Command, []string) error {
 		return access.WithClient(deleteImpl)
 	},
 }

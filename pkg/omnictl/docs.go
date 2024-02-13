@@ -42,7 +42,7 @@ var docsCmd = &cobra.Command{
 	Long:   ``,
 	Args:   cobra.ExactArgs(1),
 	Hidden: true,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		dir := args[0]
 
 		filename := filepath.Join(dir, "cli.md")

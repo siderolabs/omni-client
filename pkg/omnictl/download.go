@@ -98,7 +98,7 @@ To download the latest Radxa ROCK PI 4 image, run:
     omnictl download "rpi_generic"
 `,
 	Args: cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		return access.WithClient(func(ctx context.Context, client *client.Client) error {
 			if args[0] == "" {
 				return fmt.Errorf("image name is required")

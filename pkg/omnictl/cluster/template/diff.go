@@ -22,7 +22,7 @@ var diffCmd = &cobra.Command{
 	Long:    `Query existing resources for the cluster and compare them with the resources generated from the template. This command requires API access.`,
 	Example: "",
 	Args:    cobra.NoArgs,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(*cobra.Command, []string) error {
 		return access.WithClient(diff)
 	},
 }
