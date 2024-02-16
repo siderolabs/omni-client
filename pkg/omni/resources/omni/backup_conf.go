@@ -65,10 +65,13 @@ func (EtcdBackupS3ConfExtension) ResourceDefinition() meta.ResourceDefinitionSpe
 				JSONPath: "{.accesskeyid}",
 			},
 			{
+				Name:     "Secret Access Key",
+				JSONPath: "{.secretaccesskey}",
+			},
+			{
 				Name:     "Session Token",
 				JSONPath: "{.sessiontoken}",
 			},
 		},
-		Sensitivity: meta.Sensitive,
 	}
 }
