@@ -17,7 +17,7 @@ import (
 // NewBackupData creates new resource which holds data for the next etcd backup.
 func NewBackupData(id resource.ID) *BackupData {
 	return typed.NewResource[BackupDataSpec, BackupDataExtension](
-		resource.NewMetadata(resources.EphemeralNamespace, BackupDataType, id, resource.VersionUndefined),
+		resource.NewMetadata(resources.DefaultNamespace, BackupDataType, id, resource.VersionUndefined),
 		protobuf.NewResourceSpec(&specs.BackupDataSpec{}),
 	)
 }
@@ -42,7 +42,7 @@ func (BackupDataExtension) ResourceDefinition() meta.ResourceDefinitionSpec {
 	return meta.ResourceDefinitionSpec{
 		Type:             BackupDataType,
 		Aliases:          []resource.Type{},
-		DefaultNamespace: resources.EphemeralNamespace,
+		DefaultNamespace: resources.DefaultNamespace,
 		PrintColumns:     []meta.PrintColumn{},
 	}
 }
