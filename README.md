@@ -7,6 +7,11 @@
 
 ---
 
+> [!IMPORTANT]  
+> `omni-client` repo is archived.
+> Please use `github.com/siderolabs/omni/client` instead.
+> Rewrite your import paths from `github.com/siderolabs/omni-client` to `github.com/siderolabs/omni/client`.
+
 [**Omni**](https://www.siderolabs.com/platform/saas-for-kubernetes/) SaaS deployment of Kubernetes.
 Omni is supported by the people at [Sidero Labs](https://www.SideroLabs.com/).
 This respository contains client code and gRPC API definitions used to access Omni SaaS.
